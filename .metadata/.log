@@ -1,0 +1,10 @@
+!SESSION 2013-02-13 17:14:46.015 -----------------------------------------------
+eclipse.buildId=3.3.1.201212171919
+java.version=1.6.0_37
+java.vendor=Apple Inc.
+BootLoader constants: OS=macosx, ARCH=x86, WS=cocoa, NL=en_US
+Framework arguments:  -keyring /Users/eli/.eclipse_keyring -showlocation
+Command-line arguments:  -os macosx -ws cocoa -arch x86 -data /Users/eli/Projects/adventure -keyring /Users/eli/.eclipse_keyring -consoleLog -showlocation
+
+!ENTRY org.eclipse.core.net 1 0 2013-02-13 17:14:50.114
+!MESSAGE System property http.nonProxyHosts has been set to local|*.local|169.254/16|*.169.254/16|127.0/16|*.127.0/16|cotalker.com|*.cotalker.com|localhost|*.localhost|127.0/16|*.127.0/16|elidev|*.elidev by an external source. This value will be overwritten using the values from the preferences
