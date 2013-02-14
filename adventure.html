@@ -3,7 +3,7 @@
     <title>Prosplosion Adventure Engine</title>
     <link href="//necolas.github.com/normalize.css/2.1.0/normalize.css" rel="stylesheet">
     <script src="KineticJS/dist/kinetic-vcurrent.js"></script>
-    
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
     <style>
         body {
             background-color: #222;
@@ -22,5 +22,12 @@
 </head>
 <body>
     <div id="container"></div>
-    <script src="pae-compiled.js"></script>
+    <script src="http://localhost:9810/compile?id=pae"></script>
+    <script src="skepto.js"></script>
+    <script>
+    	Skepto.width = 1024;
+    	Skepto.height = 768;
+    	Skepto.container = "container";
+    	window.s = new PAE.Game(Skepto);
+    </script>
 </body>
