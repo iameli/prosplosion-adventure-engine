@@ -21,7 +21,6 @@ goog.provide("PAE.Game");
 		})
 		self.Layer = new Kinetic.Layer();
 		self.Stage.add(self.Layer);
-		self.UI = new PAE.UI(self.Layer);
 	};
 	Game.prototype.transition = function(params) {
 		var self = this;

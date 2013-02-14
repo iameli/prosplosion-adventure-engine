@@ -2,10 +2,12 @@
  * Games are the root object for a game.
  */
 goog.require("PAE");
+goog.require("PAE.Dynamic");
 goog.provide("PAE.Room");
 (function() {
 	var Room = PAE.Room = function(params, parent) {
 		var self = this;
+		self.Dynamics = {};
 		self.className = 'Room';
 		self.Parent = parent;
 		self.Game = self.Parent;
@@ -56,25 +58,17 @@ goog.provide("PAE.Room");
 	    var sprites = self.sprites;
 	    Object.keys(sprites).forEach(function(name) {
 	    	var sprite = sprites[name];
-	    	self.addSprite(name, sprite);
+	    	self.addDynamic(name, sprite);
 	    })
 	}
 	
-	Room.prototype.addSprite = function(name, sprite) {
+	Room.prototype.addDynamic = function(name, sprite) {
 		var self = this;
-		var spriteDef = self.Game.getSpriteData(sprite.id);
-		var img = self.Game.Resources.getImage(spriteDef.image);
-		var s = self.entities[name] = new Kinetic.Sprite({
-	        x: sprite.x,
-	        y: sprite.y,
-	        image: img,
-	        animation: spriteDef.defaultAnimation,
-	        animations: spriteDef.animations,
-	        frameRate : spriteDef.frameRate,
-	        scale: sprite.scale
-	    })
-	    self.Groups[sprite.layer].add(s);
-	    s.setZIndex(self.groupList[sprite.layer].zIndex);
-	    s.start();
+		var s = self.Dynamics[name] = new PAE.Dynamic({
+			game : self.Game,
+			spriteInstance : sprite
+		});
+	    self.Groups[sprite.layer].add(s.Sprite);
+	    s.init();
 	}
 })(); 
