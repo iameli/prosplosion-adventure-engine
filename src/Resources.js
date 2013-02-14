@@ -34,4 +34,7 @@ goog.provide("PAE.Resources");
 			img.src = self.url + '/' + file;
 		})
 	}
+	Resources.prototype.getImage = function(img) {
+		return this.images[img];
+	}
 })();

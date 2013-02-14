@@ -4,6 +4,7 @@ window.Skepto = {
 	sprites : {
 		ghost : {
 			image : 'skepticalghost.png',
+			frameRate : 4,
 			defaultAnimation : 'idle',
 			animations : {
 		        idle: [{
@@ -43,6 +44,7 @@ window.Skepto = {
 			control : "player",
 			layers : {
 				"foreground" : {
+					zIndex: 10,
 					scrollSpeed : 100
 				}
 			},
@@ -52,7 +54,8 @@ window.Skepto = {
 					id : "ghost",
 					layer : "foreground",
 					x : 200,
-					y : 200
+					y : 200,
+					scale : 0.3
 				}
 			}
 		}

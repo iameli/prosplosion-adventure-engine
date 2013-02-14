@@ -19,16 +19,23 @@ goog.provide("PAE.Game");
 		self.Resources.download(function() {
 			self.transition({room: self.GameStruct.startRoom});
 		})
+		self.Layer = new Kinetic.Layer();
+		self.Stage.add(self.Layer);
+		self.UI = new PAE.UI(self.Layer);
 	};
 	Game.prototype.transition = function(params) {
 		var self = this;
-		var roomParams = this.GameStruct.rooms[params.room];
+		var roomParams = self.GameStruct.rooms[params.room];
 		self.CurRoom = new PAE.Room(roomParams, self);
-		self.Stage.add(self.CurRoom.Layer);
+		self.Layer.add(self.CurRoom.Group);
 		self.CurRoom.initalize();
 		self.Stage.draw();
 	}
 	Game.prototype.getDimensions = function(params) {
 		return {width: this.Stage.getWidth(), height: this.Stage.getHeight()};
+	}
+	Game.prototype.getSpriteData = function(id) {
+		var self = this;
+		return self.GameStruct.sprites[id];
 	}
 })(); 
