@@ -11,12 +11,14 @@ goog.provide("PAE.Room");
 		self.className = 'Room';
 		self.Parent = parent;
 		self.Game = self.Parent;
+		self.background = params.background;
 		self.groupList = params.layers;
 		self.groupList._zero = {zIndex: 0, scrollSpeed: 0}
 		while (self.Game.className != "Game" && self.Game.Parent) {
 			self.Game = self.Game.Parent;
 		}
-		self.sprites = params.sprites;
+		self.dynamicList = params.dynamics;
+		self.staticList = params.statics;
 		self.bgcolor = params.bgColor || "black";
 		this.Group = new Kinetic.Group();
 	};
@@ -41,8 +43,8 @@ goog.provide("PAE.Room");
 			g.setZIndex(gDef.zIndex);
 		})
 		
-		var w = stage.getWidth();
-		var h = stage.getHeight();
+		var w = 1024;
+		var h = 768;
 		this.entities = {};
 		var bg = this.entities.zeroRect = new Kinetic.Rect({
 	        x : 0,
@@ -53,12 +55,13 @@ goog.provide("PAE.Room");
 	    });
 	    bg.on('click', function(e) {
 	    	console.log(e);
+	    	self.Dynamics.player.walkTo(e.layerX, e.layerY);
 	    })
 	    this.Groups._zero.add(bg);
-	    var sprites = self.sprites;
-	    Object.keys(sprites).forEach(function(name) {
-	    	var sprite = sprites[name];
-	    	self.addDynamic(name, sprite);
+	    var dynamics = self.dynamicList;
+	    Object.keys(dynamics).forEach(function(name) {
+	    	var dynamic = dynamics[name];
+	    	self.addDynamic(name, dynamic);
 	    })
 	}
 	

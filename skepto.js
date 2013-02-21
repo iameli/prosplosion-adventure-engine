@@ -1,10 +1,18 @@
 window.Skepto = {
-	startRoom : "office",
+	resources : {
+		audio : [
+			"blah1.ogg",
+			"blah2.ogg",
+			"blah3.ogg"
+		]
+	},
+	startRoom : "dock",
 	resourceURL : "resources",
-	sprites : {
+	dynamics : {
 		ghost : {
 			image : 'skepticalghost.png',
 			frameRate : 4,
+			speed : 200,
 			defaultAnimation : 'idle',
 			animations : {
 		        idle: [{
@@ -35,20 +43,34 @@ window.Skepto = {
 		            width: 281,
 		            height: 487
 		        }]
-	    	}
+	    	},
+	    	talkNoises : [
+	    		"blah1.ogg",
+	    		"blah2.ogg",
+	    		"blah3.ogg"
+	    	]
+		}
+	},
+	statics : {
+		dockBG : {
+			image : 'dock.jpg'
 		}
 	},
 	rooms : {
-		"office" : {
+		"dock" : {
 			bgColor : "black",
 			control : "player",
 			layers : {
 				"foreground" : {
 					zIndex: 10,
 					scrollSpeed : 100
+				},
+				"background" : {
+					zIndex: 9,
+					scrollSpeed : 100
 				}
 			},
-			sprites : {
+			dynamics : {
 				player: {
 					walkSpeed : 8.0,
 					id : "ghost",
@@ -56,6 +78,12 @@ window.Skepto = {
 					x : 200,
 					y : 200,
 					scale : 0.3
+				}
+			},
+			statics : {
+				bg : {
+					id : "dockBG",
+					layer: "background"
 				}
 			}
 		}
