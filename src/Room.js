@@ -38,10 +38,9 @@ goog.provide("PAE.Room");
 		
 		self.Groups = {};
 		Object.keys(self.groupList).forEach(function(g_name) {
-			gDef = self.groupList[g_name];
+			var gDef = self.groupList[g_name];
 			var g = self.Groups[g_name] = new Kinetic.Group();
 			self.Group.add(g);
-			g.setZIndex(gDef.zIndex);
 		})
 		
 		var w = 1024;
@@ -55,7 +54,6 @@ goog.provide("PAE.Room");
 	        fill: self.bgcolor
 	    });
 	    bg.on('click', function(e) {
-	    	console.log(e);
 	    	self.Dynamics.player.walkTo(e.layerX, e.layerY);
 	    })
 	    this.Groups._zero.add(bg);
@@ -69,22 +67,24 @@ goog.provide("PAE.Room");
 	    	var stat = statics[name];
 	    	self.addStatic(name, stat);
 	    })
+	    PAE.Util.objEachSorted(self.Groups, function(name, group) {
+	    		return self.groupList[name].zIndex; 
+	    	}, 
+	    	function(name, group) {
+		    	var gDef = self.groupList[name];
+		    	group.moveToTop();
+	    })
 	}
 	
 	Room.prototype.addDynamic = function(name, sprite) {
 		var self = this;
-		var s = self.Dynamics[name] = new PAE.Dynamic({
-			game : self.Game,
-			spriteInstance : sprite
-		});
+		var s = self.Dynamics[name] = new PAE.Dynamic(sprite);
 	    self.Groups[sprite.layer].add(s.Sprite);
 	    s.init();
 	}
 	Room.prototype.addStatic = function(name, stat) {
 		var self = this;
-		var s = self.Statics[name] = new PAE.Static({
-			img : stat.img
-		});
+		var s = self.Statics[name] = new PAE.Static(stat);
 		self.Groups[stat.layer].add(s.Sprite);
 		s.init();
 	}

@@ -62,7 +62,7 @@ window.Skepto = {
 	rooms : {
 		"dock" : {
 			bgColor : "black",
-			control : "player",
+			follow: "player",
 			layers : {
 				"foreground" : {
 					zIndex: 10,
@@ -80,7 +80,10 @@ window.Skepto = {
 					layer : "foreground",
 					x : 200,
 					y : 200,
-					scale : 0.3
+					scale : 0.3,
+					onClick : function(self) {
+			    		self.playText({text: "Hi, I'm Skepto the ghost. Thanks for helping me on my adventures!"});
+			    	}
 				}
 			},
 			statics : {

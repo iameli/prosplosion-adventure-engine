@@ -26,6 +26,35 @@ var PAE = {};
 			fn(key, obj[key]);
 		})
 	}
+	PAE.Util.objEachSorted = function(obj, sorter, fn) {
+		var keys = Object.keys(obj);
+		var length = keys.length;
+		var sorted = {};
+		keys.forEach(function(key, idx) {
+			var sort = sorter(key, obj[key]);
+			if (!sorted[sort]) {
+				sorted[sort] = [];
+			}
+			sorted[sort].push(key);
+		});
+		var groupings = Object.keys(sorted);
+		groupings.sort(function(a,b){return a-b});
+		for(var i = 0; i < groupings.length; i += 1) {
+			var group = groupings[i];
+			while (sorted[group].length > 0) {
+				var thing = sorted[group].pop();
+				fn(thing, obj[thing]);
+			}
+		}
+		// groupings.forEach(function(key, idx) {
+			// var group = groupings[key];
+			// console.log("Spitting group",group);
+			// while (sorted[group].length > 0) {
+				// var thing = sorted[group].pop();
+				// console.log(thing);
+			// }
+		// })
+	}
 	PAE.Event = function(params) {
 		var self = this;
 		PAE.Util.objEach(params, function(key, val) {

@@ -44,4 +44,8 @@ goog.provide("PAE.Game");
 		var self = this;
 		return self.GameStruct.dynamics[id];
 	}
+	Game.prototype.getStaticData = function(id) {
+		var self = this;
+		return self.GameStruct.statics[id];
+	}
 })(); 

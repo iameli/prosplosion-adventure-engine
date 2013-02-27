@@ -6,18 +6,19 @@
 goog.provide("PAE.Static");
 (function() {
 	var Static = PAE.Static = function(params) {
-		console.log(params);
 		var self = this;
 		self.img_name = params.img;
-		self.img = PAE.curGame.Resources.getImage(params.img);
-		
+		var def = PAE.curGame.getStaticData(params.id);
+		self.img = PAE.curGame.Resources.getImage(def.image);
+		console.log(self.img);
 		var sprite = self.Sprite = new Kinetic.Rect({
 			x : 0,
 			y : 0,
-			width: 100,
-			height: 100,
-			fillPattern : self.img
+			width: 1920,
+			height: 1200,
+			fillPatternImage : self.img
 		})
+		sprite.setListening(false);
 	}
 	Static.prototype.init = function() {
 		 

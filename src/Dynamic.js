@@ -8,10 +8,10 @@ goog.provide("PAE.Dynamic");
 (function() {
 	var Dynamic = PAE.Dynamic = function(params) {
 		var self = this;
-		self.Game = params.game;
-		var spriteInstance = self.SpriteInstance = params.spriteInstance;
-		var spriteDef = self.SpriteDef = self.Game.getDynamicData(self.SpriteInstance.id);
-		var img = self.Img = self.Game.Resources.getImage(spriteDef.image);
+		var game = PAE.curGame;
+		var spriteInstance = self.SpriteInstance = params;
+		var spriteDef = self.SpriteDef = game.getDynamicData(self.SpriteInstance.id);
+		var img = self.Img = game.Resources.getImage(spriteDef.image);
 		var s = self.Sprite = new Kinetic.Sprite({
 			x : spriteInstance.x,
 			y : spriteInstance.y,
@@ -24,10 +24,12 @@ goog.provide("PAE.Dynamic");
 		self.speed = spriteDef.speed || 200;
 		self.animations = spriteDef.animations;
 		self._talkerInit(self, spriteDef, params.game);
-		s.on('click', function(e) {
-			self.playText("Hi, I'm Skepto the ghost. Thanks for helping me on my adventures!");
-		})
-		
+		self.onClick = params.onClick;
+		if (params.onClick) {
+			s.on('click', function(e) {
+				self.onClick(self);
+			})
+		}
 	}
 	Dynamic.prototype.init = function() {
 		var self = this;
@@ -40,6 +42,13 @@ goog.provide("PAE.Dynamic");
 	 */
 	Dynamic.prototype.walkTo = function(x, y) {
 		var self = this;
+		var animName = self.Sprite.getAnimation();
+		var anim = self.Sprite.getAnimations()[animName][0];
+		var scale = self.Sprite.getScale();
+		var footX = Math.floor((anim.width/2) * scale.x);
+		var footY = Math.floor(anim.height * scale.y);
+		x -= footX;
+		y -= footY;
 		var curX = self.Sprite.getX();
 		var curY = self.Sprite.getY();
 		var dxs = (curX - x) * (curX - x);
@@ -63,5 +72,5 @@ goog.provide("PAE.Dynamic");
 			}
 		})
 	}
-	PAE.Global.extend(PAE.Dynamic, PAE.Static);
+	PAE.Global.extend(PAE.Dynamic, PAE.Talker);
 })();
