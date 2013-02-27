@@ -65,10 +65,10 @@ goog.provide("PAE.Dynamic");
 			self.Sprite.setAnimation('walk');
 		}
 		self.Sprite.transitionTo({
-			x : x,
-			y : y,
-			duration : dist / self.speed,
-			callback : function() {
+			x: x,
+			y: y,
+			duration: dist / self.speed,
+			callback: function() {
 				self.Sprite.setAnimation('idle');
 			}
 		})
