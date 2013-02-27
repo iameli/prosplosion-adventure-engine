@@ -25,16 +25,40 @@ goog.provide("PAE.UI");
 	        stroke : 'white',
 	        strokeWidth : 4
 	    });
+	    var inventoryGroup = self.inventoryGroup = new Kinetic.Group({
+	    	x : 18,
+	    	y : 650,
+	    	width: 1000,
+	    	height: 100
+	    });
+	    self.renderInventory();
 	    talkGroup.add(rect);
 	    rect.on('click', function(e) {
 	    	self.stopText();
 	    })
 	    self.Group.add(talkGroup);
+	    self.Group.add(inventoryGroup);
+	    talkGroup.moveToTop();
 	    self._shouldStop = false;
 	    PAE.EventMgr.on("playText", function(e) {
 	    	self.stopText();
 	    	self.playText(e)
     	});
+	}
+	UI.prototype.renderInventory = function() {
+		var self = this;
+		for (var i = 0; i < 9; i++) {
+			var rect = new Kinetic.Rect({
+				x : 0 + (111 * i),
+				y : 0,
+				width: 100,
+				height : 100,
+				fill : 'black',
+				cornerRadius: 5,
+	    		opacity: 0.75
+			})
+			self.inventoryGroup.add(rect);
+		}
 	}
 	UI.prototype.playText = function(params) {
 		var self = this;
