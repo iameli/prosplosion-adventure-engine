@@ -25,7 +25,6 @@ goog.provide("PAE.UI");
 	        stroke : 'white',
 	        strokeWidth : 4
 	    });
-	    talkgroup = talkGroup;
 	    talkGroup.add(rect);
 	    rect.on('click', function(e) {
 	    	self.stopText();
