@@ -44,13 +44,24 @@ goog.provide("PAE.UI");
 	    	self.stopText();
 	    	self.playText(e)
     	});
+    	PAE.EventMgr.on("gave-item", function(e) {
+    		self.renderInventory();
+    	})
+    	PAE.EventMgr.on("removed-item", function(e) {
+    		self.renderInventory();
+    	})
 	}
 	UI.prototype.renderInventory = function() {
 		var self = this;
+		var game = PAE.curGame
+		var inv = game.Inventory;
+		self.inventoryGroup.removeChildren();
 		for (var i = 0; i < 9; i++) {
+			var x = (111 * i);
+			var y = 0;
 			var rect = new Kinetic.Rect({
-				x : 0 + (111 * i),
-				y : 0,
+				x : x,
+				y : y,
 				width: 100,
 				height : 100,
 				fill : 'black',
@@ -58,6 +69,21 @@ goog.provide("PAE.UI");
 	    		opacity: 0.75
 			})
 			self.inventoryGroup.add(rect);
+			if (i < inv.length) { //this slot should be filled
+				var item = game.itemList[game.Inventory[i]];
+				var img = game.Resources.getImage(item.image);
+				var width = 90;
+				var height = 90;
+				var itemBox = new Kinetic.Rect({
+					x : x + 5,
+					y : y + 5,
+					width : 90,
+					height : 90,
+					fillPatternImage : img
+				})
+				self.inventoryGroup.add(itemBox);
+				itemBox.moveToTop();
+			}
 		}
 	}
 	UI.prototype.playText = function(params) {

@@ -10,6 +10,7 @@ goog.provide("PAE.Game");
 	var Game = PAE.Game = function(params) {
 		var self = this;
 		PAE.curGame = self;
+		self.Inventory = [];
 		self.className = "Game";
 		self.Stage = new Kinetic.Stage({
 			container : params.container,
@@ -22,6 +23,7 @@ goog.provide("PAE.Game");
 		self.Layer = new Kinetic.Layer();
 		self.Stage.add(self.Layer);
 		self.Group = new Kinetic.Group();
+		self.itemList = params.items;
 		//self.Group.add(self.UI.Group);
 		self.Layer.add(self.Group);
 		self.Resources.download(function() {
@@ -47,5 +49,35 @@ goog.provide("PAE.Game");
 	Game.prototype.getStaticData = function(id) {
 		var self = this;
 		return self.GameStruct.statics[id];
+	}
+	/**
+	 * Give the item to a player.
+ 	 * @param {Object} item
+	 */
+	Game.prototype.giveItem = function(item) {
+		var self = this;
+		PAE.EventMgr.trigger(new PAE.Event({
+			name : 'giving-item',
+			item : item
+		}));
+		self.Inventory.push(item);
+		PAE.EventMgr.trigger(new PAE.Event({
+			name : 'gave-item',
+			item : item
+		}))
+	}
+	/**
+	 * Remove an item from the player's inventory.
+ 	 * @param {Object} item
+	 */
+	Game.prototype.removeItem = function(item) {
+		
+	}
+	/**
+	 * Check to see if a player has a certain item.
+ 	 * @param {Object} item
+	 */
+	Game.prototype.hasItem = function(item) {
+		
 	}
 })(); 

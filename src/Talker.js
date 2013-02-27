@@ -10,9 +10,11 @@ goog.provide("PAE.Talker");
 	Talker.prototype._talkerInit = function(self, params) {
 		var self = this;
 		self.audios = {};
-		params.talkNoises.forEach(function(n) {
-			self.audios[n] = PAE.curGame.Resources.getAudio(n);
-		});
+		if (params.talkNoises) {
+			params.talkNoises.forEach(function(n) {
+				self.audios[n] = PAE.curGame.Resources.getAudio(n);
+			});
+		}
 	}
 	Talker.prototype.playText = function(params, callback) {
 		var self = this;

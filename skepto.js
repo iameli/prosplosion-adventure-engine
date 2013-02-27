@@ -1,4 +1,9 @@
 window.Skepto = {
+	items : {
+		snake : {
+			image : "snake_inv.png"
+		}
+	},
 	resources : {
 		audio : [
 			"blah1.ogg",
@@ -6,7 +11,8 @@ window.Skepto = {
 			"blah3.ogg"
 		],
 		images : [
-			"dock.jpg"
+			"dock.jpg",
+			"snake_inv.png"
 		]
 	},
 	startRoom : "dock",
@@ -52,6 +58,20 @@ window.Skepto = {
 	    		"blah2.ogg",
 	    		"blah3.ogg"
 	    	]
+		},
+		snake : {
+			image : 'bigsnake.png',
+			frameRate : 4,
+			speed : 200,
+			defaultAnimation : 'idle',
+			animations : {
+				idle: [{
+					x : 0,
+					y : 0,
+					width: 528,
+					height: 385
+				}]
+			}
 		}
 	},
 	statics : {
@@ -83,7 +103,20 @@ window.Skepto = {
 					scale : 0.3,
 					onClick : function(self) {
 			    		self.playText({text: "Hi, I'm Skepto the ghost. Thanks for helping me on my adventures!"});
+			    		
 			    	}
+				},
+				snake: {
+					walkSpeed: 1.0,
+					id: "snake",
+					layer : "foreground",
+					x: 400,
+					y: 300,
+					scale : 0.5,
+					onClick: function(self) {
+						this.game.giveItem('snake');
+						self.remove();
+					}
 				}
 			},
 			statics : {

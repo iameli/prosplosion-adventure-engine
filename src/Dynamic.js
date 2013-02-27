@@ -26,8 +26,9 @@ goog.provide("PAE.Dynamic");
 		self._talkerInit(self, spriteDef, params.game);
 		self.onClick = params.onClick;
 		if (params.onClick) {
+			self.onClick.prototype.game = PAE.curGame;
 			s.on('click', function(e) {
-				self.onClick(self);
+				new self.onClick(self);
 			})
 		}
 	}
@@ -71,6 +72,13 @@ goog.provide("PAE.Dynamic");
 				self.Sprite.setAnimation('idle');
 			}
 		})
+	}
+	/**
+	 * Remove this thing from the world.
+	 */
+	Dynamic.prototype.remove = function() {
+		var self = this;
+		self.Sprite.remove();
 	}
 	PAE.Global.extend(PAE.Dynamic, PAE.Talker);
 })();
