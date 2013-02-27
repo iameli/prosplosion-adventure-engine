@@ -3,29 +3,31 @@
  */
 goog.require("PAE");
 goog.require("PAE.Talker");
+goog.require("PAE.Static");
 goog.provide("PAE.Dynamic");
 (function() {
 	var Dynamic = PAE.Dynamic = function(params) {
 		var self = this;
 		self.Game = params.game;
 		var spriteInstance = self.SpriteInstance = params.spriteInstance;
-		var spriteDef      = self.SpriteDef      = self.Game.getDynamicData(self.SpriteInstance.id);
-		var img            = self.Img            = self.Game.Resources.getImage(spriteDef.image);
-		var s              = self.Sprite         = new Kinetic.Sprite({
-	        x: spriteInstance.x,
-	        y: spriteInstance.y,
-	        image: img,
-	        animation: spriteDef.defaultAnimation,
-	        animations: spriteDef.animations,
-	        frameRate : spriteDef.frameRate,
-	        scale: spriteInstance.scale
-	   });
-	   self.speed = spriteDef.speed || 200;
-	   self.animations = spriteDef.animations;
-	   self._talkerInit(self, spriteDef, params.game);
-	   s.on('click', function(e) {
-	        self.playText("Hi, I'm Skepto the ghost. Thanks for helping me on my adventures!");
-	   })
+		var spriteDef = self.SpriteDef = self.Game.getDynamicData(self.SpriteInstance.id);
+		var img = self.Img = self.Game.Resources.getImage(spriteDef.image);
+		var s = self.Sprite = new Kinetic.Sprite({
+			x : spriteInstance.x,
+			y : spriteInstance.y,
+			image : img,
+			animation : spriteDef.defaultAnimation,
+			animations : spriteDef.animations,
+			frameRate : spriteDef.frameRate,
+			scale : spriteInstance.scale
+		});
+		self.speed = spriteDef.speed || 200;
+		self.animations = spriteDef.animations;
+		self._talkerInit(self, spriteDef, params.game);
+		s.on('click', function(e) {
+			self.playText("Hi, I'm Skepto the ghost. Thanks for helping me on my adventures!");
+		})
+		
 	}
 	Dynamic.prototype.init = function() {
 		var self = this;
@@ -46,17 +48,20 @@ goog.provide("PAE.Dynamic");
 		if (self.animations.walkLeft && self.animations.walkRight) {
 			if (x < curX) {
 				self.Sprite.setAnimation('walkLeft');
-			}
-			else {
+			} else {
 				self.Sprite.setAnimation('walkRight');
 			}
-		}
-		else if (self.animations.walk) {
+		} else if (self.animations.walk) {
 			self.Sprite.setAnimation('walk');
 		}
-		self.Sprite.transitionTo({x : x, y : y, duration : dist / self.speed , callback : function() {
-			self.Sprite.setAnimation('idle');
-		}})
+		self.Sprite.transitionTo({
+			x : x,
+			y : y,
+			duration : dist / self.speed,
+			callback : function() {
+				self.Sprite.setAnimation('idle');
+			}
+		})
 	}
-	PAE.Global.extend(PAE.Dynamic, PAE.Talker);
+	PAE.Global.extend(PAE.Dynamic, PAE.Static);
 })();

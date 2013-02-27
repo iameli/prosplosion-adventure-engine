@@ -8,6 +8,7 @@ goog.provide("PAE.Room");
 	var Room = PAE.Room = function(params, parent) {
 		var self = this;
 		self.Dynamics = {};
+		self.Statics = {};
 		self.className = 'Room';
 		self.Parent = parent;
 		self.Game = self.Parent;
@@ -59,9 +60,14 @@ goog.provide("PAE.Room");
 	    })
 	    this.Groups._zero.add(bg);
 	    var dynamics = self.dynamicList;
+	    var statics = self.staticList;
 	    Object.keys(dynamics).forEach(function(name) {
 	    	var dynamic = dynamics[name];
 	    	self.addDynamic(name, dynamic);
+	    })
+	    Object.keys(statics).forEach(function(name) {
+	    	var stat = statics[name];
+	    	self.addStatic(name, stat);
 	    })
 	}
 	
@@ -73,5 +79,13 @@ goog.provide("PAE.Room");
 		});
 	    self.Groups[sprite.layer].add(s.Sprite);
 	    s.init();
+	}
+	Room.prototype.addStatic = function(name, stat) {
+		var self = this;
+		var s = self.Statics[name] = new PAE.Static({
+			img : stat.img
+		});
+		self.Groups[stat.layer].add(s.Sprite);
+		s.init();
 	}
 })(); 

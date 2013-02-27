@@ -29,6 +29,10 @@ goog.provide("PAE.Resources");
 		audios.forEach(function(n) {
 			self.audio[n] = null;
 		})
+		var images = params.resources.images;
+		images.forEach(function(n) {
+			self.images[n] = null;
+		})
 	}
 	Resources.prototype.download = function(callback) {
 		var self = this;

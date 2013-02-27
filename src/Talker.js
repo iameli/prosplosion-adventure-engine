@@ -4,20 +4,20 @@
 goog.require("PAE");
 goog.provide("PAE.Talker");
 (function() {
-	var Talker = PAE.Talker = function(params, game) {
-		this._talkerInit(this, params, game);
+	var Talker = PAE.Talker = function(params) {
+		this._talkerInit(this, params);
 	}
-	Talker.prototype._talkerInit = function(self, params, game) {
+	Talker.prototype._talkerInit = function(self, params) {
 		var self = this;
-		self.Game = game;
-		console.log(params);
 		self.audios = {};
 		params.talkNoises.forEach(function(n) {
-			self.audios[n] = game.Resources.getAudio(n);
+			self.audios[n] = PAE.curGame.Resources.getAudio(n);
 		});
 	}
-	Talker.prototype.playText = function(text) {
+	Talker.prototype.playText = function(params, callback) {
 		var self = this;
-		self.Game.UI.playText({text : text, audios : self.audios})
+		var text = params.text;
+		var e = new PAE.Event({name : 'playText', text : text, audios : self.audios});
+		PAE.EventMgr.trigger(e);
 	}
 })();

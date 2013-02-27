@@ -9,6 +9,7 @@ goog.provide("PAE.Game");
 (function() {
 	var Game = PAE.Game = function(params) {
 		var self = this;
+		PAE.curGame = self;
 		self.className = "Game";
 		self.Stage = new Kinetic.Stage({
 			container : params.container,

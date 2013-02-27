@@ -4,6 +4,9 @@ window.Skepto = {
 			"blah1.ogg",
 			"blah2.ogg",
 			"blah3.ogg"
+		],
+		images : [
+			"dock.jpg"
 		]
 	},
 	startRoom : "dock",

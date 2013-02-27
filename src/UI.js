@@ -7,6 +7,7 @@ goog.provide("PAE.UI");
 	var TEXT_SPEED = 50;
 	var UI = PAE.UI = function(params, parent) {
 		var self = this;
+		
 		self.Group = new Kinetic.Group();
 		var talkGroup = self.TalkGroup = new Kinetic.Group( {
 	    	x : 12,
@@ -31,9 +32,14 @@ goog.provide("PAE.UI");
 	    })
 	    self.Group.add(talkGroup);
 	    self._shouldStop = false;
+	    PAE.EventMgr.on("playText", function(e) {
+	    	self.stopText();
+	    	self.playText(e)
+    	});
 	}
 	UI.prototype.playText = function(params) {
 		var self = this;
+		self._shouldStop = false;
 		var fullText = params.text;
 		self.TalkGroup.setVisible(true);
 		var text = new Kinetic.Text({
@@ -82,7 +88,7 @@ goog.provide("PAE.UI");
 	UI.prototype.stopText = function() {
 		var self = this;
 		self._shouldStop = true;
-		self.CurText.remove();
+		self.CurText && self.CurText.remove();
 		self.TalkGroup.setVisible(false);
 	}
 })();
