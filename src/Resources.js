@@ -24,6 +24,7 @@ goog.provide("PAE.Resources");
 				self.images[room.backgroundImage] = null;
 			}
 		})
+		self.vectors = params.resources.vectors;
 		var audios = params.resources.audio;
 		self.audio = {};
 		audios.forEach(function(n) {
@@ -67,5 +68,8 @@ goog.provide("PAE.Resources");
 	}
 	Resources.prototype.getAudio = function(audio) {
 		return this.audio[audio];
+	}
+	Resources.prototype.getVectors = function(v) {
+		return this.vectors[v];
 	}
 })();

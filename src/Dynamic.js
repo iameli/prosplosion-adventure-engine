@@ -1,9 +1,12 @@
 /**
  * Dynamics are everything in a level that's not static. Everything that's a clickable or moves or anything is dynamic.
+ * 
+ * Contains one ugly jQuery hack.
  */
 goog.require("PAE");
 goog.require("PAE.Talker");
 goog.require("PAE.Static");
+goog.require("PAE.VectorSprite");
 goog.provide("PAE.Dynamic");
 (function() {
 	var Dynamic = PAE.Dynamic = function(params) {
@@ -13,10 +16,12 @@ goog.provide("PAE.Dynamic");
 		var spriteInstance = self.SpriteInstance = params;
 		var spriteDef = self.SpriteDef = game.getDynamicData(self.SpriteInstance.id);
 		var img = self.Img = game.Resources.getImage(spriteDef.image);
-		var s = self.Sprite = new Kinetic.Sprite({
+		var vectors = self.Vectors = game.Resources.getVectors("smile");
+		var s = self.Sprite = new PAE.VectorSprite({
 			x : spriteInstance.x,
 			y : spriteInstance.y,
 			image : img,
+			paths: vectors.paths,
 			animation : spriteDef.defaultAnimation,
 			animations : spriteDef.animations,
 			frameRate : spriteDef.frameRate,

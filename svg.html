@@ -1,0 +1,43 @@
+<html>
+	<head>
+		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+		<link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.0/css/bootstrap-combined.min.css" rel="stylesheet">
+		<script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.0/js/bootstrap.min.js"></script>
+		<script src="jquery.xml2json.js" type="text/javascript" language="javascript"></script> 
+		<style>
+			#main {
+				width: 100%;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="container">
+			<div class="row">
+				<div class="span12">
+					<textarea id="main" rows="20" cols="200"></textarea><br/><input type="submit" value="Go!" id="go">
+				</div>
+			</div>
+		</div>
+		
+		<br/>
+		
+		<script>
+			$('#go').click(function() {
+				var text = $('#main').val();
+				var svg = $.xml2json(text);
+				var output = {};
+				output.width = svg.width;
+				output.height = svg.height;
+				output.paths = [];
+				svg.path.forEach(function(thing) {
+					var p = {};
+					p.data = thing.d;
+					p.fill = thing.fill;
+					output.paths.push(p);
+				})
+				$('#main').val(JSON.stringify(output));
+			});
+
+		</script>
+	</body>
+</html>
