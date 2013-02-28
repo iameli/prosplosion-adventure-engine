@@ -1,9 +1,10 @@
+<!doctype html>
 <html>
 	<head>
 		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 		<link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.0/css/bootstrap-combined.min.css" rel="stylesheet">
 		<script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.0/js/bootstrap.min.js"></script>
-		<script src="jquery.xml2json.js" type="text/javascript" language="javascript"></script> 
+		<script src="jquery.xml2json.js" type="text/javascript"></script>
 		<style>
 			#main {
 				width: 100%;
@@ -11,19 +12,20 @@
 		</style>
 	</head>
 	<body>
-		<div class="container">
-			<div class="row">
-				<div class="span12">
-					<textarea id="main" rows="20" cols="200"></textarea><br/><input type="submit" value="Go!" id="go">
-				</div>
-			</div>
+		<div class="container"><br/><br/>
+			Animation: <input type="text" id="anim">
+			<textarea id="main" rows="20"></textarea><br/>
+			<input type="submit" value="Add" id="add">
+			<input type="submit" value="Done" id="done">
 		</div>
-		
-		<br/>
-		
 		<script>
-			$('#go').click(function() {
+			var struct = {};
+			$('#done').click(function() {
+				$('#main').val(JSON.stringify(struct));
+			})
+			$('#add').click(function() {
 				var text = $('#main').val();
+				var anim = $('#anim').val();
 				var svg = $.xml2json(text);
 				var output = {};
 				output.width = svg.width;
@@ -35,7 +37,11 @@
 					p.fill = thing.fill;
 					output.paths.push(p);
 				})
-				$('#main').val(JSON.stringify(output));
+				$('#main').val("");
+				if (!struct[anim]) {
+					struct[anim] = [];
+				}
+				struct[anim].push(output);
 			});
 
 		</script>

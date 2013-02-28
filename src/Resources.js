@@ -70,6 +70,8 @@ goog.provide("PAE.Resources");
 		return this.audio[audio];
 	}
 	Resources.prototype.getVectors = function(v) {
+		console.log(v);
+		console.log(this.vectors[v]);
 		return this.vectors[v];
 	}
 })();

@@ -15,13 +15,14 @@ goog.provide("PAE.Dynamic");
 		self.uid = game.uid();
 		var spriteInstance = self.SpriteInstance = params;
 		var spriteDef = self.SpriteDef = game.getDynamicData(self.SpriteInstance.id);
+		console.log(params);
 		var img = self.Img = game.Resources.getImage(spriteDef.image);
-		var vectors = self.Vectors = game.Resources.getVectors("smile");
+		var vectors = self.Vectors = game.Resources.getVectors(spriteDef.svg);
 		var s = self.Sprite = new PAE.VectorSprite({
 			x : spriteInstance.x,
 			y : spriteInstance.y,
 			image : img,
-			paths: vectors.paths,
+			paths: vectors,
 			animation : spriteDef.defaultAnimation,
 			animations : spriteDef.animations,
 			frameRate : spriteDef.frameRate,

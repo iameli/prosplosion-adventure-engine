@@ -47,10 +47,17 @@ goog.provide("PAE.VectorSprite");
             });
             
             console.log(config);
-            self.paths = [];
-            config.paths.forEach(function(path) {
-            	var p = new Kinetic.Path(path);
-            	self.paths.push(p);
+            self.anims = [];
+            PAE.Util.objEach(config.paths, function(anim, config) {
+            	self.anims[anim] = [];
+            	config.forEach(function(sprite) {
+            		var paths = [];
+            		sprite.paths.forEach(function(path) {
+            			path.fill = "3F3F3F"
+            			paths.push(new Kinetic.Path(path));
+            		})
+            		self.anims[anim].push(paths);
+            	})
             })
             
             // call super constructor
@@ -69,7 +76,7 @@ goog.provide("PAE.VectorSprite");
             var anim = this.attrs.animation, index = this.attrs.index, f = this.attrs.animations[anim][index], context = canvas.getContext(), image = this.attrs.image;
 
             if(image) {
-            	this.paths.forEach(function(path) {
+            	this.anims[anim][index].forEach(function(path) {
             		path.drawFunc(canvas);
             	})
                 //context.drawImage(image, f.x, f.y, f.width, f.height, 0, 0, f.width, f.height);
