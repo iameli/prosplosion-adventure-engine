@@ -9,6 +9,7 @@ goog.provide("PAE.Dynamic");
 	var Dynamic = PAE.Dynamic = function(params) {
 		var self = this;
 		var game = PAE.curGame;
+		self.uid = game.uid();
 		var spriteInstance = self.SpriteInstance = params;
 		var spriteDef = self.SpriteDef = game.getDynamicData(self.SpriteInstance.id);
 		var img = self.Img = game.Resources.getImage(spriteDef.image);
@@ -24,13 +25,29 @@ goog.provide("PAE.Dynamic");
 		self.speed = spriteDef.speed || 200;
 		self.animations = spriteDef.animations;
 		self._talkerInit(self, spriteDef, params.game);
-		self.onClick = params.onClick;
-		if (params.onClick) {
-			self.onClick.prototype.game = PAE.curGame;
-			s.on('click', function(e) {
-				new self.onClick(self);
-			})
-		}
+		self.onClick = params.onClick || function(e){};
+		self.onClick.prototype.game = PAE.curGame;
+		self.onClick.prototype.sprite = self;
+		s.on('click', function(e) {
+			PAE.EventMgr.trigger(new PAE.Event({
+				name: 'sprite-clicked.' + self.uid,
+				item: null
+			}))
+		})
+		s.on('mousedown', function(e) {
+			if ($(e.srcElement).hasClass('kinetic-drag-and-drop-layer')) { //It'd be nice to find a more elegant way to do this, but.
+				var listener = PAE.EventMgr.on('item-action', function(e) {
+					PAE.EventMgr.off(listener);
+					PAE.EventMgr.trigger(new PAE.Event({
+						name: 'sprite-clicked.' + self.uid,
+						item: e.item
+					}))
+				})
+			}
+		})
+		PAE.EventMgr.on("sprite-clicked."+self.uid, function(e) {
+			new self.onClick(e);
+		})
 	}
 	Dynamic.prototype.init = function() {
 		var self = this;

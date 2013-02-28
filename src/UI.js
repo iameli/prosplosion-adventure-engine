@@ -7,7 +7,14 @@ goog.provide("PAE.UI");
 	var TEXT_SPEED = 50;
 	var UI = PAE.UI = function(params, parent) {
 		var self = this;
-		
+		var width = 1024;
+		var height = 768;
+		var overlayGroup = self.overlayGroup = new Kinetic.Group ({
+			x: 0,
+			y: 0,
+			width: width,
+			height: height
+		})
 		self.Group = new Kinetic.Group();
 		var talkGroup = self.TalkGroup = new Kinetic.Group( {
 	    	x : 12,
@@ -36,9 +43,11 @@ goog.provide("PAE.UI");
 	    rect.on('click', function(e) {
 	    	self.stopText();
 	    })
+	    self.Group.add(overlayGroup);
 	    self.Group.add(talkGroup);
 	    self.Group.add(inventoryGroup);
 	    talkGroup.moveToTop();
+	    overlayGroup.moveToTop();
 	    self._shouldStop = false;
 	    PAE.EventMgr.on("playText", function(e) {
 	    	self.stopText();
@@ -50,7 +59,28 @@ goog.provide("PAE.UI");
     	PAE.EventMgr.on("removed-item", function(e) {
     		self.renderInventory();
     	})
+    	PAE.EventMgr.on("item-action", function(e) {
+    		self.renderInventory();
+    	})
+    	PAE.EventMgr.on("item-clicked", function(e) {
+    		var self = this;
+			var itemBox = e.itemBox;
+			var item = e.item;
+			var x = e.layerX;
+			var y = e.layerY;
+			itemBox.simulate('mousedown');
+			itemBox.on('dragend', function(e) {
+				PAE.EventMgr.trigger(new PAE.Event({
+					name: 'item-action',
+					item: item
+				}))
+			})
+    	})
 	}
+	/**
+	 * Get the item data from the game and render the 
+	 * bar at the bottom of the screen.
+	 */
 	UI.prototype.renderInventory = function() {
 		var self = this;
 		var game = PAE.curGame
@@ -70,7 +100,8 @@ goog.provide("PAE.UI");
 			})
 			self.inventoryGroup.add(rect);
 			if (i < inv.length) { //this slot should be filled
-				var item = game.itemList[game.Inventory[i]];
+				var itemName = game.Inventory[i];
+				var item = game.itemList[itemName];
 				var img = game.Resources.getImage(item.image);
 				var width = 90;
 				var height = 90;
@@ -79,7 +110,17 @@ goog.provide("PAE.UI");
 					y : y + 5,
 					width : 90,
 					height : 90,
-					fillPatternImage : img
+					fillPatternImage : img,
+					listening: false,
+					draggable: true
+				})
+				rect.on('click', function(e) {
+					PAE.EventMgr.trigger(new PAE.Event({
+						name: 'item-clicked',
+						item: itemName,
+						icon: img,
+						itemBox: itemBox
+					}))
 				})
 				self.inventoryGroup.add(itemBox);
 				itemBox.moveToTop();

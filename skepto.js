@@ -101,8 +101,16 @@ window.Skepto = {
 					x : 200,
 					y : 200,
 					scale : 0.3,
-					onClick : function(self) {
-			    		self.playText({text: "Hi, I'm Skepto the ghost. Thanks for helping me on my adventures!"});
+					onClick : function(e) {
+						if (e.item === null) {
+							this.sprite.playText({text: "Hi, I'm Skepto the ghost. Thanks for helping me on my adventures!"});
+						}
+						else if (e.item == 'snake') {
+							this.sprite.playText({text: "That's my favorite snake, Dr. Hiss!"});
+						}
+						else {
+							this.sprite.playText({text: "I'm not sure what to make of that."});
+						}
 			    		
 			    	}
 				},
@@ -113,9 +121,9 @@ window.Skepto = {
 					x: 400,
 					y: 300,
 					scale : 0.5,
-					onClick: function(self) {
+					onClick: function(e) {
 						this.game.giveItem('snake');
-						self.remove();
+						this.sprite.remove();
 					}
 				}
 			},

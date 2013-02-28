@@ -17,6 +17,7 @@ goog.provide("PAE.Game");
 			width : params.width,
 			height : params.height
 		});
+		self._uid = 0; //Unique identifiers for anything that needs them. Increments.
 		self.GameStruct = params;
 		self.UI = new PAE.UI();
 		self.Resources = new PAE.Resources(params);
@@ -31,6 +32,12 @@ goog.provide("PAE.Game");
 		})
 		self.Stage.draw();
 	};
+	Game.prototype.uid = function() {
+		var self = this;
+		var ret = self._uuid;
+		self._uuid += 1;
+		return ret;
+	}
 	Game.prototype.transition = function(params) {
 		var self = this;
 		var roomParams = self.GameStruct.rooms[params.room];
