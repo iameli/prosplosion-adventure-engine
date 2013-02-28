@@ -71,13 +71,27 @@ goog.provide("PAE.Game");
  	 * @param {Object} item
 	 */
 	Game.prototype.removeItem = function(item) {
-		
+		var self = this;
+		PAE.EventMgr.trigger(new PAE.Event({
+			name : 'removing-item',
+			item : item
+		}));
+		var idx = self.Inventory.indexOf(item);
+		if (idx != -1) {
+			self.Inventory.splice(idx, 1);
+			PAE.EventMgr.trigger(new PAE.Event({
+				name: 'removed-item',
+				item: item
+			}))
+		}
 	}
 	/**
 	 * Check to see if a player has a certain item.
  	 * @param {Object} item
 	 */
 	Game.prototype.hasItem = function(item) {
-		
+		var self = this;
+		var idx = self.Inventory.indexOf(item);
+		return (idx != -1)
 	}
 })(); 
