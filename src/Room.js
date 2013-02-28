@@ -14,6 +14,7 @@ goog.provide("PAE.Room");
 		self.Game = self.Parent;
 		self.background = params.background;
 		self.groupList = params.layers;
+		self.follow = params.follow;
 		self.groupList._zero = {zIndex: 0, scrollSpeed: 0}
 		while (self.Game.className != "Game" && self.Game.Parent) {
 			self.Game = self.Game.Parent;
@@ -21,7 +22,7 @@ goog.provide("PAE.Room");
 		self.dynamicList = params.dynamics;
 		self.staticList = params.statics;
 		self.bgcolor = params.bgColor || "black";
-		this.Group = new Kinetic.Group();
+		self.Group = new Kinetic.Group();
 	};
 	Room.prototype.setBgColor = function(color) {
 		self.bgcolor = color
@@ -43,30 +44,42 @@ goog.provide("PAE.Room");
 			self.Group.add(g);
 		})
 		
-		var w = 1024;
-		var h = 768;
+		var WIDTH = 1024;
+		var HEIGHT = 768;
 		this.entities = {};
 		var bg = this.entities.zeroRect = new Kinetic.Rect({
-	        x : 0,
-	        y : 0,
-	        width: w,
-	        height: h,
+	        x : -10000,
+	        y : -10000,
+	        width: 20000,
+	        height: 20000,
 	        fill: self.bgcolor
 	    });
 	    bg.on('click', function(e) {
-	    	self.Dynamics.player.walkTo(e.layerX, e.layerY);
+	    	if (self.follow) {
+	    		console.log(e);
+	    		var rpos = self.Group.getPosition();
+	    		var x = e.offsetX - rpos.x;
+	    		var y = e.offsetY - rpos.y;
+	    		self.Dynamics[self.follow].walkTo(x, y);
+	    	}
 	    })
 	    this.Groups._zero.add(bg);
 	    var dynamics = self.dynamicList;
 	    var statics = self.staticList;
+	    self.spriteIdx = {};
 	    Object.keys(dynamics).forEach(function(name) {
 	    	var dynamic = dynamics[name];
-	    	self.addDynamic(name, dynamic);
+	    	var idx = self.addDynamic(name, dynamic);
+	    	self.spriteIdx[idx] = name;
 	    })
 	    Object.keys(statics).forEach(function(name) {
 	    	var stat = statics[name];
-	    	self.addStatic(name, stat);
+	    	var idx = self.addStatic(name, stat);
+	    	self.spriteIdx[idx] = name;
 	    })
+	    //This sorts the layers by z-index then runs moveottop on them.
+	    //Needed because I can't start to fathom how KineticJS handles
+	    //setZIndex. 
 	    PAE.Util.objEachSorted(self.Groups, function(name, group) {
 	    		return self.groupList[name].zIndex; 
 	    	}, 
@@ -74,18 +87,66 @@ goog.provide("PAE.Room");
 		    	var gDef = self.groupList[name];
 		    	group.moveToTop();
 	    })
+	    var XBUFFER = 250; //defining these as constants just so's we can edit later if need be
+	    var YBUFFER = 150;
+	    PAE.EventMgr.on('sprite-walking', function(e) {
+	    	var sprite = self.spriteIdx[e.uid];
+	    	if (sprite && self.follow == sprite) { //If the player is moving
+	    		var dynamic = self.Dynamics[self.follow];
+	    		var sprite = dynamic.Sprite;
+	    		var dimensions = dynamic.getDimensions();
+	    		var responder = PAE.EventMgr.on('before-draw', function(e) {
+	    			var spos = sprite.getPosition();
+	    			var sx = spos.x;
+	    			var sy = spos.y;
+	    			var rpos = self.Group.getPosition();
+	    			var rx = rpos.x;
+	    			var ry = rpos.y;
+	    			if ((rx + sx) < XBUFFER) { //room too far right
+	    				self.Group.setX(XBUFFER - sx)
+	    			}
+	    			else if ((WIDTH - sx - rx - dimensions.width) < XBUFFER) {
+	    				self.Group.setX(WIDTH - sx - dimensions.width - XBUFFER)
+	    			}
+	    			if ((ry + sy) < YBUFFER) { //room too far right
+	    				self.Group.setY(YBUFFER - sy)
+	    			}
+	    			else if ((HEIGHT - sy - ry - dimensions.height) < YBUFFER) {
+	    				self.Group.setY(HEIGHT - sy - dimensions.height - YBUFFER)
+	    			}
+	    		})
+	    		var ender = PAE.EventMgr.on('sprite-walking-done', function(e) {
+	    			var sprite = self.spriteIdx[e.uid];
+	    			if (sprite && self.follow == sprite) {
+	    				PAE.EventMgr.off(responder);
+	    				PAE.EventMgr.off(ender);
+	    			}
+	    		})
+	    	}
+	    })
 	}
-	
+	/**
+	 * Add a Dynamic to this room.
+	 * @param {Object} name
+	 * @param {Object} sprite
+	 */
 	Room.prototype.addDynamic = function(name, sprite) {
 		var self = this;
 		var s = self.Dynamics[name] = new PAE.Dynamic(sprite);
 	    self.Groups[sprite.layer].add(s.Sprite);
 	    s.init();
+	    return s.uid;
 	}
+	/**
+	 * Add a Static to this room.
+	 * @param {Object} name
+	 * @param {Object} stat
+	 */
 	Room.prototype.addStatic = function(name, stat) {
 		var self = this;
 		var s = self.Statics[name] = new PAE.Static(stat);
 		self.Groups[stat.layer].add(s.Sprite);
 		s.init();
+		return s.uid;
 	}
 })(); 

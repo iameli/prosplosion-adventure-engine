@@ -31,6 +31,11 @@ goog.provide("PAE.Game");
 			self.transition({room: self.GameStruct.startRoom});
 		})
 		self.Stage.draw();
+		self.Layer.beforeDraw(function() {
+			PAE.EventMgr.trigger(new PAE.Event({
+				name: 'before-draw'
+			}))
+		})
 	};
 	Game.prototype.uid = function() {
 		var self = this;

@@ -54,19 +54,32 @@ goog.provide("PAE.Dynamic");
 		self.Sprite.start();
 	}
 	/**
+	 * Return the offset location of the foot, as well as the width and height of the sprite (they're calculated as a side-effect anyway)
+	 */
+	Dynamic.prototype.getDimensions = function() {
+		var self = this;
+		var animName = self.Sprite.getAnimation();
+		var anim = self.Sprite.getAnimations()[animName][0];
+		var scale = self.Sprite.getScale();
+		var width = Math.floor(anim.width * scale.x);
+		var footX = Math.floor(width/2);
+		var footY = Math.floor(anim.height * scale.y);
+		return {footX: footX, footY: footY, height: footY, width:width}
+	}
+	/**
 	 * Use the character's walking animation (if any) to move to another place.
 	 * @param {Object} x
 	 * @param {Object} y
 	 */
 	Dynamic.prototype.walkTo = function(x, y) {
 		var self = this;
-		var animName = self.Sprite.getAnimation();
-		var anim = self.Sprite.getAnimations()[animName][0];
-		var scale = self.Sprite.getScale();
-		var footX = Math.floor((anim.width/2) * scale.x);
-		var footY = Math.floor(anim.height * scale.y);
-		x -= footX;
-		y -= footY;
+		PAE.EventMgr.trigger(new PAE.Event({
+			name: 'sprite-walking',
+			uid: self.uid
+		}))
+		var foot = self.getDimensions();
+		x -= foot.footX;
+		y -= foot.footY;
 		var curX = self.Sprite.getX();
 		var curY = self.Sprite.getY();
 		var dxs = (curX - x) * (curX - x);
@@ -86,6 +99,10 @@ goog.provide("PAE.Dynamic");
 			y: y,
 			duration: dist / self.speed,
 			callback: function() {
+				PAE.EventMgr.trigger(new PAE.Event({
+					name: 'sprite-walking-done',
+					uid: self.uid
+				}))
 				self.Sprite.setAnimation('idle');
 			}
 		})

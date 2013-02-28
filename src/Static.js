@@ -8,6 +8,7 @@ goog.provide("PAE.Static");
 	var Static = PAE.Static = function(params) {
 		var self = this;
 		self.img_name = params.img;
+		self.uid = PAE.curGame.uid();
 		var def = PAE.curGame.getStaticData(params.id);
 		self.img = PAE.curGame.Resources.getImage(def.image);
 		console.log(self.img);
