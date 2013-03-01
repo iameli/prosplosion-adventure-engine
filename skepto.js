@@ -19,12 +19,35 @@ window.Skepto = {
 			"skepto_walkl1.svg",
 			"skepto_walkl2.svg",
 			"skepto_walkr1.svg",
-			"skepto_walkr2.svg"
+			"skepto_walkr2.svg",
+			"bigsnake.svg",
+			"dock.svg",
+			"dockBG.svg"
 		]
 	},
 	startRoom : "dock",
 	resourceURL : "resources",
 	dynamics : {
+		dock: {
+			width: 2048,
+			height: 1536,
+			frameRate: 1,
+			speed: 200,
+			defaultAnimation: 'idle',
+			vectorAnimations: {
+				idle: ['dock.svg']
+			}
+		},
+		dockBG: {
+			width: 2048,
+			height: 1536,
+			frameRate: 1,
+			speed: 200,
+			defaultAnimation: 'idle',
+			vectorAnimations: {
+				idle: ['dockBG.svg']
+			}
+		},
 		ghost : {
 			width: 315,
 			height: 488,
@@ -54,13 +77,12 @@ window.Skepto = {
 			frameRate : 4,
 			speed : 200,
 			defaultAnimation : 'idle',
-			animations : {
-				idle: [{
-					x : 0,
-					y : 0,
-					width: 528,
-					height: 385
-				}]
+			width: 528,
+			height: 385,
+			vectorAnimations: {
+				idle: [
+					"bigsnake.svg"
+				]
 			}
 		}
 	},
@@ -78,14 +100,19 @@ window.Skepto = {
 					zIndex: 10,
 					scrollSpeed : 100
 				},
-				"background" : {
+				"behind": {
 					zIndex: 9,
+					scrollSpeed: 100
+				},
+				"background" : {
+					zIndex: 8,
 					scrollSpeed : 100
 				}
 			},
 			dynamics : {
 				player: {
 					walkSpeed : 8.0,
+					listening: true,
 					id : "ghost",
 					layer : "foreground",
 					x : 200,
@@ -103,25 +130,38 @@ window.Skepto = {
 						}
 			    		
 			    	}
+				},
+				snake: {
+					walkSpeed: 1.0,
+					listening: true,
+					id: "snake",
+					layer : "foreground",
+					x: 400,
+					y: 300,
+					scale : 0.5,
+					onClick: function(e) {
+						this.game.giveItem('snake');
+						this.sprite.remove();
+					}
+				},
+				dock: {
+					listening: false,
+					id: "dock",
+					layer: "behind",
+					x: 0,
+					y: 0,
+					scale: 1.0
+				},
+				dockBG: {
+					listening: false,
+					x: 0,
+					y: 0,
+					id: "dockBG",
+					layer: "background",
+					scale: 1.0
 				}
-				// snake: {
-					// walkSpeed: 1.0,
-					// id: "snake",
-					// layer : "foreground",
-					// x: 400,
-					// y: 300,
-					// scale : 0.5,
-					// onClick: function(e) {
-						// this.game.giveItem('snake');
-						// this.sprite.remove();
-					// }
-				// }
 			},
 			statics : {
-				bg : {
-					id : "dockBG",
-					layer: "background"
-				}
 			}
 		}
 	}

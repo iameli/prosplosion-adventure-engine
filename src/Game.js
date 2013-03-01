@@ -39,8 +39,8 @@ goog.provide("PAE.Game");
 	};
 	Game.prototype.uid = function() {
 		var self = this;
-		var ret = self._uuid;
-		self._uuid += 1;
+		var ret = self._uid;
+		self._uid += 1;
 		return ret;
 	}
 	Game.prototype.transition = function(params) {

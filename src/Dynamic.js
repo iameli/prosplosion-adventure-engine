@@ -5,7 +5,6 @@
  */
 goog.require("PAE");
 goog.require("PAE.Talker");
-goog.require("PAE.Static");
 goog.require("PAE.VectorSprite");
 goog.provide("PAE.Dynamic");
 (function() {
@@ -16,7 +15,6 @@ goog.provide("PAE.Dynamic");
 		var spriteInstance = self.SpriteInstance = params;
 		var spriteDef = self.SpriteDef = game.getDynamicData(self.SpriteInstance.id);
 		var svgList = spriteDef.vectorAnimations;
-		console.log(svgList);
 		self.vectorAnimations = svgList;
 		var vectorAnimations = {};
 		PAE.Util.objEach(svgList, function(anim, frames) {
@@ -25,7 +23,6 @@ goog.provide("PAE.Dynamic");
 				vectorAnimations[anim].push(game.Resources.getSVG(frame));
 			})
 		})
-		console.log(self.animations);
 		var s = self.Sprite = new PAE.VectorSprite({
 			x : spriteInstance.x,
 			y : spriteInstance.y,
@@ -34,7 +31,8 @@ goog.provide("PAE.Dynamic");
 			animation : spriteDef.defaultAnimation,
 			frameRate : spriteDef.frameRate,
 			scale : spriteInstance.scale,
-			vectorAnimations: vectorAnimations
+			vectorAnimations: vectorAnimations,
+			listening: params.listening
 		});
 		self.speed = spriteDef.speed || 200;
 		self.animations = spriteDef.animations;
@@ -43,6 +41,7 @@ goog.provide("PAE.Dynamic");
 		self.onClick.prototype.game = PAE.curGame;
 		self.onClick.prototype.sprite = self;
 		s.on('click', function(e) {
+			console.log("Click!",e)
 			PAE.EventMgr.trigger(new PAE.Event({
 				name: 'sprite-clicked.' + self.uid,
 				item: null

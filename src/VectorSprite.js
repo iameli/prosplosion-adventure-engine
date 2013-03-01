@@ -91,8 +91,10 @@ goog.provide("PAE.VectorSprite");
 					var sy = scale.y;
 					if (sx < 1.0) sx = 1.0;
 					if (sy < 1.0) sy = 1.0;
-					if (self.attrs.scale.x > 1.0) sx *= self.attrs.scale.x;
-					if (self.attrs.scale.y > 1.0) sy *= self.attrs.scale.y;
+					if (self.attrs.scale) {
+						if (self.attrs.scale.x > 1.0) sx *= self.attrs.scale.x;
+						if (self.attrs.scale.y > 1.0) sy *= self.attrs.scale.y;
+					}
 					var width = Math.round(self.attrs.width * sx);
 					var height = Math.round(self.attrs.height * sy);
 					var canvas = new Kinetic.SceneCanvas(width, height, 1);

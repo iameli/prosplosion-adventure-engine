@@ -65,16 +65,10 @@ goog.provide("PAE.Room");
 	    })
 	    this.Groups._zero.add(bg);
 	    var dynamics = self.dynamicList;
-	    var statics = self.staticList;
 	    self.spriteIdx = {};
 	    Object.keys(dynamics).forEach(function(name) {
 	    	var dynamic = dynamics[name];
 	    	var idx = self.addDynamic(name, dynamic);
-	    	self.spriteIdx[idx] = name;
-	    })
-	    Object.keys(statics).forEach(function(name) {
-	    	var stat = statics[name];
-	    	var idx = self.addStatic(name, stat);
 	    	self.spriteIdx[idx] = name;
 	    })
 	    //This sorts the layers by z-index then runs moveottop on them.
@@ -136,17 +130,5 @@ goog.provide("PAE.Room");
 	    self.Groups[sprite.layer].add(s.Sprite);
 	    s.init();
 	    return s.uid;
-	}
-	/**
-	 * Add a Static to this room.
-	 * @param {Object} name
-	 * @param {Object} stat
-	 */
-	Room.prototype.addStatic = function(name, stat) {
-		var self = this;
-		var s = self.Statics[name] = new PAE.Static(stat);
-		self.Groups[stat.layer].add(s.Sprite);
-		s.init();
-		return s.uid;
 	}
 })(); 
