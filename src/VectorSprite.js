@@ -67,7 +67,7 @@ goog.provide("PAE.VectorSprite");
         },
         drawFunc: function(canvas) {
         	var self = this;
-            var anim = this.attrs.animation, index = this.attrs.index, f = this.attrs.animations[anim][index], context = canvas.getContext(), image = this.attrs.image;
+            var anim = this.attrs.animation, index = this.attrs.index, context = canvas.getContext();
 			var cached = this.cachedVectorAnimations[anim][index];
             if(cached) {
             	context.drawImage(cached, 0, 0, this.attrs.width, this.attrs.height);
@@ -87,16 +87,21 @@ goog.provide("PAE.VectorSprite");
 		        	//TODO FIXME OH PLEASE
 					self.cachedVectorAnimations[anim][index] = false; //cache started, hasn't finished
 					var scale = PAE.curGame.Stage.getScale();
-					var scaleX = scale.x * self.attrs.scale.x;
-					var scaleY = scale.y * self.attrs.scale.y;
-					var width = Math.round(self.attrs.width * scaleX);
-					var height = Math.round(self.attrs.height * scaleY);
+					var sx = scale.x;
+					var sy = scale.y;
+					if (sx < 1.0) sx = 1.0;
+					if (sy < 1.0) sy = 1.0;
+					if (self.attrs.scale.x > 1.0) sx *= self.attrs.scale.x;
+					if (self.attrs.scale.y > 1.0) sy *= self.attrs.scale.y;
+					var width = Math.round(self.attrs.width * sx);
+					var height = Math.round(self.attrs.height * sy);
 					var canvas = new Kinetic.SceneCanvas(width, height, 1);
-					context = canvas.getContext();
+					var context = canvas.getContext();
 		    		context.save();
 		    		context.drawSvg(svg, 0, 0, width, height);
 		    		context.restore();
 					var data = canvas.toDataURL(0, 0); //i'm sorry
+					var output = {};
 					Kinetic.Type._getImage(data, function(image) {
 						self.cachedVectorAnimations[anim][index] = image;
 					})
@@ -104,10 +109,10 @@ goog.provide("PAE.VectorSprite");
 			})
         },
         drawHitFunc: function(canvas) {
-            var anim = this.attrs.animation, index = this.attrs.index, f = this.attrs.animations[anim][index], context = canvas.getContext();
+            var anim = this.attrs.animation, index = this.attrs.index, context = canvas.getContext();
 
             context.beginPath();
-            context.rect(0, 0, f.width, f.height);
+            context.rect(0, 0, this.attrs.width, this.attrs.height);
             context.closePath();
             canvas.fill(this);
         },
@@ -163,7 +168,7 @@ goog.provide("PAE.VectorSprite");
         _updateIndex: function() {
             var i = this.attrs.index;
             var a = this.attrs.animation;
-            if(i < this.attrs.animations[a].length - 1) {
+            if(i < this.vectorAnimations[a].length - 1) {
                 this.attrs.index++;
             }
             else {

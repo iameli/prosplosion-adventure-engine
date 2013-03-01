@@ -15,8 +15,9 @@ goog.provide("PAE.Dynamic");
 		self.uid = game.uid();
 		var spriteInstance = self.SpriteInstance = params;
 		var spriteDef = self.SpriteDef = game.getDynamicData(self.SpriteInstance.id);
-		var img = self.Img = game.Resources.getImage(spriteDef.image);
 		var svgList = spriteDef.vectorAnimations;
+		console.log(svgList);
+		self.vectorAnimations = svgList;
 		var vectorAnimations = {};
 		PAE.Util.objEach(svgList, function(anim, frames) {
 			vectorAnimations[anim] = [];
@@ -24,14 +25,13 @@ goog.provide("PAE.Dynamic");
 				vectorAnimations[anim].push(game.Resources.getSVG(frame));
 			})
 		})
+		console.log(self.animations);
 		var s = self.Sprite = new PAE.VectorSprite({
 			x : spriteInstance.x,
 			y : spriteInstance.y,
 			width: spriteDef.width,
 			height: spriteDef.height,
-			image : img,
 			animation : spriteDef.defaultAnimation,
-			animations : spriteDef.animations,
 			frameRate : spriteDef.frameRate,
 			scale : spriteInstance.scale,
 			vectorAnimations: vectorAnimations
@@ -75,9 +75,9 @@ goog.provide("PAE.Dynamic");
 		var animName = self.Sprite.getAnimation();
 		var anim = self.Sprite.getAnimations()[animName][0];
 		var scale = self.Sprite.getScale();
-		var width = Math.floor(anim.width * scale.x);
+		var width = Math.floor(self.SpriteDef.width * scale.x);
 		var footX = Math.floor(width/2);
-		var footY = Math.floor(anim.height * scale.y);
+		var footY = Math.floor(self.SpriteDef.height * scale.y);
 		return {footX: footX, footY: footY, height: footY, width:width}
 	}
 	/**
@@ -87,6 +87,7 @@ goog.provide("PAE.Dynamic");
 	 */
 	Dynamic.prototype.walkTo = function(x, y) {
 		var self = this;
+		console.log(self);
 		PAE.EventMgr.trigger(new PAE.Event({
 			name: 'sprite-walking',
 			uid: self.uid
@@ -99,7 +100,7 @@ goog.provide("PAE.Dynamic");
 		var dxs = (curX - x) * (curX - x);
 		var dys = (curY - y) * (curY - y);
 		var dist = Math.sqrt(dxs + dys);
-		if (self.animations.walkLeft && self.animations.walkRight) {
+		if (self.vectorAnimations.walkLeft && self.vectorAnimations.walkRight) {
 			if (x < curX) {
 				self.Sprite.setAnimation('walkLeft');
 			} else {

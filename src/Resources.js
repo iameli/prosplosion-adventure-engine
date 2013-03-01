@@ -12,18 +12,7 @@ goog.provide("PAE.Resources");
 		var self = this;
 		self.images = {};
 		self.url = params.resourceURL;
-		var dynamics = params.dynamics;
-		Object.keys(dynamics).forEach(function(n) {
-			var dynamic = dynamics[n];
-			self.images[dynamic.image] = null;
-		})
 		var rooms = params.rooms;
-		Object.keys(rooms).forEach(function(n) {
-			var room = rooms[n];
-			if (room.backgroundImage) {
-				self.images[room.backgroundImage] = null;
-			}
-		});
 		self.svgs = {};
 		params.resources.svgs.forEach(function(file) {
 			self.svgs[file] = null;
