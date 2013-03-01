@@ -17,16 +17,25 @@ goog.provide("PAE.Dynamic");
 		var spriteDef = self.SpriteDef = game.getDynamicData(self.SpriteInstance.id);
 		console.log(params);
 		var img = self.Img = game.Resources.getImage(spriteDef.image);
-		var vectors = self.Vectors = game.Resources.getVectors(spriteDef.svg);
+		var svgList = spriteDef.vectorAnimations;
+		var vectorAnimations = {};
+		PAE.Util.objEach(svgList, function(anim, frames) {
+			vectorAnimations[anim] = [];
+			frames.forEach(function(frame) {
+				vectorAnimations[anim].push(game.Resources.getSVG(frame));
+			})
+		})
 		var s = self.Sprite = new PAE.VectorSprite({
 			x : spriteInstance.x,
 			y : spriteInstance.y,
+			width: spriteDef.width,
+			height: spriteDef.height,
 			image : img,
-			paths: vectors,
 			animation : spriteDef.defaultAnimation,
 			animations : spriteDef.animations,
 			frameRate : spriteDef.frameRate,
-			scale : spriteInstance.scale
+			scale : spriteInstance.scale,
+			vectorAnimations: vectorAnimations
 		});
 		self.speed = spriteDef.speed || 200;
 		self.animations = spriteDef.animations;

@@ -46,19 +46,7 @@ goog.provide("PAE.VectorSprite");
                 frameRate: 17
             });
             
-            console.log(config);
-            self.anims = [];
-            PAE.Util.objEach(config.paths, function(anim, config) {
-            	self.anims[anim] = [];
-            	config.forEach(function(sprite) {
-            		var paths = [];
-            		sprite.paths.forEach(function(path) {
-            			path.fill = "3F3F3F"
-            			paths.push(new Kinetic.Path(path));
-            		})
-            		self.anims[anim].push(paths);
-            	})
-            })
+            this.vectorAnimations = config.vectorAnimations;
             
             // call super constructor
             Kinetic.Shape.call(this, config);
@@ -76,10 +64,7 @@ goog.provide("PAE.VectorSprite");
             var anim = this.attrs.animation, index = this.attrs.index, f = this.attrs.animations[anim][index], context = canvas.getContext(), image = this.attrs.image;
 
             if(image) {
-            	this.anims[anim][index].forEach(function(path) {
-            		path.drawFunc(canvas);
-            	})
-                //context.drawImage(image, f.x, f.y, f.width, f.height, 0, 0, f.width, f.height);
+            	context.drawSvg(this.vectorAnimations[anim][index], 0, 0, this.attrs.width, this.attrs.height);
             }
         },
         drawHitFunc: function(canvas) {
