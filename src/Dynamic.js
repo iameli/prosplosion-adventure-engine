@@ -15,7 +15,6 @@ goog.provide("PAE.Dynamic");
 		self.uid = game.uid();
 		var spriteInstance = self.SpriteInstance = params;
 		var spriteDef = self.SpriteDef = game.getDynamicData(self.SpriteInstance.id);
-		console.log(params);
 		var img = self.Img = game.Resources.getImage(spriteDef.image);
 		var svgList = spriteDef.vectorAnimations;
 		var vectorAnimations = {};

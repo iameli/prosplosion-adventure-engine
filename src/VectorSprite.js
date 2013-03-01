@@ -46,7 +46,9 @@ goog.provide("PAE.VectorSprite");
                 frameRate: 17
             });
             
-            this.vectorAnimations = config.vectorAnimations;
+            self.vectorAnimations = config.vectorAnimations;
+            self.cachedVectorAnimations = {};
+            
             
             // call super constructor
             Kinetic.Shape.call(this, config);
@@ -54,18 +56,52 @@ goog.provide("PAE.VectorSprite");
             this._setDrawFuncs();
 
             this.anim = new Kinetic.Animation();
-            var self = this;
             this.on('animationChange', function() {
                 // reset index when animation changes
                 self.setIndex(0);
             });
+            PAE.EventMgr.on("scale-changed", function(e) {
+            	self.cacheSVG();
+            })
+            self.cacheSVG();
         },
         drawFunc: function(canvas) {
+        	var self = this;
             var anim = this.attrs.animation, index = this.attrs.index, f = this.attrs.animations[anim][index], context = canvas.getContext(), image = this.attrs.image;
-
-            if(image) {
-            	context.drawSvg(this.vectorAnimations[anim][index], 0, 0, this.attrs.width, this.attrs.height);
+			var cached = this.cachedVectorAnimations[anim][index];
+            if(cached) {
+            	context.drawImage(cached, 0, 0, this.attrs.width, this.attrs.height);
             }
+        },
+        cacheSVG: function() {
+        	var self = this;
+        	PAE.Util.objEach(this.vectorAnimations, function(anim, animlist) {
+        		self.cachedVectorAnimations[anim] = {};
+        		animlist.forEach(function(svg, index) {
+	        		self.cachedVectorAnimations[name] = {}
+		        	//Hi. I'm a really horrible hack to turn scaled vectors into images so's that 
+		        	//they can be cached. I'm emulating the behavior of the context here and it's
+		        	//real ugly. I've just worked on this all day and need to move on to something else.
+		        	//Implications: You may adjust the scale of Dynamics. You may adjust the scale of the
+		        	//stage at-large. You may not ajust scale anywhere else or so help me god I will end you.
+		        	//TODO FIXME OH PLEASE
+					self.cachedVectorAnimations[anim][index] = false; //cache started, hasn't finished
+					var scale = PAE.curGame.Stage.getScale();
+					var scaleX = scale.x * self.attrs.scale.x;
+					var scaleY = scale.y * self.attrs.scale.y;
+					var width = Math.round(self.attrs.width * scaleX);
+					var height = Math.round(self.attrs.height * scaleY);
+					var canvas = new Kinetic.SceneCanvas(width, height, 1);
+					context = canvas.getContext();
+		    		context.save();
+		    		context.drawSvg(svg, 0, 0, width, height);
+		    		context.restore();
+					var data = canvas.toDataURL(0, 0); //i'm sorry
+					Kinetic.Type._getImage(data, function(image) {
+						self.cachedVectorAnimations[anim][index] = image;
+					})
+        		})
+			})
         },
         drawHitFunc: function(canvas) {
             var anim = this.attrs.animation, index = this.attrs.index, f = this.attrs.animations[anim][index], context = canvas.getContext();

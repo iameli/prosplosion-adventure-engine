@@ -11,7 +11,6 @@ goog.provide("PAE.Static");
 		self.uid = PAE.curGame.uid();
 		var def = PAE.curGame.getStaticData(params.id);
 		self.img = PAE.curGame.Resources.getImage(def.image);
-		console.log(self.img);
 		var sprite = self.Sprite = new Kinetic.Rect({
 			x : 0,
 			y : 0,
