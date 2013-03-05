@@ -24,11 +24,13 @@ goog.provide("PAE.Game");
 		self.Layer = new Kinetic.Layer();
 		self.Stage.add(self.Layer);
 		self.Group = new Kinetic.Group();
+		self.Group.scramble = "eggs"
 		self.itemList = params.items;
 		//self.Group.add(self.UI.Group);
 		self.Layer.add(self.Group);
 		self.Resources.download(function() {
 			self.transition({room: self.GameStruct.startRoom});
+			self.Group.add(self.UI.Group);
 		})
 		self.Stage.draw();
 		self.Layer.beforeDraw(function() {
@@ -46,10 +48,14 @@ goog.provide("PAE.Game");
 	Game.prototype.transition = function(params) {
 		var self = this;
 		var roomParams = self.GameStruct.rooms[params.room];
+		if (self.CurRoom) {
+			self.CurRoom.Group.remove();
+		}
 		self.CurRoom = new PAE.Room(roomParams, self);
 		self.Group.add(self.CurRoom.Group);
-		self.Group.add(self.UI.Group);
-		self.CurRoom.initalize();
+		self.CurRoom.initalize(function() {
+			self.UI.Group.moveToTop();
+		});
 	}
 	Game.prototype.getDimensions = function(params) {
 		return {width: this.Stage.getWidth(), height: this.Stage.getHeight()};

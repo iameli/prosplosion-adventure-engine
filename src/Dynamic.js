@@ -59,9 +59,12 @@ goog.provide("PAE.Dynamic");
 			new onClick(e);
 		})
 	}
-	Dynamic.prototype.init = function() {
+	Dynamic.prototype.initalize = function(callback) {
 		var self = this;
-		self.sprite.start();
+		self.sprite.initalize(function() {
+			self.sprite.start();
+			callback();
+		})
 	}
 	/**
 	 * Return the offset location of the foot, as well as the width and height of 

@@ -63,7 +63,11 @@ goog.provide("PAE.VectorSprite");
             PAE.EventMgr.on("scale-changed", function(e) {
             	self.cacheSVG();
             })
-            self.cacheSVG();
+            
+        },
+        initalize: function(callback) {
+        	var self = this;
+        	self.cacheSVG(callback);
         },
         drawFunc: function(canvas) {
         	var self = this;
@@ -73,9 +77,11 @@ goog.provide("PAE.VectorSprite");
             	context.drawImage(cached, 0, 0, this.attrs.width, this.attrs.height);
             }
         },
-        cacheSVG: function() {
+        cacheSVG: function(callback) {
         	var self = this;
+        	var total = 0;
         	PAE.Util.objEach(this.vectorAnimations, function(anim, animlist) {
+        		total += animlist.length;
         		self.cachedVectorAnimations[anim] = {};
         		animlist.forEach(function(svg, index) {
 	        		self.cachedVectorAnimations[name] = {}
@@ -105,7 +111,9 @@ goog.provide("PAE.VectorSprite");
 					var data = canvas.toDataURL(0, 0); //i'm sorry
 					var output = {};
 					Kinetic.Type._getImage(data, function(image) {
+						total -= 1;
 						self.cachedVectorAnimations[anim][index] = image;
+						if (total == 0) callback && callback();
 					})
         		})
 			})

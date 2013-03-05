@@ -121,7 +121,7 @@ goog.provide("PAE.UI");
 					vectorAnimations: svg_list,
 					animation : item.defaultAnimation,
 					draggable: true
-				})
+				});
 				// var itemBox = new Kinetic.Rect({
 					// x : x + 5,
 					// y : y + 5,
@@ -139,8 +139,10 @@ goog.provide("PAE.UI");
 						itemBox: itemBox
 					}))
 				})
-				self.inventoryGroup.add(itemBox);
-				itemBox.moveToTop();
+				itemBox.initalize(function() {
+					self.inventoryGroup.add(itemBox);
+					itemBox.moveToTop();
+				})
 			}
 		}
 	}

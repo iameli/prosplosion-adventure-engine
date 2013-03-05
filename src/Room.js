@@ -33,7 +33,7 @@ goog.provide("PAE.Room");
 	 * We can't do this stuff in the constructor because we don't really know what
 	 * we're working with yet.
 	 */
-	Room.prototype.initalize = function() {
+	Room.prototype.initalize = function(callback) {
 		var self = this;
 		var stage = this.Group.getStage();
 		
@@ -118,12 +118,24 @@ goog.provide("PAE.Room");
 	    		})
 	    	}
 	    })
-	    if (self.follow) {
-	    	PAE.EventMgr.trigger(new PAE.Event({ //Inital one to move the camera
-				name: 'sprite-walking',
-				uid: self.Dynamics[self.follow].uid
-			}))
+	    var done = function() {
+	    	if (self.follow) {
+		    	PAE.EventMgr.trigger(new PAE.Event({ //Inital one to move the camera
+					name: 'sprite-walking',
+					uid: self.Dynamics[self.follow].uid
+				}))
+		    }
+		    callback && callback();
 	    }
+	    var dyns = Object.keys(self.Dynamics).length;
+	    if (dyns == 0) done();
+	    console.log("Got to room stuff")
+	    PAE.Util.objEach(self.Dynamics, function(name, dynamic) {
+	    	dynamic.initalize(function() {
+	    		dyns -= 1;
+	    		if (dyns == 0) done();
+	    	})
+	    })
 	}
 	/**
 	 * Add a Dynamic to this room.
@@ -134,7 +146,6 @@ goog.provide("PAE.Room");
 		var self = this;
 		var s = self.Dynamics[name] = new PAE.Dynamic(sprite);
 	    self.Groups[sprite.layer].add(s.sprite);
-	    s.init();
 	    return s.uid;
 	}
 })(); 
