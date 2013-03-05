@@ -118,6 +118,12 @@ goog.provide("PAE.Room");
 	    		})
 	    	}
 	    })
+	    if (self.follow) {
+	    	PAE.EventMgr.trigger(new PAE.Event({ //Inital one to move the camera
+				name: 'sprite-walking',
+				uid: self.Dynamics[self.follow].uid
+			}))
+	    }
 	}
 	/**
 	 * Add a Dynamic to this room.
