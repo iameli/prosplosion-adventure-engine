@@ -128,7 +128,6 @@ goog.provide("PAE.Room");
 	    }
 	    var dyns = Object.keys(self.Dynamics).length;
 	    if (dyns == 0) done();
-	    console.log("Got to room stuff")
 	    PAE.Util.objEach(self.Dynamics, function(name, dynamic) {
 	    	dynamic.initalize(function() {
 	    		dyns -= 1;
