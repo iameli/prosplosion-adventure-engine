@@ -108,7 +108,6 @@ goog.provide("PAE.Dynamic");
 		} else if (self.attrs.vectorAnimations.walk) {
 			self.sprite.setAnimation('walk');
 		}
-		console.log("Moving to",x,y)
 		self.sprite.transitionTo({
 			x: x,
 			y: y,

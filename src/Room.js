@@ -56,7 +56,6 @@ goog.provide("PAE.Room");
 	    });
 	    bg.on('click', function(e) {
 	    	if (self.follow) {
-	    		console.log(e);
 	    		var rpos = self.Group.getPosition();
 	    		var x = e.offsetX - rpos.x;
 	    		var y = e.offsetY - rpos.y;
