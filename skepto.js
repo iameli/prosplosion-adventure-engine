@@ -1,18 +1,25 @@
 window.Skepto = {
 	items : {
 		snake : {
-			image : "snake_inv.png"
+			width: 90,
+			height: 90,
+			frameRate: 1,
+			defaultAnimation: 'idle',
+			vectorAnimations: {
+				idle: ['snake_inv.svg']
+			}
 		}
 	},
 	resources : {
 		audio : [
 			"blah1.ogg",
 			"blah2.ogg",
-			"blah3.ogg"
+			"blah3.ogg",
+			"snake1.ogg",
+			"snake2.ogg",
+			"snake3.ogg"
 		],
 		images : [
-			"dock.jpg",
-			"snake_inv.png"
 		],
 		svgs: [
 			"skepto_idle.svg",
@@ -22,7 +29,8 @@ window.Skepto = {
 			"skepto_walkr2.svg",
 			"bigsnake.svg",
 			"dock.svg",
-			"dockBG.svg"
+			"dockBG.svg",
+			"snake_inv.svg"
 		]
 	},
 	startRoom : "dock",
@@ -83,7 +91,12 @@ window.Skepto = {
 				idle: [
 					"bigsnake.svg"
 				]
-			}
+			},
+			talkNoises: [
+				"snake1.ogg",
+				"snake2.ogg",
+				"snake3.ogg"
+			]
 		}
 	},
 	statics : {
@@ -115,18 +128,18 @@ window.Skepto = {
 					listening: true,
 					id : "ghost",
 					layer : "foreground",
-					x : 200,
-					y : 200,
+					x : 466,
+					y : 992,
 					scale : 0.3,
 					onClick : function(e) {
 						if (e.item === null) {
-							this.sprite.playText({text: "Hi, I'm Skepto the ghost. Thanks for helping me on my adventures!"});
+							this.dynamic.playText({text: "Hi, I'm Skepto the ghost. Thanks for helping me on my adventures!"});
 						}
 						else if (e.item == 'snake') {
-							this.sprite.playText({text: "That's my favorite snake, Dr. Hiss!"});
+							this.dynamic.playText({text: "That's my favorite snake, Dr. Hiss!"});
 						}
 						else {
-							this.sprite.playText({text: "I'm not sure what to make of that."});
+							this.dynamic.playText({text: "I'm not sure what to make of that."});
 						}
 			    		
 			    	}
@@ -136,12 +149,18 @@ window.Skepto = {
 					listening: true,
 					id: "snake",
 					layer : "foreground",
-					x: 400,
-					y: 300,
+					x: 1026,
+					y: 902,
 					scale : 0.5,
 					onClick: function(e) {
-						this.game.giveItem('snake');
-						this.sprite.remove();
+						// if (e.item == 'beans') {
+							// this.game.removeItem('beans');
+							this.game.giveItem('snake');
+							this.dynamic.remove();
+						// }
+						// else {
+							// this.dynamic.playText({text: "I'm not going anywhere without my beans!"});
+						// }
 					}
 				},
 				dock: {

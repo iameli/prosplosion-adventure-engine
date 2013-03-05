@@ -22,28 +22,12 @@ goog.provide("PAE.Resources");
 		audios.forEach(function(n) {
 			self.audio[n] = null;
 		})
-		var images = params.resources.images;
-		images.forEach(function(n) {
-			self.images[n] = null;
-		})
 	}
 	Resources.prototype.download = function(callback) {
 		var self = this;
-		var img_dloads = Object.keys(self.images);
 		var audio_dloads = Object.keys(self.audio);
 		var svg_dloads = Object.keys(self.svgs);
-		var count = img_dloads.length + audio_dloads.length + svg_dloads.length;
-		img_dloads.forEach(function(file) {
-			var img = new Image();
-			img.onload = function() {
-				self.images[file] = img;
-				count -= 1;
-				if (count == 0) { 
-					callback();
-				}
-			}
-			img.src = self.url + '/' + file;
-		});
+		var count = audio_dloads.length + svg_dloads.length;
 		audio_dloads.forEach(function(file) {
 			var audio = new Audio();
 			audio.addEventListener('canplaythrough', function() {

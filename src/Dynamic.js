@@ -37,7 +37,7 @@ goog.provide("PAE.Dynamic");
 		self._talkerInit(self, attrs, params.game);
 		var onClick = attrs.onClick || function(e){};
 		onClick.prototype.game = PAE.curGame;
-		onClick.prototype.sprite = self;
+		onClick.prototype.dynamic = self;
 		s.on('click', function(e) {
 			PAE.EventMgr.trigger(new PAE.Event({
 				name: 'sprite-clicked.' + self.uid,

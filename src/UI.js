@@ -105,15 +105,32 @@ goog.provide("PAE.UI");
 				var img = game.Resources.getImage(item.image);
 				var width = 90;
 				var height = 90;
-				var itemBox = new Kinetic.Rect({
-					x : x + 5,
-					y : y + 5,
-					width : 90,
-					height : 90,
-					fillPatternImage : img,
+				var svg_list = {};
+				PAE.Util.objEach(item.vectorAnimations, function(anim, frames) {
+					svg_list[anim] = [];
+					frames.forEach(function(frame) {
+						svg_list[anim].push(game.Resources.getSVG(frame));
+					})
+				})
+				var itemBox = new PAE.VectorSprite({
+					x: x + 5,
+					y: y + 5,
+					width: item.width,
+					height: item.height,
 					listening: false,
+					vectorAnimations: svg_list,
+					animation : item.defaultAnimation,
 					draggable: true
 				})
+				// var itemBox = new Kinetic.Rect({
+					// x : x + 5,
+					// y : y + 5,
+					// width : 90,
+					// height : 90,
+					// fillPatternImage : img,
+					// listening: false,
+					// draggable: true
+				// })
 				rect.on('click', function(e) {
 					PAE.EventMgr.trigger(new PAE.Event({
 						name: 'item-clicked',
