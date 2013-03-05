@@ -8,6 +8,13 @@ window.Skepto = {
 			vectorAnimations: {
 				idle: ['snake_inv.svg']
 			}
+		},
+		beans: {
+			width: 90,
+			height: 90,
+			frameRate: 1,
+			defaultAnimation: 'idle',
+			vectorAnimations: {idle: ['beans_inv.svg']}
 		}
 	},
 	resources : {
@@ -30,7 +37,9 @@ window.Skepto = {
 			"bigsnake.svg",
 			"dock.svg",
 			"dockBG.svg",
-			"snake_inv.svg"
+			"snake_inv.svg",
+			"beans_inv.svg",
+			"beans_big.svg"
 		]
 	},
 	startRoom : "dock",
@@ -153,14 +162,14 @@ window.Skepto = {
 					y: 902,
 					scale : 0.5,
 					onClick: function(e) {
-						// if (e.item == 'beans') {
-							// this.game.removeItem('beans');
+						if (e.item == 'beans') {
+							this.game.removeItem('beans');
 							this.game.giveItem('snake');
 							this.dynamic.remove();
-						// }
-						// else {
-							// this.dynamic.playText({text: "I'm not going anywhere without my beans!"});
-						// }
+						}
+						else {
+							this.dynamic.playText({text: "I'm not going anywhere without my beans!"});
+						}
 					}
 				},
 				dock: {
