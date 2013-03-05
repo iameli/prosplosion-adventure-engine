@@ -86,7 +86,7 @@ goog.provide("PAE.UI");
 		var game = PAE.curGame
 		var inv = game.Inventory;
 		self.inventoryGroup.removeChildren();
-		for (var i = 0; i < 9; i++) {
+		for (var i = 0; i < 9; i++) { (function() { //This one took me forever to figure out. for loops are not closures. effing JS.
 			var x = (111 * i);
 			var y = 0;
 			var rect = new Kinetic.Rect({
@@ -102,7 +102,6 @@ goog.provide("PAE.UI");
 			if (i < inv.length) { //this slot should be filled
 				var itemName = game.Inventory[i];
 				var item = game.itemList[itemName];
-				var img = game.Resources.getImage(item.image);
 				var width = 90;
 				var height = 90;
 				var svg_list = {};
@@ -135,7 +134,6 @@ goog.provide("PAE.UI");
 					PAE.EventMgr.trigger(new PAE.Event({
 						name: 'item-clicked',
 						item: itemName,
-						icon: img,
 						itemBox: itemBox
 					}))
 				})
@@ -144,7 +142,7 @@ goog.provide("PAE.UI");
 					itemBox.moveToTop();
 				})
 			}
-		}
+		})()} //<3 you JS
 	}
 	UI.prototype.playText = function(params) {
 		var self = this;
