@@ -87,7 +87,7 @@ goog.provide("PAE.Room");
 	    	var sprite = self.spriteIdx[e.uid];
 	    	if (sprite && self.follow == sprite) { //If the player is moving
 	    		var dynamic = self.Dynamics[self.follow];
-	    		var sprite = dynamic.Sprite;
+	    		var sprite = dynamic.sprite;
 	    		var dimensions = dynamic.getDimensions();
 	    		var responder = PAE.EventMgr.on('before-draw', function(e) {
 	    			var spos = sprite.getPosition();
@@ -133,7 +133,7 @@ goog.provide("PAE.Room");
 	Room.prototype.addDynamic = function(name, sprite) {
 		var self = this;
 		var s = self.Dynamics[name] = new PAE.Dynamic(sprite);
-	    self.Groups[sprite.layer].add(s.Sprite);
+	    self.Groups[sprite.layer].add(s.sprite);
 	    s.init();
 	    return s.uid;
 	}
