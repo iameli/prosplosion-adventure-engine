@@ -74,6 +74,7 @@ goog.provide("PAE.UI");
 					name: 'item-action',
 					item: item
 				}))
+				itemBox.remove();
 			})
     	})
 	}
@@ -121,15 +122,6 @@ goog.provide("PAE.UI");
 					animation : item.defaultAnimation,
 					draggable: true
 				});
-				// var itemBox = new Kinetic.Rect({
-					// x : x + 5,
-					// y : y + 5,
-					// width : 90,
-					// height : 90,
-					// fillPatternImage : img,
-					// listening: false,
-					// draggable: true
-				// })
 				rect.on('click', function(e) {
 					PAE.EventMgr.trigger(new PAE.Event({
 						name: 'item-clicked',
@@ -137,9 +129,10 @@ goog.provide("PAE.UI");
 						itemBox: itemBox
 					}))
 				})
+				self.inventoryGroup.add(itemBox);
+				itemBox.moveToTop();
 				itemBox.initalize(function() {
-					self.inventoryGroup.add(itemBox);
-					itemBox.moveToTop();
+					
 				})
 			}
 		})()} //<3 you JS
