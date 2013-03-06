@@ -21,7 +21,6 @@ goog.provide("PAE.Room");
 	 * we're working with yet.
 	 */
 	Room.prototype.initalize = function(callback) {
-		console.log(this.attrs);
 		var self = this;
 
 		//Add all Layers
@@ -37,7 +36,7 @@ goog.provide("PAE.Room");
 	        y : -10000,
 	        width: 20000,
 	        height: 20000,
-	        fill: self.bgcolor
+	        fill: self.attrs.bgColor
 	    });
 	    bg.on('click', function(e) {
 	    	if (self.attrs.follow) {
@@ -49,8 +48,8 @@ goog.provide("PAE.Room");
 	    })
 	    this.layers._zero.add(bg);
 	    
-	    this.spriteIdx = {};
 	    //Add all Dynamics
+	    this.spriteIdx = {};
 	    PAE.Util.objEach(self.attrs.dynamics, function(name, dyn) {
 	    	self.addDynamic(name, dyn);
 	    })
@@ -68,7 +67,6 @@ goog.provide("PAE.Room");
 	    var YBUFFER = 150;
 	    PAE.EventMgr.on('sprite-walking', function(e) {
 	    	var sprite = self.spriteIdx[e.uid];
-	    	console.log("sprite-walking",e)
 	    	if (sprite && self.attrs.follow == sprite) { //If the player is moving
 	    		var dynamic = self.dynamics[self.attrs.follow];
 	    		var sprite = dynamic.sprite;
