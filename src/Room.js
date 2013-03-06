@@ -38,15 +38,31 @@ goog.provide("PAE.Room");
 	        height: 20000,
 	        fill: self.attrs.bgColor
 	    });
-	    bg.on('click', function(e) {
+	    this.layers._zero.add(bg);
+	    
+	    var walkFunc = function(e) {
 	    	if (self.attrs.follow) {
 	    		var rpos = self.group.getPosition();
 	    		var x = e.offsetX - rpos.x;
 	    		var y = e.offsetY - rpos.y;
 	    		self.dynamics[self.attrs.follow].walkTo(x, y);
-	    	}
-	    })
-	    this.layers._zero.add(bg);
+			}
+		}
+	    
+	    if (self.attrs.walkable) {
+	    	var walkable = new Kinetic.Path({
+	    		data: self.attrs.walkable,
+	    		x: 0,
+	    		y: 0,
+	    		fill: 'red'
+	    	});
+	    	this.layers._zero.add(walkable);
+	    	walkable.moveToTop();
+	    	walkable.on('click', walkFunc);
+	    }
+	    else {
+	    	bg.on('click', walkFunc);
+	    }
 	    
 	    //Add all Dynamics
 	    this.spriteIdx = {};

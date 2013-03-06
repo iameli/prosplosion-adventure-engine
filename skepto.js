@@ -1,6 +1,7 @@
 window.Skepto = {
 	flags: {
-		SNAKE_GONE: false
+		SNAKE_GONE: false,
+		BEANS_GONE: false
 	},
 	items : {
 		snake : {
@@ -91,6 +92,7 @@ window.Skepto = {
 				if (e.item == null) {
 					this.game.giveItem('beans');
 					this.dynamic.remove();
+					this.game.setFlag("BEANS_GONE");
 				}
 			}
 		},
@@ -150,6 +152,11 @@ window.Skepto = {
 	},
 	rooms : {
 		"bean_store": {
+			onEnter: function(e) {
+				if (this.game.hasFlag('BEANS_GONE')) {
+					this.dynamics.beans.remove();
+				}
+			},
 			bgColor: "grey",
 			follow: "player",
 			layers: {
@@ -199,10 +206,9 @@ window.Skepto = {
 			}
 		},
 		"dock" : {
+			walkable: "M-55,1172.771L388.146,963.75l352.92,124.059l364.692-86.9l318.863,124.096c0,0,283.17-107.569,289.376-107.569c6.204,0,399.001,103.419,399.001,103.419v172.098l-386.556-85.223l-292.44,85.223l-322.041-85.223l-365.8,74.465l-356.171-93.079L-55,1325.631V1172.771z",
 			onEnter: function(e) {
-				console.log("Entered dock.")
 				if (this.game.hasFlag('SNAKE_GONE')) {
-					console.log("Should be removing snake.")
 					this.dynamics.snake.remove();
 				}
 			},
