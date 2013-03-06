@@ -1,4 +1,7 @@
 window.Skepto = {
+	flags: {
+		SNAKE_GONE: false
+	},
 	items : {
 		snake : {
 			width: 90,
@@ -196,6 +199,13 @@ window.Skepto = {
 			}
 		},
 		"dock" : {
+			onEnter: function(e) {
+				console.log("Entered dock.")
+				if (this.game.hasFlag('SNAKE_GONE')) {
+					console.log("Should be removing snake.")
+					this.dynamics.snake.remove();
+				}
+			},
 			bgColor : "black",
 			follow: "player",
 			layers : {
@@ -239,6 +249,7 @@ window.Skepto = {
 							this.game.removeItem('beans');
 							this.game.giveItem('snake');
 							this.dynamic.remove();
+							this.game.setFlag("SNAKE_GONE");
 						}
 						else {
 							this.dynamic.playText({text: "I'm not going anywhere without my beans!"});

@@ -14,6 +14,7 @@ goog.provide("PAE.Game");
 	 */
 	var Game = PAE.Game = function(params) {
 		var self = this;
+		self.attrs = params;
 		PAE.curGame = self;
 		self.inventory = [];
 		self.stage = new Kinetic.Stage({
@@ -22,7 +23,6 @@ goog.provide("PAE.Game");
 			height : params.height
 		});
 		self._uid = 0; //Unique identifiers for anything that needs them. Increments.
-		self.attrs = params;
 		self.UI = new PAE.UI();
 		self.resources = new PAE.Resources(params);
 		self.layer = new Kinetic.Layer();
@@ -39,6 +39,10 @@ goog.provide("PAE.Game");
 			PAE.EventMgr.trigger(new PAE.Event({
 				name: 'before-draw'
 			}))
+		})
+		self.flagStates = {};
+		PAE.Util.objEach(self.attrs.flags, function(name, set) {
+			self.flagStates[name] = set;
 		})
 	};
 	/**
@@ -59,6 +63,7 @@ goog.provide("PAE.Game");
 		if (self.curRoom) {
 			self.curRoom.group.remove();
 		}
+		roomParams.name = params.room;
 		self.curRoom = new PAE.Room(roomParams, self);
 		self.group.add(self.curRoom.group);
 		self.curRoom.initalize(function() {
@@ -127,5 +132,20 @@ goog.provide("PAE.Game");
 	 */
 	Game.prototype.getItem = function(name) {
 		return this.attrs.items[name];
+	}
+	Game.prototype.setFlag = function(f) {
+		var self = this;
+		if (self.flagStates[f] === undefined) throw "Tried to set undefined flag " + f;
+		else self.flagStates[f] = true;
+		
+	}
+	Game.prototype.clearFlag = function(f) {
+		var self = this;
+		if (self.flagStates[f] === undefined) throw "Tried to set undefined flag " + f;
+		else self.flagStates[f] = false;
+	}
+	Game.prototype.hasFlag = function(f) {
+		var self = this;
+		return (self.flagStates[f] === true);
 	}
 })(); 

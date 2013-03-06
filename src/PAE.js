@@ -98,15 +98,18 @@ var PAE = {};
 		if (!e.name) throw "Event without a name!"
 		if (PAE.EventMgr.listeners[e.name]) {
 			PAE.Util.objEach(PAE.EventMgr.listeners[e.name], function(idx, fn) {
-				if (!e._cancelled) {
-					var res = fn(e);
-					if (res === false) {
-						success = false;
-					}
-				}
+				fn(e);
 			})
 		}
-		return success;
+		if (e.id) {
+			var specific = e.name + "." + e.id
+			if (PAE.EventMgr.listeners[specific]) {
+				PAE.Util.objEach(PAE.EventMgr.listeners[specific], function(idx, fn) {
+					fn(e);
+				})
+			} 
+		}
+		
 	}
 })();
 

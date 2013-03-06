@@ -7,7 +7,7 @@ goog.provide("PAE.Room");
 (function() {
 	var WIDTH = 1024;
 	var HEIGHT = 768;
-	var Room = PAE.Room = function(params, parent) {
+	var Room = PAE.Room = function(params) {
 		var self = this;
 		self.dynamics = {};
 		self.statics = {};
@@ -101,12 +101,23 @@ goog.provide("PAE.Room");
 	    	}
 	    })
 	    var done = function() {
+	    	var game = PAE.curGame;
+	    	var onEnter = self.attrs.onEnter || function(e){};
+	    	onEnter.prototype.game = game;
+	    	onEnter.prototype.dynamics = self.dynamics;
+	    	onEnter.prototype.room = self;
+	    	new onEnter();
 	    	if (self.attrs.follow) {
 		    	PAE.EventMgr.trigger(new PAE.Event({ //Inital one to move the camera
 					name: 'sprite-walking',
 					uid: self.dynamics[self.attrs.follow].getUID()
 				}))
 		    }
+		    PAE.EventMgr.trigger(new PAE.Event({
+		    	name: 'room-initalized',
+		    	id: self.attrs.name,
+		    	room: self
+		    }))
 		    callback && callback();
 	    }
 	    var dyns = Object.keys(self.dynamics).length;

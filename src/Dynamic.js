@@ -46,11 +46,13 @@ goog.provide("PAE.Dynamic");
 			}))
 		})
 		s.on('mousedown', function(e) {
+			console.log("Mousedown.",e)
 			if ($(e.srcElement).hasClass('kinetic-drag-and-drop-layer')) { //An item was dropped on us. Set up to recieve it. 
 				var listener = PAE.EventMgr.on('item-action', function(e) {
 					PAE.EventMgr.off(listener);
 					PAE.EventMgr.trigger(new PAE.Event({
-						name: 'sprite-clicked.' + self.uid,
+						name: 'sprite-clicked',
+						id: self.uid,
 						item: e.item
 					}))
 				})
