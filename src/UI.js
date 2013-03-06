@@ -85,7 +85,7 @@ goog.provide("PAE.UI");
 	UI.prototype.renderInventory = function() {
 		var self = this;
 		var game = PAE.curGame
-		var inv = game.Inventory;
+		var inv = game.inventory;
 		self.inventoryGroup.removeChildren();
 		for (var i = 0; i < 9; i++) { (function() { //This one took me forever to figure out. for loops are not closures. effing JS.
 			var x = (111 * i);
@@ -101,15 +101,15 @@ goog.provide("PAE.UI");
 			})
 			self.inventoryGroup.add(rect);
 			if (i < inv.length) { //this slot should be filled
-				var itemName = game.Inventory[i];
-				var item = game.itemList[itemName];
+				var itemName = game.inventory[i];
+				var item = game.getItem(itemName);
 				var width = 90;
 				var height = 90;
 				var svg_list = {};
 				PAE.Util.objEach(item.vectorAnimations, function(anim, frames) {
 					svg_list[anim] = [];
 					frames.forEach(function(frame) {
-						svg_list[anim].push(game.Resources.getSVG(frame));
+						svg_list[anim].push(game.resources.getSVG(frame));
 					})
 				})
 				var itemBox = new PAE.VectorSprite({

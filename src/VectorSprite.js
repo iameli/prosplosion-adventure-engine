@@ -92,7 +92,7 @@ goog.provide("PAE.VectorSprite");
 		        	//stage at-large. You may not ajust scale anywhere else or so help me god I will end you.
 		        	//TODO FIXME OH PLEASE
 					self.cachedVectorAnimations[anim][index] = false; //cache started, hasn't finished
-					var scale = PAE.curGame.Stage.getScale();
+					var scale = PAE.curGame.stage.getScale();
 					var sx = scale.x;
 					var sy = scale.y;
 					if (sx < 1.0) sx = 1.0;

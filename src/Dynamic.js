@@ -21,7 +21,7 @@ goog.provide("PAE.Dynamic");
 		PAE.Util.objEach(attrs.vectorAnimations, function(anim, frames) {
 			svg_list[anim] = [];
 			frames.forEach(function(frame) {
-				svg_list[anim].push(game.Resources.getSVG(frame));
+				svg_list[anim].push(game.resources.getSVG(frame));
 			})
 		})
 		var s = self.sprite = new PAE.VectorSprite({

@@ -12,7 +12,7 @@ goog.provide("PAE.Talker");
 		self.audios = {};
 		if (params.talkNoises) {
 			params.talkNoises.forEach(function(n) {
-				self.audios[n] = PAE.curGame.Resources.getAudio(n);
+				self.audios[n] = PAE.curGame.resources.getAudio(n);
 			});
 		}
 	}

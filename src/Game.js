@@ -10,30 +10,27 @@ goog.provide("PAE.Game");
 	var Game = PAE.Game = function(params) {
 		var self = this;
 		PAE.curGame = self;
-		self.Inventory = [];
-		self.className = "Game";
-		self.Stage = new Kinetic.Stage({
+		self.inventory = [];
+		self.stage = new Kinetic.Stage({
 			container : params.container,
 			width : params.width,
 			height : params.height
 		});
 		self._uid = 0; //Unique identifiers for anything that needs them. Increments.
-		self.GameStruct = params;
+		self.attrs = params;
 		self.UI = new PAE.UI();
-		self.Resources = new PAE.Resources(params);
-		self.Layer = new Kinetic.Layer();
-		self.Stage.add(self.Layer);
-		self.Group = new Kinetic.Group();
-		self.Group.scramble = "eggs"
-		self.itemList = params.items;
+		self.resources = new PAE.Resources(params);
+		self.layer = new Kinetic.Layer();
+		self.stage.add(self.layer);
+		self.group = new Kinetic.Group();
 		//self.Group.add(self.UI.Group);
-		self.Layer.add(self.Group);
-		self.Resources.download(function() {
-			self.transition({room: self.GameStruct.startRoom});
-			self.Group.add(self.UI.Group);
+		self.layer.add(self.group);
+		self.resources.download(function() {
+			self.transition({room: self.attrs.startRoom});
+			self.group.add(self.UI.Group);
 		})
-		self.Stage.draw();
-		self.Layer.beforeDraw(function() {
+		self.stage.draw();
+		self.layer.beforeDraw(function() {
 			PAE.EventMgr.trigger(new PAE.Event({
 				name: 'before-draw'
 			}))
@@ -47,22 +44,22 @@ goog.provide("PAE.Game");
 	}
 	Game.prototype.transition = function(params) {
 		var self = this;
-		var roomParams = self.GameStruct.rooms[params.room];
-		if (self.CurRoom) {
-			self.CurRoom.group.remove();
+		var roomParams = self.attrs.rooms[params.room];
+		if (self.curRoom) {
+			self.curRoom.group.remove();
 		}
-		self.CurRoom = new PAE.Room(roomParams, self);
-		self.Group.add(self.CurRoom.group);
-		self.CurRoom.initalize(function() {
+		self.curRoom = new PAE.Room(roomParams, self);
+		self.group.add(self.curRoom.group);
+		self.curRoom.initalize(function() {
 			self.UI.Group.moveToTop();
 		});
 	}
 	Game.prototype.getDimensions = function(params) {
-		return {width: this.Stage.getWidth(), height: this.Stage.getHeight()};
+		return {width: this.stage.getWidth(), height: this.stage.getHeight()};
 	}
 	Game.prototype.getDynamicData = function(id) {
 		var self = this;
-		return self.GameStruct.dynamics[id];
+		return self.attrs.dynamics[id];
 	}
 	/**
 	 * Give the item to a player.
@@ -74,7 +71,7 @@ goog.provide("PAE.Game");
 			name : 'giving-item',
 			item : item
 		}));
-		self.Inventory.push(item);
+		self.inventory.push(item);
 		PAE.EventMgr.trigger(new PAE.Event({
 			name : 'gave-item',
 			item : item
@@ -90,9 +87,9 @@ goog.provide("PAE.Game");
 			name : 'removing-item',
 			item : item
 		}));
-		var idx = self.Inventory.indexOf(item);
+		var idx = self.inventory.indexOf(item);
 		if (idx != -1) {
-			self.Inventory.splice(idx, 1);
+			self.inventory.splice(idx, 1);
 			PAE.EventMgr.trigger(new PAE.Event({
 				name: 'removed-item',
 				item: item
@@ -105,7 +102,13 @@ goog.provide("PAE.Game");
 	 */
 	Game.prototype.hasItem = function(item) {
 		var self = this;
-		var idx = self.Inventory.indexOf(item);
+		var idx = self.inventory.indexOf(item);
 		return (idx != -1)
+	}
+	/**
+	 * Get item data
+	 */
+	Game.prototype.getItem = function(name) {
+		return this.attrs.items[name];
 	}
 })(); 

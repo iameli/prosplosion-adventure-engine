@@ -39,12 +39,23 @@ window.Skepto = {
 			"dockBG.svg",
 			"snake_inv.svg",
 			"beans_inv.svg",
-			"beans_big.svg"
+			"beans_big.svg",
+			"door.svg"
 		]
 	},
 	startRoom : "dock",
 	resourceURL : "resources",
 	dynamics : {
+		door: {
+			width: 239,
+			height: 437,
+			frameRate: 1,
+			scale: 0.6,
+			defaultAnimation: 'idle',
+			vectorAnimations: {
+				idle: ['door.svg']
+			}
+		},
 		dock: {
 			width: 2048,
 			height: 1536,
@@ -63,6 +74,21 @@ window.Skepto = {
 			defaultAnimation: 'idle',
 			vectorAnimations: {
 				idle: ['dockBG.svg']
+			}
+		},
+		beans: {
+			width: 200,
+			height: 200,
+			frameRate: 1,
+			defaultAnimation: 'idle',
+			vectorAnimations: {
+				idle: ['beans_big.svg']
+			},
+			onClick: function(e) {
+				if (e.item == null) {
+					this.game.giveItem('beans');
+					this.dynamic.remove();
+				}
 			}
 		},
 		ghost : {
@@ -88,7 +114,18 @@ window.Skepto = {
 	    		"blah1.ogg",
 	    		"blah2.ogg",
 	    		"blah3.ogg"
-	    	]
+	    	],
+	    	onClick : function(e) {
+				if (e.item === null) {
+					this.dynamic.playText({text: "Hi, I'm Skepto the ghost. Thanks for helping me on my adventures!"});
+				}
+				else if (e.item == 'snake') {
+					this.dynamic.playText({text: "That's my favorite snake, Dr. Hiss!"});
+				}
+				else {
+					this.dynamic.playText({text: "I'm not sure what to make of that."});
+				}
+	    	}
 		},
 		snake : {
 			frameRate : 4,
@@ -108,27 +145,75 @@ window.Skepto = {
 			]
 		}
 	},
-	statics : {
-		dockBG : {
-			image : 'dock.jpg'
-		}
-	},
 	rooms : {
+		"bean_store": {
+			bgColor: "grey",
+			follow: "player",
+			layers: {
+				"foreground": {
+					zIndex: 10,
+					scrollSpeed: 1.0
+				},
+				"behind": {
+					zIndex: 9,
+					scrollSpeed: 1.0
+				},
+				"background": {
+					zIndex: 5,
+					scrollSpeed: 1.0
+				}
+			},
+			dynamics: {
+				player: {
+					walkSpeed : 8.0,
+					listening: true,
+					id : "ghost",
+					layer : "foreground",
+					x : 388,
+					y : 197,
+					scale : 0.3
+				},
+				beans: {
+					listening: true,
+					id: "beans",
+					layer: "behind",
+					x: 600,
+					y: 400,
+					scale: 1.0
+				},
+				door: {
+					listening: true,
+					x: 164,
+					y: 384,
+					id: "door",
+					layer: "behind",
+					onClick: function(e) {
+						if (e.item == null) {
+							this.game.transition({room: 'dock'});
+						}
+					}
+				}
+			}
+		},
 		"dock" : {
 			bgColor : "black",
 			follow: "player",
 			layers : {
 				"foreground" : {
 					zIndex: 10,
-					scrollSpeed : 100
+					scrollSpeed : 1.0
 				},
 				"behind": {
+					zIndex: 8,
+					scrollSpeed: 1.0
+				},
+				"snakeLayer": {
 					zIndex: 9,
-					scrollSpeed: 100
+					scrollSpeed: 1.0
 				},
 				"background" : {
-					zIndex: 8,
-					scrollSpeed : 100
+					zIndex: 5,
+					scrollSpeed : 1.0
 				}
 			},
 			dynamics : {
@@ -139,25 +224,13 @@ window.Skepto = {
 					layer : "foreground",
 					x : 466,
 					y : 992,
-					scale : 0.3,
-					onClick : function(e) {
-						if (e.item === null) {
-							this.dynamic.playText({text: "Hi, I'm Skepto the ghost. Thanks for helping me on my adventures!"});
-						}
-						else if (e.item == 'snake') {
-							this.dynamic.playText({text: "That's my favorite snake, Dr. Hiss!"});
-						}
-						else {
-							this.dynamic.playText({text: "I'm not sure what to make of that."});
-						}
-			    		
-			    	}
+					scale : 0.3
 				},
 				snake: {
 					walkSpeed: 1.0,
 					listening: true,
 					id: "snake",
-					layer : "foreground",
+					layer : "snakeLayer",
 					x: 1026,
 					y: 902,
 					scale : 0.5,
@@ -187,6 +260,18 @@ window.Skepto = {
 					id: "dockBG",
 					layer: "background",
 					scale: 1.0
+				},
+				door: {
+					listening: true,
+					x: 1854,
+					y: 1003,
+					id: "door",
+					layer: "snakeLayer",
+					onClick: function(e) {
+						if (e.item == null) {
+							this.game.transition({room: 'bean_store'});
+						}
+					}
 				}
 			},
 			statics : {
