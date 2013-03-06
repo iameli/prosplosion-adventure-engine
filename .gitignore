@@ -1,2 +1,4 @@
 #Ignore useless stuff
 .DS_Store
+*.flv
+*.fxg

@@ -44,12 +44,24 @@ window.Skepto = {
 			"snake_inv.svg",
 			"beans_inv.svg",
 			"beans_big.svg",
-			"door.svg"
+			"door.svg",
+			"tree1.svg",
+			"tree2.svg"
 		]
 	},
 	startRoom : "dock",
 	resourceURL : "resources",
 	dynamics : {
+		tree: {
+			width: 352,
+			height: 405,
+			frameRate: 4,
+			scale: 1.0,
+			defaultAnimation: 'idle',
+			vectorAnimations: {
+				idle: ['tree1.svg', 'tree2.svg']
+			}
+		},
 		door: {
 			width: 239,
 			height: 437,
@@ -227,9 +239,17 @@ window.Skepto = {
 					zIndex: 9,
 					scrollSpeed: 1.0
 				},
+				"trees": {
+					zIndex: 6,
+					scrollSpeed: 0.4
+				},
+				"frontTrees": {
+					zIndex: 15,
+					scrollSpeed: 10.0
+				},
 				"background" : {
 					zIndex: 5,
-					scrollSpeed : 1.0
+					scrollSpeed : 0.2
 				}
 			},
 			dynamics : {
@@ -289,6 +309,46 @@ window.Skepto = {
 							this.game.transition({room: 'bean_store'});
 						}
 					}
+				},
+				tree1: {
+					listening: false,
+					x: 0,
+					y: 800,
+					scale: 0.5,
+					id: "tree",
+					layer: "trees"
+				},
+				tree2: {
+					listening: false,
+					x: 200,
+					y: 800,
+					scale: 0.5,
+					id: "tree",
+					layer: "trees"
+				},
+				tree3: {
+					listening: false,
+					x: 400,
+					y: 800,
+					scale: 0.5,
+					id: "tree",
+					layer: "trees"
+				},
+				tree4: {
+					listening: false,
+					x: 600,
+					y: 800,
+					scale: 0.5,
+					id: "tree",
+					layer: "trees"
+				},
+				frontTree: {
+					listening: false,
+					x: 1100,
+					y: 300,
+					scale: 3.0,
+					id: "tree",
+					layer: "frontTrees"
 				}
 			},
 			statics : {

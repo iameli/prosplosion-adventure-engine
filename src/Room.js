@@ -7,12 +7,14 @@ goog.provide("PAE.Room");
 (function() {
 	var WIDTH = 1024;
 	var HEIGHT = 768;
+	var XBUFFER = 250; //defining these as constants just so's we can edit later if need be
+	var YBUFFER = 150;
 	var Room = PAE.Room = function(params) {
 		var self = this;
 		self.dynamics = {};
 		self.statics = {};
 		var attrs = self.attrs = params;
-		attrs.layers._zero = {zIndex: 0, scrollSpeed: 0}
+		attrs.layers._zero = {zIndex: 0, scrollSpeed: 1.0}
 		self.group = new Kinetic.Group();
 	};
 	/**
@@ -42,7 +44,7 @@ goog.provide("PAE.Room");
 	    
 	    var walkFunc = function(e) {
 	    	if (self.attrs.follow) {
-	    		var rpos = self.group.getPosition();
+	    		var rpos = self.layers._zero.getPosition();
 	    		var x = e.offsetX - rpos.x;
 	    		var y = e.offsetY - rpos.y;
 	    		self.dynamics[self.attrs.follow].walkTo(x, y);
@@ -79,41 +81,20 @@ goog.provide("PAE.Room");
 	    	function(name, group) {
 		    	group.moveToTop();
 	    })
-	    var XBUFFER = 250; //defining these as constants just so's we can edit later if need be
-	    var YBUFFER = 150;
+	    
 	    PAE.EventMgr.on('sprite-walking', function(e) {
 	    	var sprite = self.spriteIdx[e.uid];
 	    	if (sprite && self.attrs.follow == sprite) { //If the player is moving
-	    		var dynamic = self.dynamics[self.attrs.follow];
-	    		var sprite = dynamic.sprite;
-	    		var dimensions = dynamic.getDimensions();
 	    		var responder = PAE.EventMgr.on('before-draw', function(e) {
-	    			var spos = sprite.getPosition();
-	    			var sx = spos.x;
-	    			var sy = spos.y;
-	    			var rpos = self.group.getPosition();
-	    			var rx = rpos.x;
-	    			var ry = rpos.y;
-	    			if ((rx + sx) < XBUFFER) { //room too far right
-	    				self.group.setX(XBUFFER - sx)
-	    			}
-	    			else if ((WIDTH - sx - rx - dimensions.width) < XBUFFER) {
-	    				self.group.setX(WIDTH - sx - dimensions.width - XBUFFER)
-	    			}
-	    			if ((ry + sy) < YBUFFER) { //room too far right
-	    				self.group.setY(YBUFFER - sy)
-	    			}
-	    			else if ((HEIGHT - sy - ry - dimensions.height) < YBUFFER) {
-	    				self.group.setY(HEIGHT - sy - dimensions.height - YBUFFER)
-	    			}
+	    			self.centerOn(sprite);
 	    		})
 	    		var ender = PAE.EventMgr.on('sprite-walking-done', function(e) {
-	    			var sprite = self.spriteIdx[e.uid];
-	    			if (sprite && self.follow == sprite) {
-	    				PAE.EventMgr.off(responder);
-	    				PAE.EventMgr.off(ender);
-	    			}
-	    		})
+					var sprite = self.spriteIdx[e.uid];
+					if (sprite && self.attrs.follow == sprite) {
+						PAE.EventMgr.off(responder);
+						PAE.EventMgr.off(ender);
+					}
+				})
 	    	}
 	    })
 	    var done = function() {
@@ -124,10 +105,7 @@ goog.provide("PAE.Room");
 	    	onEnter.prototype.room = self;
 	    	new onEnter();
 	    	if (self.attrs.follow) {
-		    	PAE.EventMgr.trigger(new PAE.Event({ //Inital one to move the camera
-					name: 'sprite-walking',
-					uid: self.dynamics[self.attrs.follow].getUID()
-				}))
+		    	self.centerOn(self.attrs.follow);
 		    }
 		    PAE.EventMgr.trigger(new PAE.Event({
 		    	name: 'room-initalized',
@@ -156,5 +134,48 @@ goog.provide("PAE.Room");
 	    self.layers[sprite.layer].add(s.sprite);
 	    var uid = s.getUID();
 	    self.spriteIdx[uid] = name;
+	}
+	/**
+	 * Scroll the window to center on on a certain dynamic.
+ 	 * @param {Object} dynamic
+	 */
+	Room.prototype.centerOn = function(dynamic_name) {
+		var self = this;
+		var dynamic = self.dynamics[dynamic_name];
+		var sprite = dynamic.sprite;
+		var spos = sprite.getPosition();
+		var dimensions = dynamic.getDimensions();
+		var sx = spos.x;
+		var sy = spos.y;
+		var rpos = self.layers._zero.getPosition();
+		var rx = rpos.x;
+		var ry = rpos.y;
+		if ((rx + sx) < XBUFFER) { //room too far right
+			self.scrollX(XBUFFER - sx)
+		}
+		else if ((WIDTH - sx - rx - dimensions.width) < XBUFFER) {
+			self.scrollX(WIDTH - sx - dimensions.width - XBUFFER)
+		}
+		if ((ry + sy) < YBUFFER) { //room too far right
+			self.scrollY(YBUFFER - sy)
+		}
+		else if ((HEIGHT - sy - ry - dimensions.height) < YBUFFER) {
+			self.scrollY(HEIGHT - sy - dimensions.height - YBUFFER)
+		}
+	}
+	Room.prototype.clearCenter = function() {
+		
+	}
+	Room.prototype.scrollX = function(newx) {
+		var self = this;
+		PAE.Util.objEach(self.attrs.layers, function(name, deets) {
+			self.layers[name].setX(Math.floor(newx * deets.scrollSpeed));
+		})
+	}
+	Room.prototype.scrollY = function(newy) {
+		var self = this;
+		PAE.Util.objEach(self.attrs.layers, function(name, deets) {
+			self.layers[name].setY(newy);
+		})
 	}
 })(); 
