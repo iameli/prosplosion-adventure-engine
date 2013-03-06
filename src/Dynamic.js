@@ -12,6 +12,7 @@ goog.provide("PAE.Dynamic");
 		var self = this;
 		var game = PAE.curGame;
 		var attrs = self.attrs = game.getDynamicData(params.id); //Get the sprite definition
+		if (!attrs) throw "Dynamic with id '" + params.id + "' not found!"
 		PAE.Util.objEach(params, function(key, val) { //and copy in any specific info from this istance.
 			attrs[key] = val;
 		})
@@ -127,6 +128,12 @@ goog.provide("PAE.Dynamic");
 	Dynamic.prototype.remove = function() {
 		var self = this;
 		self.sprite.remove();
+	}
+	/**
+	 * Get uid.
+	 */
+	Dynamic.prototype.getUID = function() {
+		return this.uid;
 	}
 	PAE.Global.extend(PAE.Dynamic, PAE.Talker);
 })();

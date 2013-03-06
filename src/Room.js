@@ -5,49 +5,34 @@ goog.require("PAE");
 goog.require("PAE.Dynamic");
 goog.provide("PAE.Room");
 (function() {
+	var WIDTH = 1024;
+	var HEIGHT = 768;
 	var Room = PAE.Room = function(params, parent) {
 		var self = this;
-		self.Dynamics = {};
-		self.Statics = {};
-		self.className = 'Room';
-		self.Parent = parent;
-		self.Game = self.Parent;
-		self.background = params.background;
-		self.groupList = params.layers;
-		self.follow = params.follow;
-		self.groupList._zero = {zIndex: 0, scrollSpeed: 0}
-		while (self.Game.className != "Game" && self.Game.Parent) {
-			self.Game = self.Game.Parent;
-		}
-		self.dynamicList = params.dynamics;
-		self.staticList = params.statics;
-		self.bgcolor = params.bgColor || "black";
-		self.Group = new Kinetic.Group();
+		self.dynamics = {};
+		self.statics = {};
+		var attrs = self.attrs = params;
+		attrs.layers._zero = {zIndex: 0, scrollSpeed: 0}
+		self.group = new Kinetic.Group();
 	};
-	Room.prototype.setBgColor = function(color) {
-		self.bgcolor = color
-		this.entities.zeroRect.setFill(color);
-	}
 	/**
 	 * Call initalize after the layer has been added to the stage.
 	 * We can't do this stuff in the constructor because we don't really know what
 	 * we're working with yet.
 	 */
 	Room.prototype.initalize = function(callback) {
+		console.log(this.attrs);
 		var self = this;
-		var stage = this.Group.getStage();
-		
-		self.Groups = {};
-		Object.keys(self.groupList).forEach(function(g_name) {
-			var gDef = self.groupList[g_name];
-			var g = self.Groups[g_name] = new Kinetic.Group();
-			self.Group.add(g);
+
+		//Add all Layers
+		self.layers = {};
+		PAE.Util.objEach(self.attrs.layers, function(name, layer) {
+			var g = self.layers[name] = new Kinetic.Group();
+			self.group.add(g);
 		})
 		
-		var WIDTH = 1024;
-		var HEIGHT = 768;
-		this.entities = {};
-		var bg = this.entities.zeroRect = new Kinetic.Rect({
+		//Add the background square
+		var bg = self.zeroRect = new Kinetic.Rect({ //TODO: make this screen-sized but not scrolling
 	        x : -10000,
 	        y : -10000,
 	        width: 20000,
@@ -55,57 +40,57 @@ goog.provide("PAE.Room");
 	        fill: self.bgcolor
 	    });
 	    bg.on('click', function(e) {
-	    	if (self.follow) {
-	    		var rpos = self.Group.getPosition();
+	    	if (self.attrs.follow) {
+	    		var rpos = self.group.getPosition();
 	    		var x = e.offsetX - rpos.x;
 	    		var y = e.offsetY - rpos.y;
-	    		self.Dynamics[self.follow].walkTo(x, y);
+	    		self.dynamics[self.attrs.follow].walkTo(x, y);
 	    	}
 	    })
-	    this.Groups._zero.add(bg);
-	    var dynamics = self.dynamicList;
-	    self.spriteIdx = {};
-	    Object.keys(dynamics).forEach(function(name) {
-	    	var dynamic = dynamics[name];
-	    	var idx = self.addDynamic(name, dynamic);
-	    	self.spriteIdx[idx] = name;
+	    this.layers._zero.add(bg);
+	    
+	    this.spriteIdx = {};
+	    //Add all Dynamics
+	    PAE.Util.objEach(self.attrs.dynamics, function(name, dyn) {
+	    	self.addDynamic(name, dyn);
 	    })
+
 	    //This sorts the layers by z-index then runs moveottop on them.
 	    //Needed because I can't start to fathom how KineticJS handles
 	    //setZIndex. 
-	    PAE.Util.objEachSorted(self.Groups, function(name, group) {
-	    		return self.groupList[name].zIndex; 
+	    PAE.Util.objEachSorted(self.layers, function(name, group) {
+	    		return self.attrs.layers[name].zIndex; 
 	    	}, 
 	    	function(name, group) {
-		    	var gDef = self.groupList[name];
 		    	group.moveToTop();
 	    })
 	    var XBUFFER = 250; //defining these as constants just so's we can edit later if need be
 	    var YBUFFER = 150;
 	    PAE.EventMgr.on('sprite-walking', function(e) {
 	    	var sprite = self.spriteIdx[e.uid];
-	    	if (sprite && self.follow == sprite) { //If the player is moving
-	    		var dynamic = self.Dynamics[self.follow];
+	    	console.log("sprite-walking",e)
+	    	if (sprite && self.attrs.follow == sprite) { //If the player is moving
+	    		var dynamic = self.dynamics[self.attrs.follow];
 	    		var sprite = dynamic.sprite;
 	    		var dimensions = dynamic.getDimensions();
 	    		var responder = PAE.EventMgr.on('before-draw', function(e) {
 	    			var spos = sprite.getPosition();
 	    			var sx = spos.x;
 	    			var sy = spos.y;
-	    			var rpos = self.Group.getPosition();
+	    			var rpos = self.group.getPosition();
 	    			var rx = rpos.x;
 	    			var ry = rpos.y;
 	    			if ((rx + sx) < XBUFFER) { //room too far right
-	    				self.Group.setX(XBUFFER - sx)
+	    				self.group.setX(XBUFFER - sx)
 	    			}
 	    			else if ((WIDTH - sx - rx - dimensions.width) < XBUFFER) {
-	    				self.Group.setX(WIDTH - sx - dimensions.width - XBUFFER)
+	    				self.group.setX(WIDTH - sx - dimensions.width - XBUFFER)
 	    			}
 	    			if ((ry + sy) < YBUFFER) { //room too far right
-	    				self.Group.setY(YBUFFER - sy)
+	    				self.group.setY(YBUFFER - sy)
 	    			}
 	    			else if ((HEIGHT - sy - ry - dimensions.height) < YBUFFER) {
-	    				self.Group.setY(HEIGHT - sy - dimensions.height - YBUFFER)
+	    				self.group.setY(HEIGHT - sy - dimensions.height - YBUFFER)
 	    			}
 	    		})
 	    		var ender = PAE.EventMgr.on('sprite-walking-done', function(e) {
@@ -118,17 +103,17 @@ goog.provide("PAE.Room");
 	    	}
 	    })
 	    var done = function() {
-	    	if (self.follow) {
+	    	if (self.attrs.follow) {
 		    	PAE.EventMgr.trigger(new PAE.Event({ //Inital one to move the camera
 					name: 'sprite-walking',
-					uid: self.Dynamics[self.follow].uid
+					uid: self.dynamics[self.attrs.follow].getUID()
 				}))
 		    }
 		    callback && callback();
 	    }
-	    var dyns = Object.keys(self.Dynamics).length;
+	    var dyns = Object.keys(self.dynamics).length;
 	    if (dyns == 0) done();
-	    PAE.Util.objEach(self.Dynamics, function(name, dynamic) {
+	    PAE.Util.objEach(self.dynamics, function(name, dynamic) {
 	    	dynamic.initalize(function() {
 	    		dyns -= 1;
 	    		if (dyns == 0) done();
@@ -142,8 +127,9 @@ goog.provide("PAE.Room");
 	 */
 	Room.prototype.addDynamic = function(name, sprite) {
 		var self = this;
-		var s = self.Dynamics[name] = new PAE.Dynamic(sprite);
-	    self.Groups[sprite.layer].add(s.sprite);
-	    return s.uid;
+		var s = self.dynamics[name] = new PAE.Dynamic(sprite);
+	    self.layers[sprite.layer].add(s.sprite);
+	    var uid = s.getUID();
+	    self.spriteIdx[uid] = name;
 	}
 })(); 

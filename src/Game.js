@@ -49,10 +49,10 @@ goog.provide("PAE.Game");
 		var self = this;
 		var roomParams = self.GameStruct.rooms[params.room];
 		if (self.CurRoom) {
-			self.CurRoom.Group.remove();
+			self.CurRoom.group.remove();
 		}
 		self.CurRoom = new PAE.Room(roomParams, self);
-		self.Group.add(self.CurRoom.Group);
+		self.Group.add(self.CurRoom.group);
 		self.CurRoom.initalize(function() {
 			self.UI.Group.moveToTop();
 		});
@@ -63,10 +63,6 @@ goog.provide("PAE.Game");
 	Game.prototype.getDynamicData = function(id) {
 		var self = this;
 		return self.GameStruct.dynamics[id];
-	}
-	Game.prototype.getStaticData = function(id) {
-		var self = this;
-		return self.GameStruct.statics[id];
 	}
 	/**
 	 * Give the item to a player.
