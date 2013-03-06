@@ -7,6 +7,11 @@ goog.require("PAE.Resources");
 goog.require("PAE.UI");
 goog.provide("PAE.Game");
 (function() {
+	/**
+	 * Create a game!
+	 * 
+	 * Params is the entire gamestate file.
+	 */
 	var Game = PAE.Game = function(params) {
 		var self = this;
 		PAE.curGame = self;
@@ -36,12 +41,18 @@ goog.provide("PAE.Game");
 			}))
 		})
 	};
+	/**
+	 * Get a unique identifier for whatever. 
+	 */
 	Game.prototype.uid = function() {
 		var self = this;
 		var ret = self._uid;
 		self._uid += 1;
 		return ret;
 	}
+	/**
+	 * Transition to a new room.
+	 */
 	Game.prototype.transition = function(params) {
 		var self = this;
 		var roomParams = self.attrs.rooms[params.room];
@@ -54,9 +65,15 @@ goog.provide("PAE.Game");
 			self.UI.Group.moveToTop();
 		});
 	}
+	/*
+	 * Get the dimensions of the stage.
+	 */
 	Game.prototype.getDimensions = function(params) {
 		return {width: this.stage.getWidth(), height: this.stage.getHeight()};
 	}
+	/**
+	 * Get the definition of a dynamic.
+	 */
 	Game.prototype.getDynamicData = function(id) {
 		var self = this;
 		return self.attrs.dynamics[id];
