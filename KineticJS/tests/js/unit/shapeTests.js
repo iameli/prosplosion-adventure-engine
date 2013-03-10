@@ -1,4 +1,31 @@
 Test.Modules.SHAPE = {
+    'scale rect with stroke scale disabled': function(containerId) {
+        var stage = new Kinetic.Stage({
+            container: containerId,
+            width: 578,
+            height: 200
+        });
+        var layer = new Kinetic.Layer();
+        var rect = new Kinetic.Rect({
+            x: 200,
+            y: 90,
+            width: 100,
+            height: 50,
+            fill: 'green',
+            stroke: 'black',
+            strokeWidth: 4,
+            scale: [3, 1],
+            draggable: true,
+            strokeScaleEnabled: false
+        });
+
+        layer.add(rect);
+        stage.add(layer);
+        
+        //console.log(layer.toDataURL());
+        
+        warn(layer.toDataURL() === dataUrls['scaled rect with disabled stroke scale'], 'probem with stroke scale disabling');
+    },
     'test intersects()': function(containerId) {
         var stage = new Kinetic.Stage({
             container: containerId,
@@ -387,7 +414,7 @@ Test.Modules.SHAPE = {
         stage.add(layer);
 
         //console.log(layer.toDataURL());
-        test(layer.toDataURL() === dataUrls['everything enabled'], 'should be circle with green fill, dashed stroke, and shadow');
+        warn(layer.toDataURL() === dataUrls['everything enabled'], 'should be circle with green fill, dashed stroke, and shadow');
     },
     'fill disabled': function(containerId) {
         var stage = new Kinetic.Stage({
@@ -416,7 +443,7 @@ Test.Modules.SHAPE = {
         stage.add(layer);
 
         //console.log(layer.toDataURL());
-        test(layer.toDataURL() === dataUrls['fill disabled'], 'should be circle with no fill, dashed stroke, and shadow');
+        warn(layer.toDataURL() === dataUrls['fill disabled'], 'should be circle with no fill, dashed stroke, and shadow');
     },
     'stroke disabled': function(containerId) {
         var stage = new Kinetic.Stage({
@@ -445,7 +472,7 @@ Test.Modules.SHAPE = {
         stage.add(layer);
 
         //console.log(layer.toDataURL());
-        test(layer.toDataURL() === dataUrls['stroke disabled'], 'should be circle with green fill, no stroke, and shadow');
+        warn(layer.toDataURL() === dataUrls['stroke disabled'], 'should be circle with green fill, no stroke, and shadow');
     },
     'dash array disabled': function(containerId) {
         var stage = new Kinetic.Stage({
@@ -474,7 +501,7 @@ Test.Modules.SHAPE = {
         stage.add(layer);
 
         //console.log(layer.toDataURL());
-        test(layer.toDataURL() === dataUrls['dash array disabled'], 'should be circle with green fill, solid stroke, and shadow');
+        warn(layer.toDataURL() === dataUrls['dash array disabled'], 'should be circle with green fill, solid stroke, and shadow');
     },
     'shadow disabled': function(containerId) {
         var stage = new Kinetic.Stage({
@@ -503,7 +530,7 @@ Test.Modules.SHAPE = {
         stage.add(layer);
 
         //console.log(layer.toDataURL());
-        test(layer.toDataURL() === dataUrls['shadow disabled'], 'should be circle with green fill, dashed stroke, and no shadow');
+        warn(layer.toDataURL() === dataUrls['shadow disabled'], 'should be circle with green fill, dashed stroke, and no shadow');
     },
     'test enablers and disablers': function(containerId) {
         var stage = new Kinetic.Stage({
