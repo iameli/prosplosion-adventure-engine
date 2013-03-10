@@ -18,12 +18,16 @@ goog.provide("PAE.Dynamic");
 		})
 		self.uid = game.uid();
 		var svg_list = {};
+		/**
+		 * Get all the SVG data from the game.
+		 */
 		PAE.Util.objEach(attrs.vectorAnimations, function(anim, frames) {
 			svg_list[anim] = [];
 			frames.forEach(function(frame) {
 				svg_list[anim].push(game.resources.getSVG(frame));
 			})
 		})
+		//Create the sprite
 		var s = self.sprite = new PAE.VectorSprite({
 			x : attrs.x,
 			y : attrs.y,
@@ -35,7 +39,9 @@ goog.provide("PAE.Dynamic");
 			vectorAnimations: svg_list,
 			listening: attrs.listening
 		});
+		//Init talker functionality.
 		self._talkerInit(self, attrs, params.game);
+		//Init onClick functionality.
 		var onClick = attrs.onClick || function(e){};
 		onClick.prototype.game = PAE.curGame;
 		onClick.prototype.dynamic = self;
@@ -45,6 +51,7 @@ goog.provide("PAE.Dynamic");
 				item: null
 			}))
 		})
+		//Init onClick with item functionality.
 		s.on('mousedown', function(e) {
 			console.log("Mousedown.",e)
 			if ($(e.srcElement).hasClass('kinetic-drag-and-drop-layer')) { //An item was dropped on us. Set up to recieve it. 
@@ -62,6 +69,9 @@ goog.provide("PAE.Dynamic");
 			new onClick(e);
 		})
 	}
+	/**
+	 * Fire it up.
+	 */
 	Dynamic.prototype.initalize = function(callback) {
 		var self = this;
 		self.sprite.initalize(function() {
