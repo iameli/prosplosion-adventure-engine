@@ -14,7 +14,8 @@ goog.provide("PAE.Room");
 		self.dynamics = {};
 		self.statics = {};
 		var attrs = self.attrs = params;
-		attrs.layers._zero = {zIndex: 0, scrollSpeed: 1.0}
+		attrs.layers._zeroBG = {zIndex: -1, scrollSpeed: 0.0}
+		attrs.layers._walkable = {zIndex: 0, scrollSpeed: 1.0}
 		attrs.layers._debug = {zIndex: 101, scrollSpeed: 1.0}
 		self.group = new Kinetic.Group();
 	};
@@ -41,11 +42,11 @@ goog.provide("PAE.Room");
 	        height: self.attrs.height,
 	        fill: self.attrs.bgColor
 	    });
-	    this.layers._zero.add(bg);
+	    this.layers._zeroBG.add(bg);
 	    
 	    var walkFunc = function(e) {
 	    	if (self.attrs.follow) {
-	    		var rpos = self.layers._zero.getPosition();
+	    		var rpos = self.layers._walkable.getPosition();
 	    		var x = e.offsetX - rpos.x;
 	    		var y = e.offsetY - rpos.y;
 	    		self.dynamics[self.attrs.follow].walkTo(x, y);
@@ -57,9 +58,10 @@ goog.provide("PAE.Room");
 	    		data: self.attrs.walkable,
 	    		x: 0,
 	    		y: 0,
-	    		fill: 'red'
+	    		fill: 'red',
+	    		opacity: 0.2
 	    	});
-	    	self.layers._zero.add(walkable);
+	    	self.layers._walkable.add(walkable);
 	    	walkable.moveToTop();
 	    	walkable.on('click', walkFunc);
 	    }
@@ -123,7 +125,7 @@ goog.provide("PAE.Room");
 	    		if (dyns == 0) done();
 	    	})
 	    })
-	}
+	}	
 	/**
 	 * Add a Dynamic to this room.
 	 * @param {Object} name
@@ -148,7 +150,7 @@ goog.provide("PAE.Room");
 		var dimensions = dynamic.getDimensions();
 		var sx = spos.x;
 		var sy = spos.y;
-		var rpos = self.layers._zero.getPosition();
+		var rpos = self.layers._walkable.getPosition();
 		var rx = rpos.x;
 		var ry = rpos.y;
 		if ((rx + sx) < XBUFFER) { //room too far left
