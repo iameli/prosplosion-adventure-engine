@@ -171,6 +171,8 @@ window.Skepto = {
 			},
 			bgColor: "grey",
 			follow: "player",
+			width: 1024,
+			height: 768,
 			layers: {
 				"foreground": {
 					zIndex: 10,
@@ -224,6 +226,8 @@ window.Skepto = {
 					this.dynamics.snake.remove();
 				}
 			},
+			width: 2048,
+			height: 1536,
 			bgColor : "black",
 			follow: "player",
 			layers : {

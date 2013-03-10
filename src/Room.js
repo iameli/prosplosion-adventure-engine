@@ -15,6 +15,7 @@ goog.provide("PAE.Room");
 		self.statics = {};
 		var attrs = self.attrs = params;
 		attrs.layers._zero = {zIndex: 0, scrollSpeed: 1.0}
+		attrs.layers._debug = {zIndex: 101, scrollSpeed: 1.0}
 		self.group = new Kinetic.Group();
 	};
 	/**
@@ -34,10 +35,10 @@ goog.provide("PAE.Room");
 		
 		//Add the background square
 		var bg = self.zeroRect = new Kinetic.Rect({ //TODO: make this screen-sized but not scrolling
-	        x : -10000,
-	        y : -10000,
-	        width: 20000,
-	        height: 20000,
+	        x : 0,
+	        y : 0,
+	        width: self.attrs.width,
+	        height: self.attrs.height,
 	        fill: self.attrs.bgColor
 	    });
 	    this.layers._zero.add(bg);
@@ -50,15 +51,15 @@ goog.provide("PAE.Room");
 	    		self.dynamics[self.attrs.follow].walkTo(x, y);
 			}
 		}
-	    
+	    //Set up walkability clickable
 	    if (self.attrs.walkable) {
-	    	var walkable = new Kinetic.Path({
+	    	var walkable = self.walkablePath = new Kinetic.Path({
 	    		data: self.attrs.walkable,
 	    		x: 0,
 	    		y: 0,
 	    		fill: 'red'
 	    	});
-	    	this.layers._zero.add(walkable);
+	    	self.layers._zero.add(walkable);
 	    	walkable.moveToTop();
 	    	walkable.on('click', walkFunc);
 	    }
@@ -150,17 +151,37 @@ goog.provide("PAE.Room");
 		var rpos = self.layers._zero.getPosition();
 		var rx = rpos.x;
 		var ry = rpos.y;
-		if ((rx + sx) < XBUFFER) { //room too far right
-			self.scrollX(XBUFFER - sx)
+		if ((rx + sx) < XBUFFER) { //room too far left
+			if (0 > rx) { // If we're at the left border of the scree'
+				self.scrollX(XBUFFER - sx);
+			}
+			else {
+				self.scrollX(0);
+			}
 		}
-		else if ((WIDTH - sx - rx - dimensions.width) < XBUFFER) {
-			self.scrollX(WIDTH - sx - dimensions.width - XBUFFER)
+		else if ((WIDTH - sx - rx - dimensions.width) < XBUFFER) { //room too far right
+			if ((-1) * rx + WIDTH < self.attrs.width) {
+				self.scrollX(WIDTH - sx - dimensions.width - XBUFFER)
+			}
+			else { //iF we're at the right border of the screen
+				self.scrollX((self.attrs.width - WIDTH) * (-1));
+			}
 		}
-		if ((ry + sy) < YBUFFER) { //room too far right
-			self.scrollY(YBUFFER - sy)
+		if ((ry + sy) < YBUFFER) { //Room too far up
+			if (0 > ry) {
+				self.scrollY(YBUFFER - sy)
+			}
+			else {
+				self.scrollY(0);
+			}
 		}
-		else if ((HEIGHT - sy - ry - dimensions.height) < YBUFFER) {
-			self.scrollY(HEIGHT - sy - dimensions.height - YBUFFER)
+		else if ((HEIGHT - sy - ry - dimensions.height) < YBUFFER) { //room too far down
+			if ((-1) * ry + HEIGHT < self.attrs.height) {
+				self.scrollY(HEIGHT - sy - dimensions.height - YBUFFER)
+			}
+			else {
+				self.scrollY((self.attrs.height - HEIGHT) * (-1));
+			}
 		}
 	}
 	Room.prototype.clearCenter = function() {
