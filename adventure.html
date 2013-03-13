@@ -57,6 +57,29 @@
 												btn.html("Show Walkable Path");
 											}
 										})
+									</script><br/>
+									<button id="showPathing" data-toggle="true" class="btn">Show Pathfinding Data</button>
+									<script>
+										$('#showPathing').on('click', function(e) {
+											var btn = $('#showPathing');
+											var doThing = btn.attr("data-toggle");
+											if (doThing == 'true') {
+												PAE.curGame.curRoom.pathingDebug(true);
+												btn.attr('data-toggle', "false");
+												btn.html("Hide Pathfinding Data");
+											}
+											else {
+												PAE.curGame.curRoom.pathingDebug(false);
+												btn.attr('data-toggle', "true");
+												btn.html("Show Pathfinding Data");
+											}
+										})
+									</script>
+									<button id="rebuildPathing" class="btn">Rebuild Pathfinding Data</button>
+									<script>
+										$('#rebuildPathing').on('click', function(e) {
+											PAE.curGame.curRoom.walkable.buildWalkGraph();
+										})
 									</script>
 								</div>
 							</div>

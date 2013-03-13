@@ -565,7 +565,8 @@ gamlib.AStarNode = gamlib.Class.extend({
      * > });
      */
     g: function(n) {
-        return 1;
+        var dif = Math.sqrt(Math.abs(this.position.x - n.position.x) + Math.abs(this.position.y - n.position.y));
+        return dif
     },
     /* Function: h
      *
@@ -602,8 +603,7 @@ gamlib.AStarNode = gamlib.Class.extend({
      * > });
      */
     h: function(n, t) {
-        var dif = this.position.difference(t.position);
-        return dif.length();
+        return 0
     },
     /*
      * Function: connect
@@ -620,6 +620,15 @@ gamlib.AStarNode = gamlib.Class.extend({
         if ( (auto) || (typeof auto == 'undefined') ) {
             n.connect(this, false);
         }
+    },
+    disconnect: function(n, auto) {
+    	var idx = this.connected.indexOf(n);
+    	if (idx != -1) {
+    		this.connected.splice(idx, 1);
+    	}
+    	if (auto) {
+    		n.disconnect(this, false);
+    	}
     }
 });
 
@@ -714,6 +723,12 @@ gamlib.AStarMap = gamlib.Class.extend({
         if (n instanceof gamlib.AStarNode) {
             this.nodes.push(n);
         }
+    },
+    remove: function(n) {
+    	var idx = this.nodes.indexOf(n);
+    	if (idx != -1) {
+    		this.nodes.splice(idx, 1);
+    	}
     },
 
     /*

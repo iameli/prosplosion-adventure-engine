@@ -94,11 +94,20 @@ goog.provide("PAE.Dynamic");
 		return {footX: footX, footY: footY, height: footY, width:width}
 	}
 	/**
+	 * Get the position of my feet.
+	 */
+	Dynamic.prototype.getFootPosition = function() {
+		var self = this;
+		var dimensions = this.getDimensions();
+		var pos = self.sprite.getPosition();
+		return {x: pos.x + dimensions.footX, y: pos.y + dimensions.footY};
+	}
+	/**
 	 * Use the character's walking animation (if any) to move to another place.
 	 * @param {Object} x
 	 * @param {Object} y
 	 */
-	Dynamic.prototype.walkTo = function(x, y) {
+	Dynamic.prototype.walkTo = function(x, y, done, callback) {
 		var self = this;
 		PAE.EventMgr.trigger(new PAE.Event({
 			name: 'sprite-walking',
@@ -126,11 +135,14 @@ goog.provide("PAE.Dynamic");
 			y: y,
 			duration: dist / self.attrs.speed,
 			callback: function() {
-				PAE.EventMgr.trigger(new PAE.Event({
-					name: 'sprite-walking-done',
-					uid: self.uid
-				}))
-				self.sprite.setAnimation('idle');
+				if (done !== false) {
+					PAE.EventMgr.trigger(new PAE.Event({
+						name: 'sprite-walking-done',
+						uid: self.uid
+					}))
+					self.sprite.setAnimation('idle');
+				}
+				callback && callback();
 			}
 		})
 	}

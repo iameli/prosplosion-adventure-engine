@@ -47,10 +47,24 @@ goog.provide("PAE.Room");
 	    
 	    var walkFunc = function(e) {
 	    	if (self.attrs.follow) {
+	    		var player = self.dynamics[self.attrs.follow];
 	    		var rpos = self.layers._walkable.getPosition();
 	    		var x = e.offsetX - rpos.x;
 	    		var y = e.offsetY - rpos.y;
-	    		self.dynamics[self.attrs.follow].walkTo(x, y);
+	    		var path = self.walkable.getPath(player.getFootPosition(), {x: x, y: y})
+	    		var idx = 1;
+	    		var next = function() {
+	    			var x = path[idx].x;
+	    			var y = path[idx].y;
+	    			if (idx + 1 >= path.length) {
+	    				player.walkTo(x, y, true);
+	    			}
+	    			else {
+	    				idx += 1;
+	    				player.walkTo(x, y, false, next);
+	    			}
+	    		}
+	    		next();
 			}
 		}
 	    //Set up walkability clickable
@@ -127,6 +141,7 @@ goog.provide("PAE.Room");
 	    		if (dyns == 0) done();
 	    	})
 	    })
+	    self.walkable.buildWalkGraph();
 	}	
 	/**
 	 * Add a Dynamic to this room.
@@ -218,7 +233,19 @@ goog.provide("PAE.Room");
 		else {
 			self.walkable.debug(false);
 			self.walkable.layer.moveTo(self.layers._walkable);
+			self.walkable.displayPathing(false);
 			self.attrs.follow = self._followDebug;
+		}
+	}
+	Room.prototype.pathingDebug = function(on) {
+		var self = this;
+		if (on) {
+			self.layers._debug.add(self.walkable.pathingData);
+			self.walkable.displayPathing(true);
+		}
+		else {
+			self.walkable.displayPathing(false);
+			self.walkable.pathingData.remove();
 		}
 	}
 })(); 
