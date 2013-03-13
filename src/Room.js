@@ -3,6 +3,7 @@
  */
 goog.require("PAE");
 goog.require("PAE.Dynamic");
+goog.require("PAE.PolyPath");
 goog.provide("PAE.Room");
 (function() {
 	var WIDTH = 1024;
@@ -54,16 +55,17 @@ goog.provide("PAE.Room");
 		}
 	    //Set up walkability clickable
 	    if (self.attrs.walkable) {
-	    	var walkable = self.walkablePath = new Kinetic.Path({
-	    		data: self.attrs.walkable,
-	    		x: 0,
-	    		y: 0,
-	    		fill: 'red',
-	    		opacity: 0.2
-	    	});
-	    	self.layers._walkable.add(walkable);
-	    	walkable.moveToTop();
-	    	walkable.on('click', walkFunc);
+	    	// var walkable = self.walkablePath = new Kinetic.Path({
+	    		// data: self.attrs.walkable,
+	    		// x: 0,
+	    		// y: 0,
+	    		// fill: 'red',
+	    		// opacity: 0.2
+	    	// });
+	    	//self.layers._walkable.add(walkable);
+	    	var walkable = self.walkable = new PAE.PolyPath(self.attrs.walkable);
+	    	self.layers._walkable.add(walkable.layer)
+	    	walkable.layer.on('click', walkFunc);
 	    }
 	    else {
 	    	bg.on('click', walkFunc);
@@ -200,5 +202,23 @@ goog.provide("PAE.Room");
 		PAE.Util.objEach(self.attrs.layers, function(name, deets) {
 			self.layers[name].setY(newy);
 		})
+	}
+	/**
+	 * Turn on walkable debug.
+ 	 * @param {Object} on
+	 */
+	Room.prototype.walkableDebug = function(on) {
+		var self = this;
+		if (on) {
+			self._followDebug = self.attrs.follow;
+			self.walkable.layer.moveTo(self.layers._debug);
+			self.walkable.debug(true);
+			self.attrs.follow = null;
+		}
+		else {
+			self.walkable.debug(false);
+			self.walkable.layer.moveTo(self.layers._walkable);
+			self.attrs.follow = self._followDebug;
+		}
 	}
 })(); 

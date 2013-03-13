@@ -55,6 +55,18 @@ var PAE = {};
 			// }
 		// })
 	}
+	/**
+	 * Transform pos into a relative position based on the absolute location of the parent.
+	 * 
+	 * Useful for getting the relative position of a mouse event.
+	 * 
+	 * @param pos Position in format {x: 0, y: 0}
+	 * @param parent Anything with a getAbsolutePosition method.
+	 */
+	PAE.Util.relativePosition = function(pos, parent) {
+		var delta = parent.getAbsolutePosition();
+		return {x: pos.x-delta.x, y: pos.y-delta.y};
+	}
 	PAE.Event = function(params) {
 		var self = this;
 		PAE.Util.objEach(params, function(key, val) {
