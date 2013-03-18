@@ -1,3 +1,4 @@
+goog.provide("Underscore");
 // Underscore.js 1.4.4
 // ===================
 
