@@ -1,6 +1,7 @@
 /**
  * Games are the root object for a game.
  */
+goog.require("Kinetic");
 goog.require("PAE");
 goog.require("PAE.Room");
 goog.require("PAE.Resources");
