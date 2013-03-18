@@ -1,9 +1,5 @@
 /**
- * Base class. Provides some necessary OOP shit.
- * 
- * Currently using jQuery's EventMgr system because it's what I know. I don't know if that's smart for 
- * something like this, so I've contained it to this file... should we ever want to use something else,
- * we just have to change PAE.EventMgr here.  
+ * Base class. Provides some necessary OOP shit. And someone needs to define PAE. It's not going to define itself.
  */
 goog.provide("PAE");
 var PAE = {};

@@ -10,8 +10,8 @@ goog.provide("PAE.PolyPath");
 		self.pathingData = new Kinetic.Group();
 		self.layer = new Kinetic.Group();
 		self.polygon = new Kinetic.Polygon({
-			points: self.attrs.points,
-			opacity: "0.5"
+			opacity: "0.5",
+			points: self.attrs.points
 		})
 		self.lineGroup = new Kinetic.Group();
 		self.squareGroup = new Kinetic.Group();
@@ -19,6 +19,16 @@ goog.provide("PAE.PolyPath");
 		self.debugGroup.add(self.squareGroup);
 		self.layer.add(self.debugGroup)
 		self.layer.add(self.polygon)
+	}
+	/**
+	 * Don't mess with the objects, yo.
+	 */
+	PolyPath.prototype.getPoints = function() {
+		var output = [];
+		this.attrs.points.forEach(function(point) {
+			output.push({x: point.x, y: point.y});
+		})
+		return output;
 	}
 	/**
 	 * Activate debug mode. The polygon may be easily moved around. Right-clicking on a line makes a new point, middle-clicking an existing point deletes it. 
@@ -127,7 +137,7 @@ goog.provide("PAE.PolyPath");
 	 */
 	PolyPath.prototype.buildWalkGraph = function() {
 		var self = this; 
-		var points = self.attrs.points.slice(0);
+		var points = self.getPoints();
 		var convexHull = self.getConvexHull(points);
 		var concaveLines = [];
 		var concavePoints = self.concavePoints = [];
