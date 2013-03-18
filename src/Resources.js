@@ -40,13 +40,24 @@ goog.provide("PAE.Resources");
 			audio.src = self.url + '/' + file;
 		});
 		svg_dloads.forEach(function(file) {
-			jQuery.get(self.url + '/' + file, function(data) {
-				self.svgs[file] = data;
-				count -= 1;
-				if (count == 0) {
-					callback();
+			var req = new XMLHttpRequest();
+			req.onreadystatechange = function() {
+				if (req.readyState == 4) {
+					console.log("Got file!");
+					self.svgs[file] = req.responseXML;
+					count -= 1;
+					if (count == 0) callback();
 				}
-			})
+			}
+			req.open("GET", self.url + '/' + file, true);
+			req.send(null);
+			// jQuery.get(self.url + '/' + file, function(data) {
+				// self.svgs[file] = data;
+				// count -= 1;
+				// if (count == 0) {
+					// callback();
+				// }
+			// })
 		})
 	}
 	Resources.prototype.getImage = function(img) {
