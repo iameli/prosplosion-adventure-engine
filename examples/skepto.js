@@ -164,6 +164,7 @@ window.Skepto = {
 	},
 	rooms : {
 		"bean_store": {
+			walkable: {"points":[{"x":0,"y":0},{"x":970,"y":24},{"x":1010,"y":758},{"x":10,"y":757}]},
 			onEnter: function(e) {
 				if (this.game.hasFlag('BEANS_GONE')) {
 					this.dynamics.beans.remove();
