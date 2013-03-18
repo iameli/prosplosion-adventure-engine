@@ -1,7 +1,0 @@
-{
-  "id": "pae",
-  "paths": "src",
-  "inputs": "src/main.js",
-  "pretty-print": true,
-  "debug":        true
-}

@@ -1,7 +1,6 @@
 /**
  * Games are the root object for a game.
  */
-goog.require("Kinetic");
 goog.require("PAE");
 goog.require("PAE.Room");
 goog.require("PAE.Resources");
@@ -19,9 +18,9 @@ goog.provide("PAE.Game");
 		PAE.curGame = self;
 		self.inventory = [];
 		self.stage = new Kinetic.Stage({
-			container : params.container,
-			width : params.width,
-			height : params.height
+			"container" : params.container,
+			"width" : params.width,
+			"height" : params.height
 		});
 		self._uid = 0; //Unique identifiers for anything that needs them. Increments.
 		self.UI = new PAE.UI();

@@ -1,4 +1,5 @@
-window.Skepto = {
+goog.require("PAE.Game");
+var SkeptoData = {
 	flags: {
 		SNAKE_GONE: false,
 		BEANS_GONE: false
@@ -361,3 +362,8 @@ window.Skepto = {
 		}
 	}
 }
+SkeptoData.width = 1024;
+SkeptoData.height = 768;
+SkeptoData.container = document.getElementById('GameContainer');
+new PAE.Game(SkeptoData);
+document.getElementById('GameContainer').oncontextmenu = function() { return false; } 

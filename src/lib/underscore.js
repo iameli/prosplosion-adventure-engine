@@ -953,11 +953,11 @@ goog.provide("Underscore");
 
   // Define a fallback version of the method in browsers (ahem, IE), where
   // there isn't any inspectable "Arguments" type.
-  if (!_.isArguments(arguments)) {
-    _.isArguments = function(obj) {
-      return !!(obj && _.has(obj, 'callee'));
-    };
-  }
+  // if (!_.isArguments(arguments)) {
+    // _.isArguments = function(obj) {
+      // return !!(obj && _.has(obj, 'callee'));
+    // };
+  // }
 
   // Optimize `isFunction` if appropriate.
   if (typeof (/./) !== 'function') {

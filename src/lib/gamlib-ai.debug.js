@@ -1,3 +1,4 @@
+goog.provide('gamlib');
 /**
  * Copyright (C) 2013 Heiko Irrgang <hi@93i.de>
  * 

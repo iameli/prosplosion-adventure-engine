@@ -2,6 +2,7 @@
  * PolyPath maintains a polygon that automatically does pathing information for what's within it. 
  */
 goog.require("Underscore");
+goog.require("gamlib");
 goog.provide("PAE.PolyPath");
 (function() {
 	var PolyPath = PAE.PolyPath = function(params) {

@@ -1,3 +1,5 @@
+goog.require('rgbcolor');
+goog.provide('canvg');
 /*
  * canvg.js - Javascript SVG parser and renderer on Canvas
  * MIT Licensed 

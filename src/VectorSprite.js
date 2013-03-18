@@ -1,4 +1,5 @@
 goog.require("PAE");
+goog.require("canvg");
 goog.provide("PAE.VectorSprite");
 (function() {
     /**
@@ -41,10 +42,6 @@ goog.provide("PAE.VectorSprite");
     PAE.VectorSprite.prototype = {
         _initSprite: function(config) {
         	var self = this;
-            this.setDefaultAttrs({
-                index: 0,
-                frameRate: 17
-            });
             
             self.vectorAnimations = config.vectorAnimations;
             self.cachedVectorAnimations = {};
@@ -189,7 +186,9 @@ goog.provide("PAE.VectorSprite");
     Kinetic.Global.extend(PAE.VectorSprite, Kinetic.Shape);
 
     // add getters setters
-    Kinetic.Node.addGettersSetters(PAE.VectorSprite, ['animation', 'animations', 'index']);
+    Kinetic.Node.addGetterSetter(PAE.VectorSprite, 'animation');
+    Kinetic.Node.addGetterSetter(PAE.VectorSprite, 'animations');
+    Kinetic.Node.addGetterSetter(PAE.VectorSprite, 'index');
 
     /**
      * set animation key
