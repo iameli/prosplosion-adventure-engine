@@ -1,8 +1,5 @@
 /**
  * Resources.js manages getting all the data--images and such--that we need from the server. 
- * 
- * This is the only part of PAE to utilize jQuery. As such, if we ever want to utilize some other method
- * of loading all the data, this is the only file that will have to be changed.
  */
 goog.require("PAE");
 goog.provide("PAE.Resources");
@@ -51,13 +48,6 @@ goog.provide("PAE.Resources");
 			}
 			req.open("GET", self.url + '/' + file, true);
 			req.send(null);
-			// jQuery.get(self.url + '/' + file, function(data) {
-				// self.svgs[file] = data;
-				// count -= 1;
-				// if (count == 0) {
-					// callback();
-				// }
-			// })
 		})
 	}
 	Resources.prototype.getImage = function(img) {
