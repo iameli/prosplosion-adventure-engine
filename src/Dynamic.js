@@ -1,7 +1,5 @@
 /**
  * Dynamics are everything in a level that's not static. Everything that's a clickable or moves or anything is dynamic.
- * 
- * Contains one ugly jQuery hack.
  */
 goog.require("PAE");
 goog.require("PAE.Talker");
@@ -54,16 +52,18 @@ goog.provide("PAE.Dynamic");
 		//Init onClick with item functionality.
 		s.on('mousedown', function(e) {
 			console.log("Mousedown.",e)
-			if ($(e.srcElement).hasClass('kinetic-drag-and-drop-layer')) { //An item was dropped on us. Set up to recieve it. 
-				var listener = PAE.EventMgr.on('item-action', function(e) {
-					PAE.EventMgr.off(listener);
-					PAE.EventMgr.trigger(new PAE.Event({
-						name: 'sprite-clicked',
-						id: self.uid,
-						item: e.item
-					}))
-				})
-			}
+			var listener = PAE.EventMgr.on('item-action', function(e) {
+				PAE.EventMgr.off(listener);
+				PAE.EventMgr.trigger(new PAE.Event({
+					name: 'sprite-clicked',
+					id: self.uid,
+					item: e.item
+				}))
+			})
+			setTimeout(function() { //TODO: This is a bit of a hack.
+				console.log("Timeout.")
+				PAE.EventMgr.off(listener);
+			}, 100);
 		})
 		PAE.EventMgr.on("sprite-clicked."+self.uid, function(e) {
 			new onClick(e);
