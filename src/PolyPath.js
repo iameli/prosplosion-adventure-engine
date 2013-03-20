@@ -12,7 +12,7 @@ goog.provide("PAE.PolyPath");
 		self.pathingData = new Kinetic.Group();
 		self.layer = new Kinetic.Group();
 		self.polygon = new Kinetic.Polygon({
-			opacity: "0.5",
+			opacity: "0.3",
 			points: self.attrs.points
 		})
 		self.lineGroup = new Kinetic.Group();
