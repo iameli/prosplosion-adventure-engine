@@ -64,7 +64,7 @@ goog.provide("PAE.Game");
 	 * Serialize the game, for purposes of editing and saving it.
 	 */
 	Game.prototype.serialize = function() {
-	    return this.attrs;
+	    return PAE.Serializer.serialize(this.attrs);
 	}
 	/**
 	 * Transition to a new room.

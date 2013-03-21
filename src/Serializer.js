@@ -10,7 +10,6 @@ goog.provide("PAE.Serializer");
      */
     Serializer.serialize = function(input) {
         return JSON.stringify(input, function(name, value) {
-            //console.log("" + name + " is a " + (typeof value) + " with value " + value);
             if (typeof value == "function") {
                 return {__serializedFunction : true, func: value.toString()};
             }
@@ -23,8 +22,7 @@ goog.provide("PAE.Serializer");
      */
     Serializer.deserialize = function(input) {
         return JSON.parse(input, function(name, value) {
-            //console.log("" + name + " is a " + (typeof value) + " with value " + value);
-            if (typeof value == 'object') {
+            if (typeof value === 'object' && value !== null) {
                 if (value.__serializedFunction === true && value.func) {
                     eval('var f = ' + value.func);
                     return f;
