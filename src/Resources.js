@@ -5,6 +5,14 @@ goog.require("PAE");
 goog.provide("PAE.Resources");
 
 (function() {
+    /**
+     * Create a new resources object.
+     * 
+     * params.images is the list of images
+     * params.url is the URL of the images that we'll download from
+     * params.audios is the list of OGG files
+     * params.svgs is the list of SVG files
+     */
 	var Resources = PAE.Resources = function(params) {
 		var self = this;
 		self.images = {};
@@ -40,7 +48,6 @@ goog.provide("PAE.Resources");
 			var req = new XMLHttpRequest();
 			req.onreadystatechange = function() {
 				if (req.readyState == 4) {
-					console.log("Got file!");
 					self.svgs[file] = req.responseXML;
 					count -= 1;
 					if (count == 0) callback();
