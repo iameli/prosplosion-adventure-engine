@@ -1,7 +1,7 @@
 {
   "id": "skepto",
   "paths": "src",
-  "inputs": "examples/skepto.js",
+  "inputs": "src/Game.js",
   "pretty-print": true,
   "debug":        true,
   "mode" : "SIMPLE"

@@ -51,7 +51,6 @@ goog.provide("PAE.Dynamic");
 		})
 		//Init onClick with item functionality.
 		s.on('mousedown', function(e) {
-			console.log("Mousedown.",e)
 			var listener = PAE.EventMgr.on('item-action', function(e) {
 				PAE.EventMgr.off(listener);
 				PAE.EventMgr.trigger(new PAE.Event({
@@ -61,7 +60,6 @@ goog.provide("PAE.Dynamic");
 				}))
 			})
 			setTimeout(function() { //TODO: This is a bit of a hack.
-				console.log("Timeout.")
 				PAE.EventMgr.off(listener);
 			}, 100);
 		})

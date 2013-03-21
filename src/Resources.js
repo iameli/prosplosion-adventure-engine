@@ -13,10 +13,10 @@ goog.provide("PAE.Resources");
      * params.audios is the list of OGG files
      * params.svgs is the list of SVG files
      */
-	var Resources = PAE.Resources = function(params) {
+	var Resources = PAE.Resources = function(params, windowData) {
 		var self = this;
 		self.images = {};
-		self.url = params.resourceURL;
+		self.url = windowData.resourceURL;
 		var rooms = params.rooms;
 		self.svgs = {};
 		params.resources.svgs.forEach(function(file) {

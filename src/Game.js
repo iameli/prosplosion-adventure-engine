@@ -5,6 +5,7 @@ goog.require("PAE");
 goog.require("PAE.Room");
 goog.require("PAE.Resources");
 goog.require("PAE.UI");
+goog.require("PAE.Serializer");
 goog.provide("PAE.Game");
 (function() {
 	/**
@@ -12,19 +13,24 @@ goog.provide("PAE.Game");
 	 * 
 	 * Params is the entire gamestate file.
 	 */
-	var Game = PAE.Game = function(params) {
+	var Game = PAE.Game = function(gameData, windowData) {
+	    console.log(typeof gameData)
+	    if (typeof gameData != 'object') {
+	        gameData = PAE.Serializer.deserialize(gameData);
+	    }
 		var self = this;
+		var params = gameData;
 		self.attrs = params;
 		PAE.curGame = self;
 		self.inventory = [];
 		self.stage = new Kinetic.Stage({
-			"container" : params.container,
-			"width" : params.width,
-			"height" : params.height
+			"container" : windowData.container,
+			"width" : windowData.width,
+			"height" : windowData.height
 		});
 		self._uid = 0; //Unique identifiers for anything that needs them. Increments.
 		self.UI = new PAE.UI();
-		self.resources = new PAE.Resources(params);
+		self.resources = new PAE.Resources(params, windowData);
 		self.layer = new Kinetic.Layer();
 		self.stage.add(self.layer);
 		self.group = new Kinetic.Group();
@@ -53,6 +59,12 @@ goog.provide("PAE.Game");
 		var ret = self._uid;
 		self._uid += 1;
 		return ret;
+	}
+	/**
+	 * Serialize the game, for purposes of editing and saving it.
+	 */
+	Game.prototype.serialize = function() {
+	    return this.attrs;
 	}
 	/**
 	 * Transition to a new room.
@@ -133,17 +145,31 @@ goog.provide("PAE.Game");
 	Game.prototype.getItem = function(name) {
 		return this.attrs.items[name];
 	}
+	/**
+	 * Set a flag.
+	 * 
+     * @param {Object} flag name
+	 */
 	Game.prototype.setFlag = function(f) {
 		var self = this;
 		if (self.flagStates[f] === undefined) throw "Tried to set undefined flag " + f;
 		else self.flagStates[f] = true;
 		
 	}
+	/**
+	 * Clear a flag.
+	 * 
+     * @param {Object} flag name
+	 */
 	Game.prototype.clearFlag = function(f) {
 		var self = this;
 		if (self.flagStates[f] === undefined) throw "Tried to set undefined flag " + f;
 		else self.flagStates[f] = false;
-	}
+	}/**
+	  * http://www.youtube.com/watch?v=uEx5G-GOS1k
+	  * 
+	  * @param {Object} f flag name
+	  */
 	Game.prototype.hasFlag = function(f) {
 		var self = this;
 		return (self.flagStates[f] === true);
