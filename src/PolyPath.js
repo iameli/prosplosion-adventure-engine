@@ -133,6 +133,23 @@ goog.provide("PAE.PolyPath");
 		}
 	}
 	/**
+	 * Display all sight lines to the given point.
+	 */
+	PolyPath.prototype.renderSightLines = function(a) {
+	    var self = this;
+	    self.concavePoints.forEach(function(b) {
+	        if (self.lineOfSight(a, b)) {
+	            self.pathingData.add(new Kinetic.Line({
+                    points: [a, b],
+                    stroke: 'pink',
+                    strokeWidth: 3,
+                    lineCap: 'round',
+                    listening: false
+                }))
+	        }
+	    })
+	}
+	/**
 	 * Calculate the walking graph.
 	 * 
 	 * SLOW. But easily cached.

@@ -39,7 +39,7 @@ goog.provide("PAE.VectorSprite");
         this._initSprite(config);
     };
 
-    PAE.VectorSprite.prototype = {
+    PAE.VectorSprite.prototype = { 
         _initSprite: function(config) {
         	var self = this;
             

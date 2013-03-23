@@ -206,12 +206,18 @@ goog.provide("PAE.Room");
 	Room.prototype.clearCenter = function() {
 		
 	}
+	/**
+	 * Scroll the background frame to the given X, accounting for background paralax.
+	 */
 	Room.prototype.scrollX = function(newx) {
 		var self = this;
 		PAE.Util.objEach(self.attrs.layers, function(name, deets) {
 			self.layers[name].setX(Math.floor(newx * deets.scrollSpeed));
 		})
 	}
+	/**
+	 * Scroll the foreground frame to the given Y, accounting for background paralax. 
+	 */
 	Room.prototype.scrollY = function(newy) {
 		var self = this;
 		PAE.Util.objEach(self.attrs.layers, function(name, deets) {
@@ -242,6 +248,10 @@ goog.provide("PAE.Room");
 		if (on) {
 			self.layers._debug.add(self.walkable.pathingData);
 			self.walkable.displayPathing(true);
+			if (self.attrs.follow) {
+			    var dyn = self.dynamics[self.attrs.follow];
+			    self.walkable.renderSightLines(dyn.getFootPosition());
+			}
 		}
 		else {
 			self.walkable.displayPathing(false);

@@ -167,7 +167,7 @@ gamlib.AI = {
  * >        this._par = param;
  * >    },
  * >    debug: function() {
- * >        console.log(this._par);
+ * >        //console.log(this._par);
  * >    }
  * > });
  * > var obj = new myExtendableObject('test');
@@ -282,7 +282,7 @@ gamlib.AI = {
  * Example:
  *
  * > var vec = new gamlib.Vector(1, 2, 3);
- * > console.log("Vector length: "+vec.length());
+ * > //console.log("Vector length: "+vec.length());
  *
  */
 gamlib.Vector = gamlib.Class.extend({
@@ -335,9 +335,9 @@ gamlib.Vector = gamlib.Class.extend({
          * Example:
          *
          * > if (vec1.quickLength() > vec2.quickLength()) {
-         * >    console.log('vector 1 is longer');
+         * >    //console.log('vector 1 is longer');
          * > } else {
-         * >    console.log('vector 2 is longer');
+         * >    //console.log('vector 2 is longer');
          * > }
          */
         quickLength: function() {
@@ -421,8 +421,8 @@ gamlib.Vector = gamlib.Class.extend({
          * > var vec1 = new gamlib.Vector(1, 1, 1);
          * > var vec2 = vec1.copy();
          * > vec2.x += 1;
-         * > console.log(vec1.x); // will be 1
-         * > console.log(vec2.x); // will be 2
+         * > //console.log(vec1.x); // will be 1
+         * > //console.log(vec2.x); // will be 2
          */
         copy: function() {
             return new gamlib.Vector(this.x, this.y, this.z);
@@ -442,7 +442,7 @@ gamlib.Vector = gamlib.Class.extend({
          *
          * > var vec1 = new gamlib.Vector(1, 1, 1);
          * > var vec2 = new gamlib.Vector(2, 3, 4);
-         * > console.log('The vectors are '+vec1.distance(vec2)+' units away');
+         * > //console.log('The vectors are '+vec1.distance(vec2)+' units away');
          */
         distance: function(v) {
             var d = this.difference(v);
@@ -466,9 +466,9 @@ gamlib.Vector = gamlib.Class.extend({
          * > var distv1v2 = vec1.quickDistance(vec2);
          * > var distv1v3 = vec1.quickDistance(vec3);
          * > if (distv1v2 > distv1v3) {
-         * >    console.log('vector 1 is closer to vector 2');
+         * >    //console.log('vector 1 is closer to vector 2');
          * > } else {
-         * >    console.log('vector 1 is closer to vector 3');
+         * >    //console.log('vector 1 is closer to vector 3');
          * > }
          */
         quickDistance: function(v) {
@@ -566,8 +566,8 @@ gamlib.AStarNode = gamlib.Class.extend({
      * > });
      */
     g: function(n) {
-        var dif = Math.sqrt(Math.abs(this.position.x - n.position.x) + Math.abs(this.position.y - n.position.y));
-        return dif
+        var dif = this.position.difference(n.position);
+        return dif.length();
     },
     /* Function: h
      *
@@ -604,7 +604,9 @@ gamlib.AStarNode = gamlib.Class.extend({
      * > });
      */
     h: function(n, t) {
-        return 0
+        // var dif = this.position.difference(t.position);
+        // return dif.length();
+        return 0;
     },
     /*
      * Function: connect
@@ -690,6 +692,20 @@ gamlib.AStarNode = gamlib.Class.extend({
  * > // find the path between two points in space
  * > var path = pathFind.find(5, 1, 2, 120, 40, 7);
  */
+var printinfo = function(i) {
+    //console.log("    We at:",i.node.id);
+    var cur = i.pi;
+    var pathString = "";
+    while (cur) {
+        pathString += (cur.node.id + ", ");
+        cur = cur.pi;
+    }
+    //console.log("    We been: ", pathString);
+    //console.log("    G-Value:",i.sw);
+    //console.log("    H-Value:",i.tw);
+    //console.log("");
+}
+
 gamlib.AStarInfo = function(n, sW, tW, pI) {
     this.node = n;
     this.sw = sW;
@@ -776,6 +792,10 @@ gamlib.AStarMap = gamlib.Class.extend({
         var curr = null;
         while ( (!found) && (ol.length) ) {
             curr = ol.shift();
+            //console.log("========================")
+            //console.log("        NEW POP         ")
+            //console.log("========================")
+            printinfo(curr);
             if (curr.node === en) {
                 found = true;
                 continue;
@@ -783,7 +803,7 @@ gamlib.AStarMap = gamlib.Class.extend({
             for (var c = 0; c < curr.node.connected.length; c++) {
                 var tn = curr.node.connected[c];
                 var tnoid = tn.objectID();
-                if ( (!yol[tnoid]) && (!cl[tnoid]) ) {
+                if ( (!cl[tnoid]) ) {
                     var gv = curr.node.g(tn);
                     if (gv < 0) {
                         continue;
@@ -793,12 +813,18 @@ gamlib.AStarMap = gamlib.Class.extend({
                     var ins = false;
                     for (var oi = 0; oi < ol.length && ins === false; oi++) {
                         if (ol[oi].sw+ol[oi].tw > nWeight) {
+                            //console.log("FOUND A BETTER LINK! Inserting our connection: ");
+                            printinfo(new gamlib.AStarInfo(tn, curr.sw+gv, hv, curr));
+                            //console.log("Before");
+                            printinfo(ol[oi]);
                             ol.splice(oi, 0, new gamlib.AStarInfo(tn, curr.sw+gv, hv, curr));
                             yol[tnoid] = true;
                             ins = true;
                         }
                     }
                     if (!ins) {
+                        //console.log("No better links found. Inserting this at the end: ");
+                        printinfo(new gamlib.AStarInfo(tn, curr.sw+gv, hv, curr));
                         ol.push(new gamlib.AStarInfo(tn, curr.sw+gv, hv, curr));
                         yol[tnoid] = true;
                     }
@@ -816,7 +842,11 @@ gamlib.AStarMap = gamlib.Class.extend({
                 ret.unshift(curr.node);
             }
         }
-
+        var logstring = "Path: "
+        ret.forEach(function(n) {
+            logstring += (n.id + ", ");
+        })
+        //console.log(logstring);
         return ret;
     },
 
@@ -889,7 +919,7 @@ gamlib.AStarArrayNode = gamlib.AStarNode.extend({
          *
          * > var path = myAStarArray.find(0, 0, 10, 15);
          * > if (path.length) {
-         * >    console.log('First position: '+path[0].position.x+', '+path[0].position.y);
+         * >    //console.log('First position: '+path[0].position.x+', '+path[0].position.y);
          * > }
          *
          */
@@ -993,7 +1023,7 @@ gamlib.AStarArrayNode = gamlib.AStarNode.extend({
  * > var pathMap = new gamlib.AStarArray(50, 50);
  * > var result = pathMap.find(0, 0, 49, 49);
  * > for (var i = 0; i < result.length; i++) {
- * >    console.log('Step '+i+' is at 'result[i].position.x+','+result[i].position.y);
+ * >    //console.log('Step '+i+' is at 'result[i].position.x+','+result[i].position.y);
  * > }
  *
  * See:
