@@ -49,6 +49,7 @@ goog.provide("PAE.VectorSprite");
             
             // call super constructor
             Kinetic.Shape.call(this, config);
+            this.setIndex(0);
             this.shapeType = 'VectorSprite';
             this._setDrawFuncs();
 
