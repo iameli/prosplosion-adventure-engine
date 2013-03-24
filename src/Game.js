@@ -14,7 +14,6 @@ goog.provide("PAE.Game");
 	 * Params is the entire gamestate file.
 	 */
 	var Game = PAE.Game = function(gameData, windowData) {
-	    console.log(typeof gameData)
 	    if (typeof gameData != 'object') {
 	        gameData = PAE.Serializer.deserialize(gameData);
 	    }
