@@ -63,6 +63,42 @@ var PAE = {};
 		var delta = parent.getAbsolutePosition();
 		return {x: pos.x-delta.x, y: pos.y-delta.y};
 	}
+	/**
+	 * Capatalize a thing, yo.
+	 */
+	PAE.Util.camelCase = function(str) {
+	    return str.slice(0, 1).toUpperCase() + str.slice(1);
+	}
+	/**
+	 * Add getters to a given object for obj.attrs.
+	 * 
+	 * So this is incompatable with Closure Compiler in
+	 * Advanced Mode. That's actually great. It's only used for the 
+	 * non-Advanced Mode editor.
+	 */
+	PAE.Util.addGetters = function(self, attribs) {
+	    attribs.forEach(function(attr){
+	        console.log("AddGetter called for",self,attr)
+	        var n = 'get' + PAE.Util.camelCase(attr);
+	        self.prototype[n] = function() {
+	            return this.attrs[attr];
+	        }
+	    })
+	}
+	/**
+	 * Same deal here.
+	 */
+	PAE.Util.addSetters = function(self, attribs) {
+        attribs.forEach(function(attr){
+            var n = 'set' + PAE.Util.camelCase(attr);
+            self.prototype[n] = function(val) {
+                this.attrs[attr] = val;
+            }
+        })
+    }
+	/**
+	 * Event system. Very straightforward but functional.
+	 */
 	PAE.Event = function(params) {
 		var self = this;
 		PAE.Util.objEach(params, function(key, val) {

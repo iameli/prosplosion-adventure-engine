@@ -164,7 +164,8 @@ goog.provide("PAE.Game");
 		var self = this;
 		if (self.flagStates[f] === undefined) throw "Tried to set undefined flag " + f;
 		else self.flagStates[f] = false;
-	}/**
+	}
+	/**
 	  * http://www.youtube.com/watch?v=uEx5G-GOS1k
 	  * 
 	  * @param {Object} f flag name
@@ -173,4 +174,6 @@ goog.provide("PAE.Game");
 		var self = this;
 		return (self.flagStates[f] === true);
 	}
+	PAE.Util.addGetters(PAE.Game, ['name']);
+    PAE.Util.addSetters(PAE.Game, ['name']);
 })(); 
