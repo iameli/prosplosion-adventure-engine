@@ -26,6 +26,8 @@ goog.provide("PAE.Game");
 		var container = document.getElementById(windowData.container);
 		var width = container.scrollWidth;
 		var height = container.scrollHeight;
+		var scale = self.scale = height / 768;
+		var leftOffset = self.leftOffset = Math.floor((width - (1024*scale)) / 2);
 		self.stage = new Kinetic.Stage({
 			"container" : windowData.container,
 			"width" : width,
@@ -34,7 +36,10 @@ goog.provide("PAE.Game");
 		self._uid = 0; //Unique identifiers for anything that needs them. Increments.
 		self.UI = new PAE.UI();
 		self.resources = new PAE.Resources(params, windowData);
-		self.layer = new Kinetic.Layer();
+		self.layer = new Kinetic.Layer({
+		    scale: scale,
+		    x: leftOffset
+		});
 		self.stage.add(self.layer);
 		self.group = new Kinetic.Group();
 		//self.Group.add(self.UI.Group);
@@ -54,6 +59,14 @@ goog.provide("PAE.Game");
 			self.flagStates[name] = set;
 		})
 	};
+	/**
+	 * Given a click somewhere on our window, translate it according to the 
+	 * current scale and leftOffset.
+	 */
+	Game.prototype.translateClick = function(e) {
+	    var normalX = e.x - this.leftOffset;
+	    return {x: (normalX / this.scale), y: (e.y / this.scale)};
+	}
 	/**
 	 * Get a unique identifier for whatever. 
 	 */

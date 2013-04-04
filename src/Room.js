@@ -19,6 +19,7 @@ goog.provide("PAE.Room");
 		attrs.layers._walkable = {zIndex: 0, scrollSpeed: 1.0}
 		attrs.layers._debug = {zIndex: 101, scrollSpeed: 1.0}
 		self.group = new Kinetic.Group();
+		self.leftBorder = PAE.curGame.leftOffset / PAE.curGame.scale
 	};
 	/**
 	 * Call initalize after the layer has been added to the stage.
@@ -46,11 +47,12 @@ goog.provide("PAE.Room");
 	    this.layers._zeroBG.add(bg);
 	    
 	    var walkFunc = function(e) {
+	        var normalE = PAE.curGame.translateClick(e);
 	    	if (self.attrs.follow) {
 	    		var player = self.dynamics[self.attrs.follow];
 	    		var rpos = self.layers._walkable.getPosition();
-	    		var x = e.offsetX - rpos.x;
-	    		var y = e.offsetY - rpos.y;
+	    		var x = normalE.x - rpos.x;
+	    		var y = normalE.y - rpos.y;
 	    		var path = self.walkable.getPath(player.getFootPosition(), {x: x, y: y})
 	    		var idx = 1;
 	    		var next = function() {
@@ -123,6 +125,7 @@ goog.provide("PAE.Room");
 	    	onEnter.prototype.dynamics = self.dynamics;
 	    	onEnter.prototype.room = self;
 	    	new onEnter();
+	    	self.scrollX(self.leftBorder * -1);
 	    	if (self.attrs.follow) {
 		    	self.centerOn(self.attrs.follow);
 		    }
@@ -171,46 +174,26 @@ goog.provide("PAE.Room");
 		var rx = rpos.x;
 		var ry = rpos.y;
 		if ((rx + sx) < XBUFFER) { //room too far left
-			if (0 > rx) { // If we're at the left border of the scree'
-				self.scrollX(XBUFFER - sx);
-			}
-			else {
-				self.scrollX(0);
-			}
+			self.scrollX(XBUFFER - sx);
 		}
 		else if ((WIDTH - sx - rx - dimensions.width) < XBUFFER) { //room too far right
-			if ((-1) * rx + WIDTH < self.attrs.width) {
-				self.scrollX(WIDTH - sx - dimensions.width - XBUFFER)
-			}
-			else { //iF we're at the right border of the screen
-				self.scrollX((self.attrs.width - WIDTH) * (-1));
-			}
+			self.scrollX(WIDTH - sx - dimensions.width - XBUFFER)
 		}
 		if ((ry + sy) < YBUFFER) { //Room too far up
-			if (0 > ry) {
-				self.scrollY(YBUFFER - sy)
-			}
-			else {
-				self.scrollY(0);
-			}
+            self.scrollY(YBUFFER - sy)
 		}
 		else if ((HEIGHT - sy - ry - dimensions.height) < YBUFFER) { //room too far down
-			if ((-1) * ry + HEIGHT < self.attrs.height) {
-				self.scrollY(HEIGHT - sy - dimensions.height - YBUFFER)
-			}
-			else {
-				self.scrollY((self.attrs.height - HEIGHT) * (-1));
-			}
+			self.scrollY(HEIGHT - sy - dimensions.height - YBUFFER)
 		}
-	}
-	Room.prototype.clearCenter = function() {
-		
 	}
 	/**
 	 * Scroll the background frame to the given X, accounting for background paralax.
 	 */
 	Room.prototype.scrollX = function(newx) {
 		var self = this;
+		var righty = (self.leftBorder + 1024) - this.attrs.width;
+		if (newx < righty) newx = righty
+		else if (newx > (self.leftBorder * -1)) {newx = (self.leftBorder * -1)}
 		PAE.Util.objEach(self.attrs.layers, function(name, deets) {
 			self.layers[name].setX(Math.floor(newx * deets.scrollSpeed));
 		})
