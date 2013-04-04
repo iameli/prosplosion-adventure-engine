@@ -22,10 +22,14 @@ goog.provide("PAE.Game");
 		self.attrs = params;
 		PAE.curGame = self;
 		self.inventory = [];
+		console.log(windowData.container);
+		var container = document.getElementById(windowData.container);
+		var width = container.scrollWidth;
+		var height = container.scrollHeight;
 		self.stage = new Kinetic.Stage({
 			"container" : windowData.container,
-			"width" : windowData.width,
-			"height" : windowData.height
+			"width" : width,
+			"height" : height
 		});
 		self._uid = 0; //Unique identifiers for anything that needs them. Increments.
 		self.UI = new PAE.UI();
