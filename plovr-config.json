@@ -1,8 +1,0 @@
-{
-  "id": "skepto",
-  "paths": "src",
-  "inputs": "src/Game.js",
-  "pretty-print": true,
-  "debug":        true,
-  "mode" : "SIMPLE"
-}

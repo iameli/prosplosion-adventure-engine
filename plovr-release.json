@@ -1,0 +1,6 @@
+{
+  "id": "pae",
+  "paths": "src",
+  "inputs": "src/Game.js",
+  "mode" : "SIMPLE"
+}
