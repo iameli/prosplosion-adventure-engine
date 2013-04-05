@@ -82,7 +82,6 @@ var PAE = {};
 	 */
 	PAE.Util.addGetters = function(self, attribs) {
 	    attribs.forEach(function(attr){
-	        console.log("AddGetter called for",self,attr)
 	        var n = 'get' + PAE.Util.camelCase(attr);
 	        self.prototype[n] = function() {
 	            return this.attrs[attr];

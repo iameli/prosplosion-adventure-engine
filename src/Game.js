@@ -22,7 +22,6 @@ goog.provide("PAE.Game");
 		self.attrs = params;
 		PAE.curGame = self;
 		self.inventory = [];
-		console.log(windowData.container);
 		var container = document.getElementById(windowData.container);
 		var width = container.scrollWidth;
 		var height = container.scrollHeight;
