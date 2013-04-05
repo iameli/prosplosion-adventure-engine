@@ -1,3 +1,4 @@
+goog.provide("Kinetic");
 /**
  * KineticJS JavaScript Framework vcurrent
  * http://www.kineticjs.com/

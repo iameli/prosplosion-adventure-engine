@@ -2,6 +2,7 @@
  * Base class. Provides some necessary OOP shit. And someone needs to define PAE. It's not going to define itself.
  */
 goog.provide("PAE");
+goog.require("Kinetic");
 var PAE = {};
 (function() {
 	PAE.Global = {};
@@ -22,6 +23,9 @@ var PAE = {};
 			fn(key, obj[key]);
 		})
 	}
+	/**
+	 * Sort the objects by sorter. Do fn on them in that order.
+	 */
 	PAE.Util.objEachSorted = function(obj, sorter, fn) {
 		var keys = Object.keys(obj);
 		var length = keys.length;
