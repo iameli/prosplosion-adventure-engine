@@ -64,8 +64,8 @@ goog.provide("PAE.Game");
 	 * current scale and leftOffset.
 	 */
 	Game.prototype.translateClick = function(e) {
-	    var normalX = e.x - this.leftOffset;
-	    return {x: (normalX / this.scale), y: (e.y / this.scale)};
+	    var normalX = e.layerX - this.leftOffset;
+	    return {x: (normalX / this.scale), y: (e.layerY / this.scale)};
 	}
 	/**
 	 * Get a unique identifier for whatever. 
