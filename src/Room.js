@@ -226,6 +226,10 @@ goog.provide("PAE.Room");
 			self.attrs.follow = self._followDebug;
 		}
 	}
+	/**
+	 * Display pathfinding debug information.
+     * @param {Object} on
+	 */
 	Room.prototype.pathingDebug = function(on) {
 		var self = this;
 		if (on) {
@@ -240,5 +244,12 @@ goog.provide("PAE.Room");
 			self.walkable.displayPathing(false);
 			self.walkable.pathingData.remove();
 		}
+	}
+	/**
+	 * Rebuild the pathfinding graph.
+	 */
+	Room.prototype.rebuildPathfinding = function() {
+	    var self = this;
+	    self.walkable.buildWalkGraph();
 	}
 })(); 
