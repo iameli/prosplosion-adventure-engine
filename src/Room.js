@@ -252,4 +252,27 @@ goog.provide("PAE.Room");
 	    var self = this;
 	    self.walkable.buildWalkGraph();
 	}
+	/**
+	 * Set the background color of the room.
+     * @param {Object} color
+	 */
+	Room.prototype.setBgColor = function(color) {
+	    var self = this;
+	    self.zeroRect.setFill(color);
+	    self.attrs.bgColor = color;
+	}
+	/**
+	 * Set width of the room.
+	 */
+	Room.prototype.setWidth = function(w) {
+	    throw "Room.setWidth not yet implemented."
+	}
+	/**
+     * Set height of the room.
+     */
+    Room.prototype.setHeight = function(w) {
+        throw "Room.setHeight not yet implemented."
+    }
+	PAE.Util.addGetters(PAE.Room, ['name', 'bgColor', 'width', 'height']);
+	PAE.Util.addSetters(PAE.Room, ['name'])
 })(); 

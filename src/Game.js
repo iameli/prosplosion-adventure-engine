@@ -190,6 +190,12 @@ goog.provide("PAE.Game");
 		var self = this;
 		return (self.flagStates[f] === true);
 	}
+	/**
+	 * Get current room.
+	 */
+	Game.prototype.getCurrentRoom = function() {
+	    return this.curRoom;
+	}
 	PAE.Util.addGetters(PAE.Game, ['name', 'shortName', 'startRoom']);
     PAE.Util.addSetters(PAE.Game, ['name', 'shortName', 'startRoom']);
 })(); 
