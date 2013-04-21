@@ -190,6 +190,6 @@ goog.provide("PAE.Game");
 		var self = this;
 		return (self.flagStates[f] === true);
 	}
-	PAE.Util.addGetters(PAE.Game, ['name']);
-    PAE.Util.addSetters(PAE.Game, ['name']);
+	PAE.Util.addGetters(PAE.Game, ['name', 'shortName', 'startRoom']);
+    PAE.Util.addSetters(PAE.Game, ['name', 'shortName', 'startRoom']);
 })(); 
