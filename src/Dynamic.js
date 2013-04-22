@@ -160,15 +160,8 @@ goog.provide("PAE.Dynamic");
 	/**
 	 * Get name.
 	 */
-	Dynamic.prototype.getName = function() {
-	    return this.attrs.name;
-	}
-	/**
-	 * Set name.
-     * @param {Object} name
-	 */
-	Dynamic.prototype.setName = function(name) {
-	    this.attrs.name = name;
+	Dynamic.prototype.getId = function() {
+	    return this.attrs.id;
 	}
 	PAE.Global.extend(PAE.Dynamic, PAE.Talker);
 })();
