@@ -3,6 +3,7 @@
  */
 goog.require("PAE");
 goog.require("PAE.Dynamic");
+goog.require("PAE.Layer");
 goog.require("PAE.PolyPath");
 goog.provide("PAE.Room");
 (function() {
@@ -13,6 +14,7 @@ goog.provide("PAE.Room");
 	var Room = PAE.Room = function(params) {
 		var self = this;
 		self.dynamics = {};
+		self.layers = {};
 		var attrs = self.attrs = params;
 		self.group = new Kinetic.Group();
 		self.leftBorder = PAE.curGame.leftOffset / PAE.curGame.scale
@@ -25,18 +27,19 @@ goog.provide("PAE.Room");
 	Room.prototype.initalize = function(callback) {
 		var self = this;
 
-		//Add all Layers
+		//Layer creation
 		self.layers = {};
 		var makeLayers = _.clone(self.attrs.layers);
+		
+		//Add the internal and debug layers.
 		makeLayers.push({name: '_zeroBG', zIndex: -1, scrollSpeed: 0.0});
         makeLayers.push({name: '_walkable', zIndex: 0, scrollSpeed: 1.0});
         makeLayers.push({name: '_debug', zIndex: 101, scrollSpeed: 1.0});
-        var layerIdx = self.layerIdx = {};
-		makeLayers.forEach(function(layer) {
-		    var name = layer.name;
-		    layerIdx[name] = layer;
-			var g = self.layers[name] = new Kinetic.Group();
-			self.group.add(g);
+		makeLayers.forEach(function(layerDef) {
+		    var layer = new PAE.Layer(layerDef);
+		    var name = layer.getName();
+		    self.layers[name] = layer;
+			self.group.add(layer.getGroup());
 		})
 		
 		//Add the background square
@@ -74,14 +77,6 @@ goog.provide("PAE.Room");
 		}
 	    //Set up walkability clickable
 	    if (self.attrs.walkable) {
-	    	// var walkable = self.walkablePath = new Kinetic.Path({
-	    		// data: self.attrs.walkable,
-	    		// x: 0,
-	    		// y: 0,
-	    		// fill: 'red',
-	    		// opacity: 0.2
-	    	// });
-	    	//self.layers._walkable.add(walkable);
 	    	var walkable = self.walkable = new PAE.PolyPath(self.attrs.walkable);
 	    	self.layers._walkable.add(walkable.layer)
 	    	walkable.layer.on('click', walkFunc);
@@ -99,11 +94,10 @@ goog.provide("PAE.Room");
 	    //This sorts the layers by z-index then runs moveottop on them.
 	    //Needed because I can't start to fathom how KineticJS handles
 	    //setZIndex. 
-	    PAE.Util.objEachSorted(self.layers, function(name, group) {
-	    		return layerIdx[name].zIndex; 
-	    	}, 
-	    	function(name, group) {
-		    	group.moveToTop();
+	    _.sortBy(this.layers, function(layer){
+	        return layer.getZIndex();
+	    }).forEach(function(layer) {
+	        layer.moveToTop();
 	    })
 	    
 	    PAE.EventMgr.on('sprite-walking', function(e) {
@@ -158,7 +152,7 @@ goog.provide("PAE.Room");
 		var self = this;
 		var name = def.name;
 		var s = self.dynamics[name] = new PAE.Dynamic(def);
-	    self.layers[def.layer].add(s.sprite);
+	    self.layers[def.layer].add(s);
 	    var uid = s.getUID();
 	    self.spriteIdx[uid] = name;
 	}
@@ -198,8 +192,8 @@ goog.provide("PAE.Room");
 		var righty = (self.leftBorder + 1024) - this.attrs.width;
 		if (newx < righty) newx = righty
 		else if (newx > (self.leftBorder * -1)) {newx = (self.leftBorder * -1)}
-		PAE.Util.objEach(self.layerIdx, function(name, deets) {
-			self.layers[name].setX(Math.floor(newx * deets.scrollSpeed));
+		_.each(self.layers, function(layer) {
+			layer.scrollX(newx);
 		})
 	}
 	/**
@@ -207,9 +201,9 @@ goog.provide("PAE.Room");
 	 */
 	Room.prototype.scrollY = function(newy) {
 		var self = this;
-		PAE.Util.objEach(self.layerIdx, function(name, deets) {
-			self.layers[name].setY(newy);
-		})
+        _.each(self.layers, function(layer) {
+            layer.scrollY(newy);
+        })
 	}
 	/**
 	 * Turn on walkable debug.
@@ -266,7 +260,7 @@ goog.provide("PAE.Room");
 	 * Get layers.
 	 */
 	Room.prototype.getLayers = function() {
-	    return this.attrs.layers;
+	    return _.toArray(this.layers);
 	}
 	/**
 	 * Get a certain dynamic.

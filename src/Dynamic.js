@@ -148,8 +148,13 @@ goog.provide("PAE.Dynamic");
 	 * Remove this thing from the world.
 	 */
 	Dynamic.prototype.remove = function() {
-		var self = this;
-		self.sprite.remove();
+		this.sprite.remove();
+	}
+	/**
+	 * Get this sprite.
+	 */
+	Dynamic.prototype.getSprite = function() {
+	    return this.sprite;
 	}
 	/**
 	 * Get uid.
