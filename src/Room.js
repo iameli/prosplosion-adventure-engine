@@ -259,6 +259,12 @@ goog.provide("PAE.Room");
 	    return _.toArray(this.dynamics);
 	}
 	/**
+	 * Get a certain dynamic.
+	 */
+	Room.prototype.getDynamic = function(name) {
+	    return this.dynamics[name];
+	}
+	/**
 	 * Set the background color of the room.
      * @param {Object} color
 	 */
