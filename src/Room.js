@@ -14,9 +14,6 @@ goog.provide("PAE.Room");
 		var self = this;
 		self.dynamics = {};
 		var attrs = self.attrs = params;
-		attrs.layers._zeroBG = {zIndex: -1, scrollSpeed: 0.0}
-		attrs.layers._walkable = {zIndex: 0, scrollSpeed: 1.0}
-		attrs.layers._debug = {zIndex: 101, scrollSpeed: 1.0}
 		self.group = new Kinetic.Group();
 		self.leftBorder = PAE.curGame.leftOffset / PAE.curGame.scale
 	};
@@ -30,7 +27,14 @@ goog.provide("PAE.Room");
 
 		//Add all Layers
 		self.layers = {};
-		PAE.Util.objEach(self.attrs.layers, function(name, layer) {
+		var makeLayers = _.clone(self.attrs.layers);
+		makeLayers.push({name: '_zeroBG', zIndex: -1, scrollSpeed: 0.0});
+        makeLayers.push({name: '_walkable', zIndex: 0, scrollSpeed: 1.0});
+        makeLayers.push({name: '_debug', zIndex: 101, scrollSpeed: 1.0});
+        var layerIdx = self.layerIdx = {};
+		makeLayers.forEach(function(layer) {
+		    var name = layer.name;
+		    layerIdx[name] = layer;
 			var g = self.layers[name] = new Kinetic.Group();
 			self.group.add(g);
 		})
@@ -96,7 +100,7 @@ goog.provide("PAE.Room");
 	    //Needed because I can't start to fathom how KineticJS handles
 	    //setZIndex. 
 	    PAE.Util.objEachSorted(self.layers, function(name, group) {
-	    		return self.attrs.layers[name].zIndex; 
+	    		return layerIdx[name].zIndex; 
 	    	}, 
 	    	function(name, group) {
 		    	group.moveToTop();
@@ -194,7 +198,7 @@ goog.provide("PAE.Room");
 		var righty = (self.leftBorder + 1024) - this.attrs.width;
 		if (newx < righty) newx = righty
 		else if (newx > (self.leftBorder * -1)) {newx = (self.leftBorder * -1)}
-		PAE.Util.objEach(self.attrs.layers, function(name, deets) {
+		PAE.Util.objEach(self.layerIdx, function(name, deets) {
 			self.layers[name].setX(Math.floor(newx * deets.scrollSpeed));
 		})
 	}
@@ -203,7 +207,7 @@ goog.provide("PAE.Room");
 	 */
 	Room.prototype.scrollY = function(newy) {
 		var self = this;
-		PAE.Util.objEach(self.attrs.layers, function(name, deets) {
+		PAE.Util.objEach(self.layerIdx, function(name, deets) {
 			self.layers[name].setY(newy);
 		})
 	}
