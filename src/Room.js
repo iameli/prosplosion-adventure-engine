@@ -263,6 +263,12 @@ goog.provide("PAE.Room");
 	    return _.toArray(this.dynamics);
 	}
 	/**
+	 * Get layers.
+	 */
+	Room.prototype.getLayers = function() {
+	    return this.attrs.layers;
+	}
+	/**
 	 * Get a certain dynamic.
 	 */
 	Room.prototype.getDynamic = function(name) {
