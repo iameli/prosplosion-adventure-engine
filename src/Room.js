@@ -256,7 +256,7 @@ goog.provide("PAE.Room");
 	 * Get the dynamics in this room. 
 	 */
 	Room.prototype.getDynamics = function() {
-	    return _.toArray(this.dynamics);
+	    return this.dynamics;
 	}
 	/**
 	 * Set the background color of the room.
