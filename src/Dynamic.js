@@ -175,5 +175,11 @@ goog.provide("PAE.Dynamic");
     Dynamic.prototype.setName = function(name) {
         this.attrs.name = name;
     }
+    /**
+     * Set whether we can drag this dude around for game creation purposes.
+     */
+    Dynamic.prototype.setDraggable = function(yes) {
+        this.sprite.setDraggable(yes);
+    }
 	PAE.Global.extend(PAE.Dynamic, PAE.Talker);
 })();
