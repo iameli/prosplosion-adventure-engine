@@ -158,10 +158,22 @@ goog.provide("PAE.Dynamic");
 		return this.uid;
 	}
 	/**
-	 * Get name.
+	 * Get ID.
 	 */
 	Dynamic.prototype.getId = function() {
 	    return this.attrs.id;
 	}
+	/**
+	 * Get name.
+	 */
+	Dynamic.prototype.getName = function() {
+	    return this.attrs.name;
+	}
+	/**
+     * Set name.
+     */
+    Dynamic.prototype.setName = function(name) {
+        this.attrs.name = name;
+    }
 	PAE.Global.extend(PAE.Dynamic, PAE.Talker);
 })();
