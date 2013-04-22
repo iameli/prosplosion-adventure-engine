@@ -157,5 +157,18 @@ goog.provide("PAE.Dynamic");
 	Dynamic.prototype.getUID = function() {
 		return this.uid;
 	}
+	/**
+	 * Get name.
+	 */
+	Dynamic.prototype.getName = function() {
+	    return this.attrs.name;
+	}
+	/**
+	 * Set name.
+     * @param {Object} name
+	 */
+	Dynamic.prototype.setName = function(name) {
+	    this.attrs.name = name;
+	}
 	PAE.Global.extend(PAE.Dynamic, PAE.Talker);
 })();
