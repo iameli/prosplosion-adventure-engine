@@ -13,7 +13,6 @@ goog.provide("PAE.Room");
 	var Room = PAE.Room = function(params) {
 		var self = this;
 		self.dynamics = {};
-		self.statics = {};
 		var attrs = self.attrs = params;
 		attrs.layers._zeroBG = {zIndex: -1, scrollSpeed: 0.0}
 		attrs.layers._walkable = {zIndex: 0, scrollSpeed: 1.0}
@@ -89,8 +88,8 @@ goog.provide("PAE.Room");
 	    
 	    //Add all Dynamics
 	    this.spriteIdx = {};
-	    PAE.Util.objEach(self.attrs.dynamics, function(name, dyn) {
-	    	self.addDynamic(name, dyn);
+	    self.attrs.dynamics.forEach(function(dyn) {
+	    	self.addDynamic(dyn);
 	    })
 
 	    //This sorts the layers by z-index then runs moveottop on them.
@@ -151,10 +150,11 @@ goog.provide("PAE.Room");
 	 * @param {Object} name
 	 * @param {Object} sprite
 	 */
-	Room.prototype.addDynamic = function(name, sprite) {
+	Room.prototype.addDynamic = function(def) {
 		var self = this;
-		var s = self.dynamics[name] = new PAE.Dynamic(sprite);
-	    self.layers[sprite.layer].add(s.sprite);
+		var name = def.name;
+		var s = self.dynamics[name] = new PAE.Dynamic(def);
+	    self.layers[def.layer].add(s.sprite);
 	    var uid = s.getUID();
 	    self.spriteIdx[uid] = name;
 	}
