@@ -108,7 +108,7 @@ goog.provide("PAE.Game");
 	 */
 	Game.prototype.getDynamicData = function(id) {
 		var self = this;
-		return self.attrs.dynamics[id];
+		return _.clone(self.attrs.dynamics[id]);
 	}
 	/**
 	 * Give the item to a player.
