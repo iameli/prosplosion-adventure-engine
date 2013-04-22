@@ -179,7 +179,14 @@ goog.provide("PAE.Dynamic");
      * Set whether we can drag this dude around for game creation purposes.
      */
     Dynamic.prototype.setDraggable = function(yes) {
-        this.sprite.setDraggable(yes);
+        if (yes) {
+            this.sprite.setDraggable(yes);
+            this.sprite.setListening(true);
+        }
+        else {
+            this.sprite.setDraggable(false);
+            this.sprite.setListening(this.attrs.listening);
+        }
     }
 	PAE.Global.extend(PAE.Dynamic, PAE.Talker);
 })();
