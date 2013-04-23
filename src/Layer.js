@@ -77,7 +77,7 @@ goog.provide("PAE.Layer");
      * Set scrollSpeed.
      */
     Layer.prototype.setScrollSpeed = function(value) {
-        this.attrs.scrollSpeed = value;
+        this.attrs.scrollSpeed = PAE.Util.ensureFloat(value);
     }
     /*
      * Get zIndex
@@ -89,7 +89,7 @@ goog.provide("PAE.Layer");
      * Set zIndex
      */
     Layer.prototype.setZIndex = function(z) {
-        this.attrs.zIndex = z;
+        this.attrs.zIndex = PAE.Util.ensureInt(z);
     }
     /**
      * Scroll to X, accounting for scroll speed.

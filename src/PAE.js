@@ -15,6 +15,22 @@ var PAE = {};
 	}
 	PAE.Util = {};
 	/**
+	 * parseInt except it throws an error if it's not.
+	 */
+	PAE.Util.ensureInt = function(val) {
+	    var ret = parseInt(val);
+	    if (isNaN(ret)) throw "Value must be an integer."
+	    else return ret;
+	}
+	/**
+     * parseFloat except it throws an error if it's not.
+     */
+    PAE.Util.ensureFloat = function(val) {
+        var ret = parseFloat(val);
+        if (isNaN(ret)) throw "Value must be a number."
+        else return ret;
+    }
+	/**
 	 * Why on earth doesn't have a method that's this?
 	 */
 	PAE.Util.objEach = function(obj, fn) {
