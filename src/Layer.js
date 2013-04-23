@@ -35,7 +35,7 @@ goog.provide("PAE.Layer");
     Layer.prototype.add = function(obj) {
         var kNode;
         if (obj instanceof PAE.Dynamic) {
-            this.dynamics[obj.name] = obj;
+            this.dynamics[obj.getName()] = obj;
             kNode = obj.getSprite();
         }
         else {
@@ -48,6 +48,12 @@ goog.provide("PAE.Layer");
      */
     Layer.prototype.getGroup = function() {
         return this.group;
+    }
+    /**
+     * Get all dynamics in this layer.
+     */
+    Layer.prototype.getDynamics = function() {
+        return this.dynamics;
     }
     /*
      * Get name.

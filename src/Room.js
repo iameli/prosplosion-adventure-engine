@@ -55,7 +55,7 @@ goog.provide("PAE.Room");
 	    var walkFunc = function(e) {
 	        var normalE = PAE.curGame.translateClick(e);
 	    	if (self.attrs.follow) {
-	    		var player = self.dynamics[self.attrs.follow];
+	    		var player = self.getDynamic(self.attrs.follow);
 	    		var rpos = self.layers._walkable.getPosition();
 	    		var x = normalE.x - rpos.x;
 	    		var y = normalE.y - rpos.y;
@@ -119,7 +119,7 @@ goog.provide("PAE.Room");
 	    	var game = PAE.curGame;
 	    	var onEnter = self.attrs.onEnter || function(e){};
 	    	onEnter.prototype.game = game;
-	    	onEnter.prototype.dynamics = self.dynamics;
+	    	onEnter.prototype.dynamics = self.getDynamics();
 	    	onEnter.prototype.room = self;
 	    	new onEnter();
 	    	self.scrollX(self.leftBorder * -1);
@@ -133,9 +133,9 @@ goog.provide("PAE.Room");
 		    }))
 		    callback && callback();
 	    }
-	    var dyns = Object.keys(self.dynamics).length;
+	    var dyns = self.getDynamics().length;
 	    if (dyns == 0) done();
-	    PAE.Util.objEach(self.dynamics, function(name, dynamic) {
+	    self.getDynamics().forEach( function(dynamic) {
 	    	dynamic.initalize(function() {
 	    		dyns -= 1;
 	    		if (dyns == 0) done();
@@ -151,7 +151,7 @@ goog.provide("PAE.Room");
 	Room.prototype.addDynamic = function(def) {
 		var self = this;
 		var name = def.name;
-		var s = self.dynamics[name] = new PAE.Dynamic(def);
+		var s = new PAE.Dynamic(def);
 	    self.layers[def.layer].add(s);
 	    var uid = s.getUID();
 	    self.spriteIdx[uid] = name;
@@ -162,7 +162,7 @@ goog.provide("PAE.Room");
 	 */
 	Room.prototype.centerOn = function(dynamic_name) {
 		var self = this;
-		var dynamic = self.dynamics[dynamic_name];
+		var dynamic = self.getDynamic(dynamic_name);
 		var sprite = dynamic.sprite;
 		var spos = sprite.getPosition();
 		var dimensions = dynamic.getDimensions();
@@ -234,7 +234,7 @@ goog.provide("PAE.Room");
 			self.layers._debug.add(self.walkable.pathingData);
 			self.walkable.displayPathing(true);
 			if (self.attrs.follow) {
-			    var dyn = self.dynamics[self.attrs.follow];
+			    var dyn = self.getDynamic(self.attrs.follow);
 			    self.walkable.renderSightLines(dyn.getFootPosition());
 			}
 		}
@@ -250,23 +250,31 @@ goog.provide("PAE.Room");
 	    var self = this;
 	    self.walkable.buildWalkGraph();
 	}
+    /**
+     * Get layers.
+     */
+    Room.prototype.getLayers = function() {
+        return _.toArray(this.layers);
+    }
 	/**
 	 * Get the dynamics in this room. 
 	 */
-	Room.prototype.getDynamics = function() {
-	    return _.toArray(this.dynamics);
-	}
-	/**
-	 * Get layers.
-	 */
-	Room.prototype.getLayers = function() {
-	    return _.toArray(this.layers);
+    Room.prototype.getDynamics = function() {
+        return _.toArray(this.getDynamicMap());
+    }
+    /**
+     * Get an object mapping names to dynamics.
+     */
+	Room.prototype.getDynamicMap = function() {
+	    var layerDyns = _.map(this.layers, function(layer) {return layer.getDynamics()});
+	    var ret = _.reduce(layerDyns, function(left, right) {return _.extend(left, right)}, {});
+	    return ret;
 	}
 	/**
 	 * Get a certain dynamic.
 	 */
 	Room.prototype.getDynamic = function(name) {
-	    return this.dynamics[name];
+	    return this.getDynamicMap()[name];
 	}
 	/**
 	 * Set the background color of the room.
