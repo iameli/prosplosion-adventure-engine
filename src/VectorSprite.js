@@ -46,7 +46,7 @@ goog.provide("PAE.VectorSprite");
             self.vectorAnimations = config.vectorAnimations;
             self.cachedVectorAnimations = {};
             
-            
+            self.startAnim = config.animation;
             // call super constructor
             Kinetic.Shape.call(this, config);
             this.setIndex(0);
@@ -62,6 +62,19 @@ goog.provide("PAE.VectorSprite");
             	self.cacheSVG();
             })
             
+        },
+        /**
+         * Get a static image representation of this vectorSprite.
+         * 
+         * If it isn't initialized, just returns a blank image.
+         */
+        toImage: function() {
+            try {
+                return this.cachedVectorAnimations[this.startAnim][0];
+            }
+            catch(e) {
+                return null;
+            }
         },
         initalize: function(callback) {
         	var self = this;

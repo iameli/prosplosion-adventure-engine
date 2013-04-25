@@ -193,5 +193,11 @@ goog.provide("PAE.Dynamic");
             this.sprite.setListening(this.attrs.listening);
         }
     }
+    /**
+     * Get a static image representation of this object as a data string. Frame 0 of default animation.
+     */
+    Dynamic.prototype.getImage = function() {
+        return this.sprite.toImage().src;
+    }
 	PAE.Global.extend(PAE.Dynamic, PAE.Talker);
 })();
