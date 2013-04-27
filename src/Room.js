@@ -32,15 +32,22 @@ goog.provide("PAE.Room");
 		var makeLayers = _.clone(self.attrs.layers);
 		
 		//Add the internal and debug layers.
-		makeLayers.push({name: '_zeroBG', zIndex: -1, scrollSpeed: 0.0});
-        makeLayers.push({name: '_walkable', zIndex: 0, scrollSpeed: 1.0});
-        makeLayers.push({name: '_debug', zIndex: 101, scrollSpeed: 1.0});
+
 		makeLayers.forEach(function(layerDef) {
 		    var layer = new PAE.Layer(layerDef);
-		    var name = layer.getName();
-		    self.layers[name] = layer;
-			self.group.add(layer.getGroup());
+		    self.addLayer(layer);
 		})
+		
+		var debugLayers = [];
+		
+		debugLayers.push({name: '_zeroBG', zIndex: -1, scrollSpeed: 0.0});
+        debugLayers.push({name: '_walkable', zIndex: 0, scrollSpeed: 1.0});
+        debugLayers.push({name: '_debug', zIndex: 101, scrollSpeed: 1.0});
+        
+        debugLayers.forEach(function(layerDef) {
+            var layer = new PAE.Layer(layerDef);
+            self.addLayer(layer, false);
+        })
 		
 		//Add the background square
 		var bg = self.zeroRect = new Kinetic.Rect({ //TODO: make this screen-sized but not scrolling
@@ -297,6 +304,15 @@ goog.provide("PAE.Room");
     Room.prototype.setHeight = function(w) {
         throw "Room.setHeight not yet implemented."
     }
+    /**
+     * Add a layer. If it's a debug layer or something, save = false.
+     */
+    Room.prototype.addLayer = function(l, save) {
+        if (this.layers[l.getName()]) throw ("This room already has a layer named " + l.getName());
+        this.layers[l.getName()] = l;
+        if (save !== false) this.attrs.layers.push(l.attrs);
+        this.group.add(l.getGroup());
+    }
 	PAE.Util.addGetters(PAE.Room, ['name', 'bgColor', 'width', 'height']);
-	PAE.Util.addSetters(PAE.Room, ['name'])
+	PAE.Util.addSetters(PAE.Room, ['name']);
 })(); 
