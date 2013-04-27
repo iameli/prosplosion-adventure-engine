@@ -7,6 +7,11 @@ goog.require("Kinetic");
 goog.require("PAE.Dynamic");
 goog.provide("PAE.Layer");
 (function() {
+    var layerStruct = {
+        name: { type: 'string' },
+        scrollSpeed: { type: 'float', def: 1.0 },
+        zIndex: { type: 'int', def: 10 }
+    }
     /**
      * Params accepts the following options.
      * 
@@ -17,16 +22,9 @@ goog.provide("PAE.Layer");
      * @param {Object} params
      */
     var Layer = PAE.Layer = function(params) {
-        this.attrs = {};
-        this.attrs.name = params.name;
-        if (!params.name) {
-            throw "PAE.Layer created without a name!!";
-        }
-        this.attrs.scrollSpeed = params.scrollSpeed || 1.0;
-        this.attrs.zIndex = params.zIndex;
-        if (params.zIndex === undefined) this.attrs.zIndex = 10;
         this.group = new Kinetic.Group();
         this.dynamics = {};
+        PAE.Util.setAttrs(this, layerStruct, params);
     }
     /**
      * Add any kind of Kinetic.Node, or a PAE.Dynamic.
