@@ -3,6 +3,7 @@
  */
 goog.provide("PAE");
 goog.require("Kinetic");
+goog.require("Underscore");
 var PAE = {};
 (function() {
 	PAE.Global = {};
@@ -14,6 +15,41 @@ var PAE = {};
 		}
 	}
 	PAE.Util = {};
+	/**
+	 * Called in the constructor of most game nodes. Given a structure and a list of parameters,
+	 * populate the attrs of the thing by using .setWhatever functions. Those will be called in the order
+	 * that they're listed in the struct. If there are any paremeters provided that aren't in the struct,
+	 * they will be ignored. If they are any parameters in the struct not in the params, we will either assign
+	 * the default or throw an error if there is no default. This comment is very long.
+	 * 
+	 * Also initializes the object's attrs variable if it hasn't been done yet. Anything to make our constructors
+	 * short and concise.
+	 */
+	PAE.Util.setAttrs = function(obj, struct, params) {
+	    if (!obj.attrs) obj.attrs = {};
+	    var errors = [];
+	    _.forEach(struct, function(field, name) {
+	        var val = params[name];
+	        if (val === undefined || val === null) { //null and undefiend values get the default
+	            if (field[name].def !== undefined) {
+	                val = field[name].def;
+	            }
+	            else {
+	                errors.push("Value not provided for required field: " + name);
+	                return;
+	            }
+	        }
+	        var funcName = 'set' + PAE.Util.camelCase(name);
+	        try {
+	            obj[funcName](val);
+	        }
+	        catch(e) {
+	            errors.push("Error on " + funcName + ": " + e);
+	        }
+	    })
+	    if (errors.length > 0) throw (errors.join(', '));
+	    
+	}
 	/**
 	 * parseInt except it throws an error if it's not.
 	 */
