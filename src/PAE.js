@@ -31,8 +31,8 @@ var PAE = {};
 	    _.forEach(struct, function(field, name) {
 	        var val = params[name];
 	        if (val === undefined || val === null) { //null and undefiend values get the default
-	            if (field[name].def !== undefined) {
-	                val = field[name].def;
+	            if (field.def !== undefined) {
+	                val = field.def;
 	            }
 	            else {
 	                errors.push("Value not provided for required field: " + name);
