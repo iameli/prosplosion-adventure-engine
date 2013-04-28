@@ -151,6 +151,18 @@ var PAE = {};
             }
         })
     }
+    /**
+     * Remove the first occurance of _.isEqual(array, obj) from array.
+     */
+    PAE.Util.removeObj = function(array, obj) {
+        for (var i = 0; i < array.length; i++) {
+            if (_.isEqual(array[i], obj)) {
+                array.splice(i, 1);
+                return true;
+            }
+        }
+        return false;
+    }
 	/**
 	 * Event system. Very straightforward but functional.
 	 */

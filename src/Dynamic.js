@@ -181,6 +181,12 @@ goog.provide("PAE.Dynamic");
         this.attrs.name = name;
     }
     /**
+     * Get layer
+     */
+    Dynamic.prototype.getLayer = function(name) {
+        return this.attrs.layer;
+    }
+    /**
      * Set whether we can drag this dude around for game creation purposes.
      */
     Dynamic.prototype.setDraggable = function(yes) {

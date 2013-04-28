@@ -107,4 +107,7 @@ goog.provide("PAE.Layer");
     Layer.prototype.getPosition = function() {
         return this.group.getPosition();
     }
+    Layer.prototype.remove = function() {
+        this.group.remove();
+    }
 })()

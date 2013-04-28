@@ -305,6 +305,25 @@ goog.provide("PAE.Room");
         if (save !== false) this.attrs.layers.push(l.attrs);
         this.group.add(l.getGroup());
     }
+    /**
+     * Remove a layer.
+     */
+    Room.prototype.removeLayer = function(name) {
+        var layer = this.layers[name];
+        if (!layer) throw ("Can't delete layer '" + name + "', doesn't exist.");
+        var dynamics = _.filter(this.getDynamics(), function(dyn) {
+            return (dyn.getLayer() === name)
+        })
+        if (dynamics.length > 0) {
+            var names = _.map(dynamics, function(dyn) {
+                return dyn.getName();
+            })
+            throw ("Can't remove populated layer. Dynamics still in this layer: " + names.join(", "))
+        }
+        if (!PAE.Util.removeObj(this.attrs.layers, layer.attrs)) throw ("Layer not found in room attributes. Perhaps it's a debug layer?");
+        layer.remove();
+        delete this.layers[name];
+    }
 	PAE.Util.addGetters(PAE.Room, ['name', 'bgColor', 'width', 'height']);
 	PAE.Util.addSetters(PAE.Room, ['name']);
 })(); 
