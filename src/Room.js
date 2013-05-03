@@ -11,6 +11,15 @@ goog.provide("PAE.Room");
 	var HEIGHT = 768;
 	var XBUFFER = 250; //defining these as constants just so's we can edit later if need be
 	var YBUFFER = 150;
+	var roomStruct = {
+	    name: {type: 'string'},
+	    bgColor: {type: 'string', def: 'black'},
+	    follow: {type: 'string'},
+	    height: {type: 'int', def: 1024},
+	    width: {type: 'int', def: 768},
+	    walkable: {type: 'object', def: {"points":[{"x":0,"y":0},{"x":970,"y":24},{"x":1010,"y":758},{"x":10,"y":757}]}},
+	    onEnter: {type: 'function', def: function(e){}}
+	}
 	var Room = PAE.Room = function(params) {
 		var self = this;
 		self.dynamics = {};
@@ -323,6 +332,18 @@ goog.provide("PAE.Room");
         if (!PAE.Util.removeObj(this.attrs.layers, layer.attrs)) throw ("Layer not found in room attributes. Perhaps it's a debug layer?");
         layer.remove();
         delete this.layers[name];
+    }
+    /**
+     * Save this room.
+     */
+    Room.prototype.getAttrs = function() {
+        var attrs = PAE.Util.dumpAttrs(roomStruct, this.attrs);
+        var ls = _.filter(this.layers, function(l, name) {
+            return (name.slice(0, 1) !== "_")
+        })
+        attrs.layers = PAE.Util.collectionAttrs(ls);
+        attrs.dynamics = PAE.Util.collectionAttrs(this.getDynamics());
+        return attrs;
     }
 	PAE.Util.addGetters(PAE.Room, ['name', 'bgColor', 'width', 'height']);
 	PAE.Util.addSetters(PAE.Room, ['name']);

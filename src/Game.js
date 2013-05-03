@@ -8,6 +8,16 @@ goog.require("PAE.UI");
 goog.require("PAE.Serializer");
 goog.provide("PAE.Game");
 (function() {
+    var gameStruct = {
+        name: {type: 'string'},
+        shortName: {type: 'string'},
+        startRoom: {type: 'string'},
+        dynamics: {type: 'object'},
+        flags: {type: 'object'},
+        items: {type: 'object'},
+        resources: {type: 'object'},
+        rooms: {type: 'object'}
+    }
 	/**
 	 * Create a game!
 	 * 
@@ -79,13 +89,14 @@ goog.provide("PAE.Game");
 	 * Serialize the game, for purposes of editing and saving it.
 	 */
 	Game.prototype.serialize = function() {
-	    return PAE.Serializer.serialize(this.attrs);
+	    return PAE.Serializer.serialize(this.getAttrs());
 	}
 	/**
 	 * Transition to a new room.
 	 */
 	Game.prototype.transition = function(params) {
 		var self = this;
+		self.saveRoom();
 		var roomParams = self.attrs.rooms[params.room];
 		if (self.curRoom) {
 			self.curRoom.group.remove();
@@ -195,6 +206,25 @@ goog.provide("PAE.Game");
 	 */
 	Game.prototype.getCurrentRoom = function() {
 	    return this.curRoom;
+	}
+	/**
+	 * Save current room to this.attrs
+	 */
+	Game.prototype.saveRoom = function() {
+	    var room = this.getCurrentRoom();
+	    if (room) {
+	        var name = room.getName();
+            this.attrs.rooms[name] = room.getAttrs();
+	    }
+	}
+	/**
+	 * Serialize the game for storage.
+	 * 
+	 * Not to be confused with saving and loading the game.
+	 */
+	Game.prototype.getAttrs = function() {
+	    this.saveRoom();
+	    return PAE.Util.dumpAttrs(gameStruct, this.attrs);
 	}
 	PAE.Util.addGetters(PAE.Game, ['name', 'shortName', 'startRoom']);
     PAE.Util.addSetters(PAE.Game, ['name', 'shortName', 'startRoom']);

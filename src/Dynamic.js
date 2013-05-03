@@ -205,5 +205,8 @@ goog.provide("PAE.Dynamic");
     Dynamic.prototype.getImage = function() {
         return this.sprite.toImage().src;
     }
+    Dynamic.prototype.getAttrs = function() {
+        return this.attrs;
+    }
 	PAE.Global.extend(PAE.Dynamic, PAE.Talker);
 })();

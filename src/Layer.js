@@ -110,4 +110,7 @@ goog.provide("PAE.Layer");
     Layer.prototype.remove = function() {
         this.group.remove();
     }
+    Layer.prototype.getAttrs = function() {
+        return PAE.Util.dumpAttrs(layerStruct, this.attrs);
+    }
 })()

@@ -163,6 +163,29 @@ var PAE = {};
         }
         return false;
     }
+    /**
+     * Given a structure and an attrs object, return an object with all the variables mentioned 
+     * in the struct.
+     */
+    PAE.Util.dumpAttrs = function(struct, obj) {
+        var ret = {};
+        _.forEach(struct, function(data, name) {
+            ret[name] = obj[name];
+        })
+        return ret;
+    }
+    /**
+     * Run getAttrs on everything in this collection, return a list of all the attrs.
+     * 
+     * Used for Rooms saving all their Layers, for example.
+     */
+    PAE.Util.collectionAttrs = function(coll) {
+        var ret = [];
+        _.forEach(coll, function(node) {
+            ret.push(node.getAttrs());
+        })
+        return ret;
+    }
 	/**
 	 * Event system. Very straightforward but functional.
 	 */
