@@ -137,6 +137,9 @@ goog.provide("PAE.UI");
 			}
 		})()} //<3 you JS
 	}
+	/**
+	 * Plays some text with audio.
+	 */
 	UI.prototype.playText = function(params) {
 		var self = this;
 		self._shouldStop = false;
@@ -169,7 +172,7 @@ goog.provide("PAE.UI");
 			var audio = audios[name]
 			audio.addEventListener('ended', listener)
 		})
-		audios[a_names[0]].play();
+		if (a_names[0]) audios[a_names[0]].play();
 		var index = 0;
 		var i = setInterval(function() {
 			var string = fullText.substring(0, index);
