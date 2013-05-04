@@ -4,24 +4,26 @@
 goog.require("PAE");
 goog.require("PAE.Room");
 goog.require("PAE.Resources");
+goog.require("PAE.DynamicDefinition");
 goog.require("PAE.UI");
 goog.require("PAE.Serializer");
 goog.provide("PAE.Game");
 (function() {
     var gameStruct = {
-        name: {type: 'string'},
+        name:      {type: 'string'},
         shortName: {type: 'string'},
         startRoom: {type: 'string'},
-        dynamics: {type: 'object'},
-        flags: {type: 'object'},
-        items: {type: 'object'},
+        flags:     {type: 'object'},
+        items:     {type: 'object'},
         resources: {type: 'object'},
-        rooms: {type: 'object'}
+        rooms:     {type: 'object'}
     }
 	/**
 	 * Create a game!
 	 * 
 	 * Params is the entire gamestate file.
+	 * 
+	 * TODO: This method is a mess!
 	 */
 	var Game = PAE.Game = function(gameData, windowData) {
 	    if (typeof gameData != 'object') {
@@ -37,6 +39,11 @@ goog.provide("PAE.Game");
 		var height = container.scrollHeight;
 		var scale = self.scale = height / 768;
 		var leftOffset = self.leftOffset = Math.floor((width - (1024*scale)) / 2);
+		self.dynamicDefinitions = {};
+		_.forEach(gameData.dynamics, function(def) {
+		    var dynDef = new PAE.DynamicDefinition(def);
+		    self.dynamicDefinitions[def.name] = dynDef;
+		});
 		self.stage = new Kinetic.Stage({
 			"container" : windowData.container,
 			"width" : width,
@@ -117,9 +124,8 @@ goog.provide("PAE.Game");
 	/**
 	 * Get the definition of a dynamic.
 	 */
-	Game.prototype.getDynamicData = function(id) {
-		var self = this;
-		return _.clone(self.attrs.dynamics[id]);
+	Game.prototype.getDynamicDefinition = function(id) {
+		return this.dynamicDefinitions[id];
 	}
 	/**
 	 * Give the item to a player.
@@ -224,7 +230,9 @@ goog.provide("PAE.Game");
 	 */
 	Game.prototype.getAttrs = function() {
 	    this.saveRoom();
-	    return PAE.Util.dumpAttrs(gameStruct, this.attrs);
+	    var attrs = PAE.Util.dumpAttrs(gameStruct, this.attrs);
+	    attrs.dynamics = PAE.Util.collectionAttrs(this.dynamicDefinitions);
+	    return attrs;
 	}
 	PAE.Util.addGetters(PAE.Game, ['name', 'shortName', 'startRoom']);
     PAE.Util.addSetters(PAE.Game, ['name', 'shortName', 'startRoom']);

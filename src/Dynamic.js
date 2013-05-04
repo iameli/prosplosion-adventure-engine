@@ -6,14 +6,29 @@ goog.require("PAE.Talker");
 goog.require("PAE.VectorSprite");
 goog.provide("PAE.Dynamic");
 (function() {
+    var dynamicStruct = {
+        name: {type: 'string'},
+        id: {type: 'string'},
+        x: {type: 'int'},
+        y: {type: 'int'},
+        scale: {type: 'float', def: null},
+        layer: {type: 'string'},
+        onClick: {type: 'function', def: function(e){}}
+    }
 	var Dynamic = PAE.Dynamic = function(params) {
 		var self = this;
+		PAE.Util.setAttrs(self, dynamicStruct, params);
+		var attrs = self.attrs;
 		var game = PAE.curGame;
-		var attrs = self.attrs = game.getDynamicData(params.id); //Get the sprite definition
-		if (!attrs) throw "Dynamic with id '" + params.id + "' not found!"
-		PAE.Util.objEach(params, function(key, val) { //and copy in any specific info from this istance.
-			attrs[key] = val;
+		var def = game.getDynamicDefinition(params.id); //Get the sprite definition
+		if (!def) throw "Dynamic with id '" + params.id + "' not found!"
+		var imports = ['width', 'height', 'defaultAnimation', 'frameRate', 'vectorAnimations', 'speed', 'listening', 'onClick', 'talkNoises'];
+		imports.forEach(function(attrib) {
+		    if (self.attrs[attrib] === null || self.attrs[attrib] === undefined) {
+		        self.attrs[attrib] = def.attrs[attrib];
+		    }
 		})
+		
 		self.uid = game.uid();
 		var svg_list = {};
 		/**
@@ -206,7 +221,8 @@ goog.provide("PAE.Dynamic");
         return this.sprite.toImage().src;
     }
     Dynamic.prototype.getAttrs = function() {
-        return this.attrs;
+        return PAE.Util.dumpAttrs(dynamicStruct, this.attrs);
     }
+    PAE.Util.addSetters(Dynamic, ['id', 'x', 'y', 'scale', 'layer', 'onClick']);
 	PAE.Global.extend(PAE.Dynamic, PAE.Talker);
 })();
