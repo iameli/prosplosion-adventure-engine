@@ -168,6 +168,14 @@ goog.provide("PAE.Room");
 	    }
 	}
 	/**
+	 * Remove this dynamic.
+	 */
+	Room.prototype.removeDynamic = function(dyn) {
+	    if (typeof name == 'string') dyn = this.getDynamic(dyn);
+	    var l = this.layers[dyn.getLayer()];
+	    l.removeDynamic(dyn.getName());
+	}
+	/**
 	 * Scroll the window to center on on a certain dynamic.
  	 * @param {Object} dynamic
 	 */

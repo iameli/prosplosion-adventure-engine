@@ -116,6 +116,13 @@ goog.provide("PAE.Dynamic");
 		return {x: pos.x + dimensions.footX, y: pos.y + dimensions.footY};
 	}
 	/**
+	 * Save this sprite's position so it spawns here next time.
+	 */
+	Dynamic.prototype.savePosition = function() {
+	    this.setX(this.sprite.getX());
+	    this.setY(this.sprite.getY());
+	}
+	/**
 	 * Use the character's walking animation (if any) to move to another place.
 	 * @param {Object} x
 	 * @param {Object} y
@@ -196,12 +203,6 @@ goog.provide("PAE.Dynamic");
         this.attrs.name = name;
     }
     /**
-     * Get layer
-     */
-    Dynamic.prototype.getLayer = function(name) {
-        return this.attrs.layer;
-    }
-    /**
      * Set whether we can drag this dude around for game creation purposes.
      */
     Dynamic.prototype.setDraggable = function(yes) {
@@ -233,5 +234,6 @@ goog.provide("PAE.Dynamic");
         return PAE.Util.dumpAttrs(dynamicStruct, this.attrs);
     }
     PAE.Util.addSetters(Dynamic, ['id', 'x', 'y', 'layer', 'onClick']);
+    PAE.Util.addGetters(Dynamic, ['id', 'x', 'y', 'layer', 'onClick']);
 	PAE.Global.extend(PAE.Dynamic, PAE.Talker);
 })();

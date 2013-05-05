@@ -110,6 +110,11 @@ goog.provide("PAE.Layer");
     Layer.prototype.remove = function() {
         this.group.remove();
     }
+    Layer.prototype.removeDynamic = function(dynamic) {
+        console.log(this);
+        this.dynamics[dynamic].remove();
+        delete this.dynamics[dynamic];
+    }
     Layer.prototype.getAttrs = function() {
         return PAE.Util.dumpAttrs(layerStruct, this.attrs);
     }
