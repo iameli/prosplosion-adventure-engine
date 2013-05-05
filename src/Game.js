@@ -128,6 +128,12 @@ goog.provide("PAE.Game");
 		return this.dynamicDefinitions[id];
 	}
 	/**
+	 * Get a list of all dynamic definitions.
+	 */
+	Game.prototype.getDynamicDefinitions = function() {
+	    return this.dynamicDefinitions;
+	}
+	/**
 	 * Give the item to a player.
  	 * @param {Object} item
 	 */

@@ -18,7 +18,7 @@ goog.provide("PAE.Room");
 	    height: {type: 'int', def: 1024},
 	    width: {type: 'int', def: 768},
 	    walkable: {type: 'object', def: {"points":[{"x":0,"y":0},{"x":970,"y":24},{"x":1010,"y":758},{"x":10,"y":757}]}},
-	    onEnter: {type: 'function', def: function(e){}}
+	    onEnter: {type: 'function', def: function(){}}
 	}
 	var Room = PAE.Room = function(params) {
 		var self = this;
@@ -156,13 +156,16 @@ goog.provide("PAE.Room");
 	 * @param {Object} name
 	 * @param {Object} sprite
 	 */
-	Room.prototype.addDynamic = function(def) {
+	Room.prototype.addDynamic = function(def, initalize) {
 		var self = this;
 		var name = def.name;
 		var s = new PAE.Dynamic(def);
 	    self.layers[def.layer].add(s);
 	    var uid = s.getUID();
 	    self.spriteIdx[uid] = name;
+	    if (initalize === true) {
+	        s.initalize();
+	    }
 	}
 	/**
 	 * Scroll the window to center on on a certain dynamic.
@@ -191,6 +194,17 @@ goog.provide("PAE.Room");
 		else if ((HEIGHT - sy - ry - dimensions.height) < YBUFFER) { //room too far down
 			self.scrollY(HEIGHT - sy - dimensions.height - YBUFFER)
 		}
+	}
+	/**
+	 * Get the coordinates of the current midpoint of the screen.
+	 * 
+	 * This is where newly inserted Dynamics end up.
+	 */
+	Room.prototype.getMid = function() {
+	    var rpos = this.layers._walkable.getPosition();
+        var x = (WIDTH/2) - rpos.x;
+        var y = (HEIGHT/2) - rpos.y;
+        return {x: x, y: y};
 	}
 	/**
 	 * Scroll the background frame to the given X, accounting for background paralax.

@@ -11,7 +11,7 @@ goog.provide("PAE.Dynamic");
         id: {type: 'string'},
         x: {type: 'int'},
         y: {type: 'int'},
-        scale: {type: 'float', def: null},
+        scale: {type: 'float', def: 1.0},
         layer: {type: 'string'},
         onClick: {type: 'function', def: function(e){}}
     }
@@ -89,7 +89,7 @@ goog.provide("PAE.Dynamic");
 		var self = this;
 		self.sprite.initalize(function() {
 			self.sprite.start();
-			callback();
+			callback && callback();
 		})
 	}
 	/**
@@ -214,6 +214,15 @@ goog.provide("PAE.Dynamic");
             this.sprite.setListening(this.attrs.listening);
         }
     }
+    Dynamic.prototype.getScale = function(scale) {
+        return this.attrs.scale;
+    }
+    Dynamic.prototype.setScale = function(scale) {
+        this.attrs.scale = PAE.Util.ensureFloat(scale);
+        if (this.sprite) {
+            this.sprite.setScale({x: scale, y: scale});
+        }
+    }
     /**
      * Get a static image representation of this object as a data string. Frame 0 of default animation.
      */
@@ -223,6 +232,6 @@ goog.provide("PAE.Dynamic");
     Dynamic.prototype.getAttrs = function() {
         return PAE.Util.dumpAttrs(dynamicStruct, this.attrs);
     }
-    PAE.Util.addSetters(Dynamic, ['id', 'x', 'y', 'scale', 'layer', 'onClick']);
+    PAE.Util.addSetters(Dynamic, ['id', 'x', 'y', 'layer', 'onClick']);
 	PAE.Global.extend(PAE.Dynamic, PAE.Talker);
 })();
