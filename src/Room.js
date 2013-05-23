@@ -102,11 +102,7 @@ goog.provide("PAE.Room");
 	    //This sorts the layers by z-index then runs moveottop on them.
 	    //Needed because I can't start to fathom how KineticJS handles
 	    //setZIndex. 
-	    _.sortBy(this.layers, function(layer){
-	        return layer.getZIndex();
-	    }).forEach(function(layer) {
-	        layer.moveToTop();
-	    })
+	    this.sortLayers();
 	    
 	    PAE.EventMgr.on('sprite-walking', function(e) {
 	    	var sprite = self.spriteIdx[e.uid];
@@ -151,6 +147,13 @@ goog.provide("PAE.Room");
 	    })
 	    self.walkable.buildWalkGraph();
 	}	
+	Room.prototype.sortLayers = function() {
+	    _.sortBy(this.layers, function(layer){
+            return layer.getZIndex();
+        }).forEach(function(layer) {
+            layer.moveToTop();
+        })
+	}
 	/**
 	 * Add a Dynamic to this room.
 	 * @param {Object} name
@@ -242,16 +245,13 @@ goog.provide("PAE.Room");
 	Room.prototype.walkableDebug = function(on) {
 		var self = this;
 		if (on) {
-			self._followDebug = self.attrs.follow;
 			self.walkable.layer.moveTo(self.layers._debug);
 			self.walkable.debug(true);
-			self.attrs.follow = null;
 		}
 		else {
 			self.walkable.debug(false);
 			self.walkable.layer.moveTo(self.layers._walkable);
 			self.walkable.displayPathing(false);
-			self.attrs.follow = self._followDebug;
 		}
 	}
 	/**
@@ -335,6 +335,11 @@ goog.provide("PAE.Room");
         this.layers[l.getName()] = l;
         if (save !== false) this.attrs.layers.push(l.attrs);
         this.group.add(l.getGroup());
+        if (this.layers._walkable) { //new layers need to get correctly positioned wrt the scrolling
+            var pos = this.layers._walkable.getPosition();
+            l.scrollX(pos.x);
+            l.scrollY(pos.y);
+        }
     }
     /**
      * Remove a layer.
