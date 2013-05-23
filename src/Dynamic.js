@@ -55,9 +55,8 @@ goog.provide("PAE.Dynamic");
 		//Init talker functionality.
 		self._talkerInit(self, attrs, params.game);
 		//Init onClick functionality.
-		var onClick = attrs.onClick || function(e){};
-		onClick.prototype.game = PAE.curGame;
-		onClick.prototype.dynamic = self;
+		var onClick = attrs.onClick;
+		
 		s.on('click', function(e) {
 			PAE.EventMgr.trigger(new PAE.Event({
 				name: 'sprite-clicked.' + self.uid,
@@ -79,7 +78,11 @@ goog.provide("PAE.Dynamic");
 			}, 100);
 		})
 		PAE.EventMgr.on("sprite-clicked."+self.uid, function(e) {
-			new onClick(e);
+		    if (attrs.onClick) {
+		        attrs.onClick.prototype.game = PAE.curGame;
+                attrs.onClick.prototype.dynamic = self;
+		        new attrs.onClick(e);
+		    }
 		})
 	}
 	/**
