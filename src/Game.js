@@ -61,11 +61,11 @@ goog.provide("PAE.Game");
 		//self.Group.add(self.UI.Group);
 		self.layer.add(self.group);
 		self.resources.download(function() {
+		    self.group.add(self.UI.Group);
 			self.transition({room: self.attrs.startRoom});
-			self.group.add(self.UI.Group);
 		})
 		self.stage.draw();
-		self.layer.beforeDraw(function() {
+		self.layer.on('beforeDraw', function() {
 			PAE.EventMgr.trigger(new PAE.Event({
 				name: 'before-draw'
 			}))

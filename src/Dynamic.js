@@ -101,8 +101,6 @@ goog.provide("PAE.Dynamic");
 	 */
 	Dynamic.prototype.getDimensions = function() {
 		var self = this;
-		var animName = self.sprite.getAnimation();
-		var anim = self.sprite.getAnimations()[animName][0];
 		var scale = self.sprite.getScale();
 		var width = Math.floor(self.attrs.width * scale.x);
 		var footX = Math.floor(width/2);
@@ -153,21 +151,23 @@ goog.provide("PAE.Dynamic");
 		} else if (self.attrs.vectorAnimations.walk) {
 			self.sprite.setAnimation('walk');
 		}
-		self.sprite.transitionTo({
-			x: x,
-			y: y,
-			duration: dist / self.attrs.speed,
-			callback: function() {
-				if (done !== false) {
-					PAE.EventMgr.trigger(new PAE.Event({
-						name: 'sprite-walking-done',
-						uid: self.uid
-					}))
-					self.sprite.setAnimation('idle');
-				}
-				callback && callback();
-			}
+		var tween = new Kinetic.Tween({
+		    node: self.sprite,
+		    x: x,
+            y: y,
+            duration: dist / self.attrs.speed,
+            onFinish: function() {
+                if (done !== false) {
+                    PAE.EventMgr.trigger(new PAE.Event({
+                        name: 'sprite-walking-done',
+                        uid: self.uid
+                    }))
+                    self.sprite.setAnimation('idle');
+                }
+                callback && callback();
+            }
 		})
+		tween.play();
 	}
 	/**
 	 * Remove this thing from the world.
