@@ -1,0 +1,8 @@
+{
+  "id": "pae",
+  "paths": ["src", "tests"],
+  "inputs": "tests/suite.js",
+  "pretty-print": true,
+  "debug":        true,
+  "mode" : "SIMPLE"
+}
