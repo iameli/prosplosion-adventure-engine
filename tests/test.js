@@ -17,24 +17,31 @@ goog.provide("PAE.test");
      * 
      * end() call this when you're done. can't just rely on method 
      *       execution because async.
+     * 
+     * Caling this TestMonad was kinda dumb, it just means "one test"
      *      
      * 
      * @param {Object} tests
      */
+    var stage = new Kinetic.Stage({
+        container: document.getElementById('container'),
+        width: 1024,
+        height: 768
+    });
     var TestMonad = function(testMethod, message) {
         this.testMethod = testMethod;
         this.message = message;
         this.passed = true;
-    }
-    TestMonad.prototype.init = function() {
-        if (this.testCount === undefined) this.testCount = 0;
-        if (this.results === undefined) this.results = [];
+        this.testCount = 0;
+        this.results = [];
+        this.layer = new Kinetic.Layer();
+        stage.add(this.layer);
+        this.stage = stage;
     }
     TestMonad.prototype.assertEquals = function(one, two, message) {
         this.assert(one === two, message);
     }
     TestMonad.prototype.assert = function(statement, message) {
-        this.init();
         this.testCount += 1;
         var results = [];
         if (statement === true) {
@@ -49,11 +56,20 @@ goog.provide("PAE.test");
         this.results.push(results);
     }
     TestMonad.prototype.done = function() {
+        this.layer.remove();
         this.callback();
     }
     TestMonad.prototype.run = function(callback) {
         this.callback = callback;
-        this.testMethod();
+        try {
+            this.testMethod();
+        }
+        catch(e) {
+            this.passed = false;
+            this.message = this.message + " (THREW ERROR!!)";
+            this.results.push([false, e]);
+            this.callback();
+        }
     }
     PAE.test = function(tests) {
         var testArr = [];

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <head>
     <title>PAE Tests</title>
-    <script src="http://localhost:9810/compile?id=pae"></script>
+    <script defer="defer" src="http://localhost:9810/compile?id=pae"></script>
     <style>
         body {
             margin: 0;
@@ -9,8 +9,14 @@
             overflow: hidden;
             font-family: Helvetica, Arial, sans-serif;
         }
+        #container {
+            width: 1024px;
+            height: 768px;
+            border: 1px solid black;
+        }
     </style>
 </head>
 <body>
     <p>Test suite running. Check your console.</p>
+    <div id="container"></div>
 </body>
