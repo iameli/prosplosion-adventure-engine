@@ -44,7 +44,6 @@ goog.provide("Tests.Unit.VectorSprite");
             this.layer.add(vec);
             vec.initalize(function() {
                 vec.start();
-                console.log(vec.toDataURL());
                 self.assert(vec.toDataURL() === tree1_half_cached, 'half scaled tree looks like half scaled tree');
                 self.done();
             })
