@@ -1,5 +1,11 @@
 goog.require("PAE.Game");
 goog.provide("PAE.test");
+window.onerror = function(message, url, lineNumber) {  
+  console.log("%cTOP-LEVEL ERROR ENCOUNTERED.", 'color: red');
+  console.log("Last test run: %s", lastTest);
+  return false;
+};  
+lastTest = null;
 (function() {
     /**
      * Agressively simple testing framework. Call PAE.test with a map of 
@@ -62,6 +68,7 @@ goog.provide("PAE.test");
     TestMonad.prototype.run = function(callback) {
         this.callback = callback;
         try {
+            lastTest = this.message;
             this.testMethod();
         }
         catch(e) {

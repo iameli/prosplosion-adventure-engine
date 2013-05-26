@@ -90,7 +90,9 @@ goog.require("canvg");
                 newAnim = 0;
             }
             self.animIndex = newAnim;
-            l.draw();
+            if (l !== undefined) {
+                l.draw();
+            }
         }, 1000 / self.frameRate)
     }
     /**
@@ -115,6 +117,13 @@ goog.require("canvg");
     VectorSprite.prototype.setAnimation = function(newAnim) {
         this.animIndex = 0;
         this.curAnim = newAnim;
+    }
+    /**
+     * Overwriting Shape.Remove to stop our animation function if we're removed.
+     */
+    VectorSprite.prototype.remove = function() {
+        this.stop();
+        Kinetic.Shape.prototype.remove.call(this);
     }
     Kinetic.Util.extend(PAE.VectorSprite, Kinetic.Shape);
 })()

@@ -48,6 +48,27 @@ goog.provide("Tests.Unit.VectorSprite");
                 self.assert(vec.toDataURL() === tree1_half_cached, 'half scaled tree looks like half scaled tree');
                 self.done();
             })
+        },
+        "VectorSprites should gracefully handle being removed and stop themselves" : function() {
+            var self = this;
+            var vec = new PAE.VectorSprite({
+                frameRate : 10,
+                vectorAnimations: {idle: [tree1], excited: [tree2, tree1]},
+                animation: 'idle',
+                x: 0,
+                y: 0,
+                width: 352,
+                height: 405
+            });
+            this.layer.add(vec);
+            vec.initalize(function() {
+                vec.start();
+                self.layer.removeChildren();
+                setTimeout(function() {
+                    self.assert(true, "This worked unless there are mad errors everywhere.");
+                    self.done();
+                }, 1000)
+            });
         }
     })
 })()
