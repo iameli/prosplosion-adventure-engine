@@ -93,6 +93,9 @@ goog.require("canvg");
             l.draw();
         }, 1000 / self.frameRate)
     }
+    /**
+     * stop animation of the VectorSprite
+     */
     VectorSprite.prototype.stop = function() {
         if (this.interval) {
             clearInterval(this.interval);
@@ -100,11 +103,15 @@ goog.require("canvg");
         }
     }
     /**
-     * FIXME
+     * Get an image version of this VectorSprite.
      */
     VectorSprite.prototype.toImage = function() {
         
     }
+    /**
+     * Set the active animation of this VectorSprite.
+     * @param {String} newAnim The new animation
+     */
     VectorSprite.prototype.setAnimation = function(newAnim) {
         this.animIndex = 0;
         this.curAnim = newAnim;
