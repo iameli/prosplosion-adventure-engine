@@ -24,6 +24,17 @@ goog.require("canvg");
         context.drawImage(cached, 0, 0, this.attrs.width, this.attrs.height);
     }
     /**
+     * Draw the hitbox for this VectorSprite
+     * @param {Canvas} canvas on which to draw
+     */
+    VectorSprite.prototype.drawHitFunc = function(canvas) {
+        var context = canvas.getContext();
+        context.beginPath();
+        context.rect(0, 0, this.attrs.width, this.attrs.height);
+        context.closePath();
+        canvas.fill(this);
+    }
+    /**
      * initalize the VectorSprite by caching its svgs
      * @param {Object} callback upon complete initalization
      */
