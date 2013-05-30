@@ -97,6 +97,14 @@ goog.provide("PAE.Dynamic");
 		})
 	}
 	/**
+	 * WE OUT
+	 */
+	Dynamic.prototype.shutdown = function() {
+	    this.sprite.stop();
+	    this.sprite.remove();
+	    delete this.sprite;
+	}
+	/**
 	 * Returns whether this Dynamic is getting Listening events.
 	 */
 	Dynamic.prototype.getListening = function() {

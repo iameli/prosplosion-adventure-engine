@@ -64,7 +64,16 @@ goog.provide("PAE.Game");
 		    self.group.add(self.UI.Group);
 			self.transition({room: self.attrs.startRoom});
 		})
-		self.stage.draw();
+		self.loadingScreen = new Kinetic.Group();
+		self.loadingScreen.add(new Kinetic.Rect({
+            x: -5000,
+            y: -5000,
+            width: 10000,
+            height: 10000,
+            fill: 'green',
+            stroke: 'black',
+            strokeWidth: 4
+        }))
 		self.layer.on('beforeDraw', function() {
 			PAE.EventMgr.trigger(new PAE.Event({
 				name: 'before-draw'
@@ -103,17 +112,25 @@ goog.provide("PAE.Game");
 	 */
 	Game.prototype.transition = function(params) {
 		var self = this;
+		self.group.add(self.loadingScreen);
+		self.loadingScreen.moveToTop();
+		self.layer.draw();
 		self.saveRoom();
 		var roomParams = self.attrs.rooms[params.room];
 		if (self.curRoom) {
+		    self.curRoom.shutdown();
 			self.curRoom.group.remove();
 		}
 		roomParams.name = params.room;
-		self.curRoom = new PAE.Room(roomParams, self);
-		self.group.add(self.curRoom.group);
-		self.curRoom.initalize(function() {
-			self.UI.Group.moveToTop();
-		});
+		setTimeout(function() {
+		    self.curRoom = new PAE.Room(roomParams, self);
+            self.group.add(self.curRoom.group);
+            self.curRoom.initalize(function() {
+                self.UI.Group.moveToTop();
+                self.loadingScreen.remove();
+                self.stage.draw();
+            });
+		}, 1)
 	}
 	/*
 	 * Get the dimensions of the stage.

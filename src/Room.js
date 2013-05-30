@@ -154,6 +154,14 @@ goog.provide("PAE.Room");
 	    self.walkable.buildWalkGraph();
 	}
 	/**
+	 * WE OUT
+	 */
+	Room.prototype.shutdown = function() {
+	    this.getDynamics().forEach(function(d) {
+	        d.shutdown();
+	    })
+	}
+	/**
 	 * Kinetic z-indexing is scary! Tell all our layers
 	 * to move to top in order.
 	 */	
