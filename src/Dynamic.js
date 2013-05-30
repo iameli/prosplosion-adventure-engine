@@ -182,11 +182,13 @@ goog.provide("PAE.Dynamic");
             duration: dist / self.attrs.speed,
             onFinish: function() {
                 if (done !== false) {
-                    PAE.EventMgr.trigger(new PAE.Event({
-                        name: 'sprite-walking-done',
-                        uid: self.uid
-                    }))
-                    self.sprite.setAnimation('idle');
+                    if (self.sprite) { //TODO: this is a hack. should unregister the tween when the room changes.
+                        PAE.EventMgr.trigger(new PAE.Event({
+                            name: 'sprite-walking-done',
+                            uid: self.uid
+                        }))
+                        self.sprite.setAnimation('idle');
+                    }
                 }
                 callback && callback();
             }

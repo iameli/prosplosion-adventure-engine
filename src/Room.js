@@ -25,7 +25,9 @@ goog.provide("PAE.Room");
 		self.dynamics = {};
 		self.layers = {};
 		var attrs = self.attrs = params;
+		self.layer = new Kinetic.Group() //TODO I'd like this to be a layer someday.
 		self.group = new Kinetic.Group();
+		self.layer.add(self.group);
 		self.leftBorder = PAE.curGame.leftOffset / PAE.curGame.scale
 	};
 	/**
@@ -61,6 +63,7 @@ goog.provide("PAE.Room");
 	    this.layers._zeroBG.add(bg);
 	    
 	    var walkFunc = function(e) {
+	        console.log("walkFunc")
 	        var normalE = PAE.curGame.translateClick(e);
 	    	if (self.attrs.follow && e.button != 1) {
 	    		var player = self.getDynamic(self.attrs.follow);
@@ -104,16 +107,17 @@ goog.provide("PAE.Room");
 	    //setZIndex. 
 	    this.sortLayers();
 	    
-	    PAE.EventMgr.on('sprite-walking', function(e) {
+	    self.walkResponder = PAE.EventMgr.on('sprite-walking', function(e) {
 	    	var sprite = self.spriteIdx[e.uid];
 	    	if (sprite && self.attrs.follow == sprite) { //If the player is moving
-	    		var responder = PAE.EventMgr.on('before-draw', function(e) {
-	    			self.centerOn(sprite);
+	    		var l = self.group.getLayer();
+	    		l.on('beforeDraw', function(e) {
+			         self.centerOn(sprite);
 	    		})
-	    		var ender = PAE.EventMgr.on('sprite-walking-done', function(e) {
+	    		var ender = self.walkEnder = PAE.EventMgr.on('sprite-walking-done', function(e) {
 					var sprite = self.spriteIdx[e.uid];
 					if (sprite && self.attrs.follow == sprite) {
-						PAE.EventMgr.off(responder);
+						l.off('beforeDraw');
 						PAE.EventMgr.off(ender);
 					}
 				})
@@ -157,6 +161,13 @@ goog.provide("PAE.Room");
 	 * WE OUT
 	 */
 	Room.prototype.shutdown = function() {
+	    this.group.getLayer().off('beforeDraw');
+	    PAE.EventMgr.off(this.walkResponder);
+	    delete this.walkResponder;
+	    if (this.walkEnder) {
+	        PAE.EventMgr.off(this.walkEnder);
+	        delete this.walkEnder;
+	    }
 	    this.getDynamics().forEach(function(d) {
 	        d.shutdown();
 	    })

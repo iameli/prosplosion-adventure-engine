@@ -231,7 +231,9 @@ var PAE = {};
 	 */
 	PAE.EventMgr.off = function(id) {
 		var name = PAE.EventMgr._e_list[id];
-		delete PAE.EventMgr.listeners[name][id];
+		if (name && PAE.EventMgr.listeners[name] && PAE.EventMgr.listeners[name][id]) {
+		    delete PAE.EventMgr.listeners[name][id];
+		}
 	}
 	/**
 	 * Trigger an event. Return true if nobody in the chain returned false.

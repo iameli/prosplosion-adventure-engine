@@ -114,17 +114,17 @@ goog.provide("PAE.Game");
 		var self = this;
 		self.group.add(self.loadingScreen);
 		self.loadingScreen.moveToTop();
-		self.layer.draw();
 		self.saveRoom();
 		var roomParams = self.attrs.rooms[params.room];
 		if (self.curRoom) {
 		    self.curRoom.shutdown();
-			self.curRoom.group.remove();
+			self.curRoom.layer.remove();
 		}
+		self.layer.draw();
 		roomParams.name = params.room;
 		setTimeout(function() {
 		    self.curRoom = new PAE.Room(roomParams, self);
-            self.group.add(self.curRoom.group);
+            self.layer.add(self.curRoom.layer);
             self.curRoom.initalize(function() {
                 self.UI.Group.moveToTop();
                 self.loadingScreen.remove();
