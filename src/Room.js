@@ -62,7 +62,7 @@ goog.provide("PAE.Room");
 	    
 	    var walkFunc = function(e) {
 	        var normalE = PAE.curGame.translateClick(e);
-	    	if (self.attrs.follow) {
+	    	if (self.attrs.follow && e.button != 1) {
 	    		var player = self.getDynamic(self.attrs.follow);
 	    		var rpos = self.layers._walkable.getPosition();
 	    		var x = normalE.x - rpos.x;
@@ -144,15 +144,79 @@ goog.provide("PAE.Room");
 	    		dyns -= 1;
 	    		if (dyns == 0) done();
 	    	})
+	    });
+	    /**
+	     * Only can drag with the middle mouse button in debug mode.
+	     */
+	    this.group.on('dragstart', function(e) {
+	        e.cancelBubble = true;
 	    })
 	    self.walkable.buildWalkGraph();
-	}	
+	}
+	/**
+	 * Kinetic z-indexing is scary! Tell all our layers
+	 * to move to top in order.
+	 */	
 	Room.prototype.sortLayers = function() {
 	    _.sortBy(this.layers, function(layer){
             return layer.getZIndex();
         }).forEach(function(layer) {
             layer.moveToTop();
         })
+	}
+	/**
+	 * Enable room scrolling, lines at borders, some other stuff.
+	 */
+	Room.prototype.roomDebug = function(yes) {
+	    if (yes) {
+	        this.debugLayer = new Kinetic.Group();
+	        this.layers['_debug'].add(this.debugLayer);
+	        this.group.setDraggable(true);
+	        this.drawBorderLines();
+	    }
+	    else {
+	        if (this.debugLayer) {
+    	        this.debugLayer.remove();
+    	        delete this.debugLayer;
+    	    }
+    	    this.group.setDraggable(false);
+    	    this.group.setPosition({x: 0, y: 0});
+	    }
+	}
+	/**
+	 * If debug mode is enabled, draw a red line around the broder of the room.
+	 */
+	Room.prototype.drawBorderLines = function() {
+	    if (this.debugLayer !== undefined) {
+	        if (this.crazyLine) {
+	            this.crazyLine.remove();
+	            delete this.crazyLine;
+	        }
+	        this.crazyLine = new Kinetic.Line({
+                points: [{x:-1, y:-1}, {x:-1, y: this.attrs.height + 1}, {x: this.attrs.width + 1, y:this.attrs.height + 1}, {x: this.attrs.width + 1, y: -1}, {x:-1, y:-1}],
+                stroke: 'red',
+                strokeWidth: 1,
+                lineCap: 'square',
+                lineJoin: 'square'
+            });
+            this.debugLayer.add(this.crazyLine);
+	    }
+	}
+	/**
+	 * Set room width.
+	 */
+	Room.prototype.setWidth = function(width) {
+	    this.attrs.width = PAE.Util.ensureInt(width);
+	    this.zeroRect.setWidth(width);
+	    this.drawBorderLines();
+	}
+	/**
+	 * Set room height.
+	 */
+	Room.prototype.setHeight = function(height) {
+	    this.attrs.height = PAE.Util.ensureInt(height);
+	    this.zeroRect.setHeight(height);
+	    this.drawBorderLines();
 	}
 	/**
 	 * Add a Dynamic to this room.
@@ -315,18 +379,6 @@ goog.provide("PAE.Room");
 	    self.zeroRect.setFill(color);
 	    self.attrs.bgColor = color;
 	}
-	/**
-	 * Set width of the room.
-	 */
-	Room.prototype.setWidth = function(w) {
-	    throw "Room.setWidth not yet implemented."
-	}
-	/**
-     * Set height of the room.
-     */
-    Room.prototype.setHeight = function(w) {
-        throw "Room.setHeight not yet implemented."
-    }
     /**
      * Add a layer. If it's a debug layer or something, save = false.
      */
