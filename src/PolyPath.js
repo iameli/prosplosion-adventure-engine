@@ -5,18 +5,19 @@ goog.require("Underscore");
 goog.require("gamlib");
 goog.provide("PAE.PolyPath");
 (function() {
+    var polyPathStruct = {
+        points: {type: 'object'},
+        mode: {type: 'string', def: 'normal'}
+    }
 	var PolyPath = PAE.PolyPath = function(params) {
 		var self = this;
-		self.attrs = {};
+		self.polygon = new Kinetic.Polygon({
+            opacity: "0.3"
+        })
+		PAE.Util.setAttrs(this, polyPathStruct, params);
 		self.debugGroup = new Kinetic.Group();
-		self.attrs.points = params.points;
-		self.attrs.mode = params.mode || 'normal';
 		self.pathingData = new Kinetic.Group();
 		self.layer = new Kinetic.Group();
-		self.polygon = new Kinetic.Polygon({
-			opacity: "0.3",
-			points: self.attrs.points
-		})
 		self.lineGroup = new Kinetic.Group();
 		self.squareGroup = new Kinetic.Group();
 		self.debugGroup.add(self.lineGroup);
@@ -29,6 +30,16 @@ goog.provide("PAE.PolyPath");
 	 */
 	PolyPath.prototype.getPoints = function() {
 		return this.polygon.getPoints();
+	}
+	/**
+	 * Set this PolyPath's points so somethin.
+	 */
+	PolyPath.prototype.setPoints = function(points) {
+	    this.attrs.points = points;
+	    this.polygon.setPoints(points);
+	}
+	PolyPath.prototype.getAttrs = function() {
+	    return PAE.Util.dumpAttrs(polyPathStruct, this.attrs);
 	}
 	/**
 	 * Activate debug mode. The polygon may be easily moved around. Right-clicking on a line makes a new point, middle-clicking an existing point deletes it. 

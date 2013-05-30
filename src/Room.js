@@ -370,6 +370,7 @@ goog.provide("PAE.Room");
         })
         attrs.layers = PAE.Util.collectionAttrs(ls);
         attrs.dynamics = PAE.Util.collectionAttrs(this.getDynamics());
+        attrs.walkable = this.walkable.getAttrs();
         return attrs;
     }
     Room.prototype.getWalkable = function() {
