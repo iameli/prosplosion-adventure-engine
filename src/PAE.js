@@ -66,6 +66,16 @@ var PAE = {};
         if (isNaN(ret)) throw "Value must be a number."
         else return ret;
     }
+    /**
+     * parseBool except... oh wait that's not a thing.
+     * Turns "true" or "false" into true or false,
+     * throws an error otherwise.
+     */
+    PAE.Util.ensureBool = function(val) {
+        if (val === true || val === 'true') return true;
+        if (val === false || val === 'false') return false;
+        throw "Value must be true or false."
+    }
 	/**
 	 * Why on earth doesn't have a method that's this?
 	 */

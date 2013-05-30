@@ -12,7 +12,6 @@ goog.provide("PAE.DynamicDefinition");
         vectorAnimations: { type: 'object' },
         talkNoises: { type: 'array', def: []},
         speed: { type: 'int', def: 100 },
-        listening: { type: 'boolean', def: false },
         onClick: { type: 'function', def: function(e){}}
     }
     var DynamicDefinition = PAE.DynamicDefinition = function(params) {

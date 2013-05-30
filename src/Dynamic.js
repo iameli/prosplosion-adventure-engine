@@ -13,6 +13,7 @@ goog.provide("PAE.Dynamic");
         y: {type: 'int'},
         scale: {type: 'float', def: 1.0},
         layer: {type: 'string'},
+        listening: {type: 'boolean', def: false},
         onClick: {type: 'function', def: function(e){}}
     }
 	var Dynamic = PAE.Dynamic = function(params) {
@@ -22,7 +23,7 @@ goog.provide("PAE.Dynamic");
 		var game = PAE.curGame;
 		var def = game.getDynamicDefinition(params.id); //Get the sprite definition
 		if (!def) throw "Dynamic with id '" + params.id + "' not found!"
-		var imports = ['width', 'height', 'defaultAnimation', 'frameRate', 'vectorAnimations', 'speed', 'listening', 'onClick', 'talkNoises'];
+		var imports = ['width', 'height', 'defaultAnimation', 'frameRate', 'vectorAnimations', 'speed', 'onClick', 'talkNoises'];
 		imports.forEach(function(attrib) {
 		    if (self.attrs[attrib] === null || self.attrs[attrib] === undefined) {
 		        self.attrs[attrib] = def.attrs[attrib];
@@ -94,6 +95,21 @@ goog.provide("PAE.Dynamic");
 			self.sprite.start();
 			callback && callback();
 		})
+	}
+	/**
+	 * Returns whether this Dynamic is getting Listening events.
+	 */
+	Dynamic.prototype.getListening = function() {
+	    return this.attrs.listening;
+	}
+	/**
+	 * Set whether this Dynamic responds to click events.
+	 */
+	Dynamic.prototype.setListening = function(listening) {
+	    this.attrs.listening = PAE.Util.ensureBool(listening);
+	    if (this.sprite) {
+	        this.sprite.setListening(this.attrs.listening);
+	    }
 	}
 	/**
 	 * Return the offset location of the foot, as well as the width and height of 
