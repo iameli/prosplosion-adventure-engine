@@ -45,7 +45,13 @@ lastTest = null;
         this.stage = stage;
     }
     TestMonad.prototype.assertEquals = function(one, two, message) {
-        this.assert(one === two, message);
+        var res = _.isEqual(one, two);
+        if (!res) {
+            var onestring = JSON.stringify(one);
+            var twostring = JSON.stringify(two);
+            message = message + " [" + onestring + " != " + twostring + "]";
+        }
+        this.assert(res, message);
     }
     TestMonad.prototype.assert = function(statement, message) {
         this.testCount += 1;
@@ -74,7 +80,7 @@ lastTest = null;
         catch(e) {
             this.passed = false;
             this.message = this.message + " (THREW ERROR!!)";
-            this.results.push([false, e]);
+            this.results.push([false, e.stack]);
             this.callback();
         }
     }

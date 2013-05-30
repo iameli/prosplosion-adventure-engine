@@ -7,8 +7,10 @@ goog.provide("PAE.PolyPath");
 (function() {
 	var PolyPath = PAE.PolyPath = function(params) {
 		var self = this;
+		self.attrs = {};
 		self.debugGroup = new Kinetic.Group();
-		self.attrs = params;
+		self.attrs.points = params.points;
+		self.attrs.mode = params.mode || 'normal';
 		self.pathingData = new Kinetic.Group();
 		self.layer = new Kinetic.Group();
 		self.polygon = new Kinetic.Polygon({
@@ -26,11 +28,7 @@ goog.provide("PAE.PolyPath");
 	 * Don't mess with the objects, yo.
 	 */
 	PolyPath.prototype.getPoints = function() {
-		var output = [];
-		this.attrs.points.forEach(function(point) {
-			output.push({x: point.x, y: point.y});
-		})
-		return output;
+		return this.polygon.getPoints();
 	}
 	/**
 	 * Activate debug mode. The polygon may be easily moved around. Right-clicking on a line makes a new point, middle-clicking an existing point deletes it. 
@@ -400,6 +398,39 @@ goog.provide("PAE.PolyPath");
 		return c;
 	}
 	/**
+	 * Get all lines in this PolyPath--all connected points.
+	 */
+	PolyPath.prototype.getLines = function() {
+	    var ret = [];
+	    for (var i = 0; i < this.attrs.points.length - 1; i += 1) {
+	        ret.push([this.attrs.points[i], this.attrs.points[i+1]]);
+	    }
+	    ret.push([this.attrs.points[this.attrs.points.length - 1], this.attrs.points[0]]);
+	    return ret;
+	}
+	/**
+	 * Get the cooresponding polygon point given whatever mode that we're in.
+	 */
+	PolyPath.prototype.getPoint = function(inPoint) {
+	    if (this.attrs.mode == 'bottom') {
+	        var candidateLines = [];
+	        this.getLines().forEach(function(l) {
+	            if (l[0].x <= inPoint.x && l[1].x >= inPoint.x)
+	               candidateLines.push(l);
+	        })
+	        var lowest = null;
+	        candidateLines.forEach(function(l) {
+	            var m = (l[1].y - l[0].y) / (l[1].x - l[0].x);
+	            var y = m * (inPoint.x - l[1].x) + l[1].y; // y - y1 = m(x - x1);
+	            if (!lowest || y < lowest.y) {
+	                lowest = {x: inPoint.x, y: y};
+	            }
+	        });
+	        return lowest;
+	    }
+	    else return inPoint;
+	}
+	/**
 	 * Get the convex hull of the points inputted.
 	 * @param {Object} thePoints in {x: 0, y: 0} format
 	 */ 
@@ -427,5 +458,4 @@ goog.provide("PAE.PolyPath");
 	    })
 	    return toObjs(outpoints);
 	}
-
 })();
