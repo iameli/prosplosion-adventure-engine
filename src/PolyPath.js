@@ -201,7 +201,7 @@ goog.provide("PAE.PolyPath");
 	PolyPath.prototype.getPath = function(a, b) {
 		var self = this;
 		b = this.getPoint(b);
-		if (self.lineOfSight(a, b)) return [a, b];
+		if (self.attrs.mode == 'bottom' || self.lineOfSight(a, b)) return [a, b]; //FIXME: this should be more robust than giving up if it's bottom mode.
 		var n1 = new gamlib.AStarNode(a.x, a.y, 0);
 		var n2 = new gamlib.AStarNode(b.x, b.y, 0);
 		var removals = []
@@ -416,14 +416,15 @@ goog.provide("PAE.PolyPath");
 	    if (this.attrs.mode == 'bottom') {
 	        var candidateLines = [];
 	        this.getLines().forEach(function(l) {
-	            if (l[0].x <= inPoint.x && l[1].x >= inPoint.x)
+	            if ((l[0].x <= inPoint.x && l[1].x >= inPoint.x) ||
+	                (l[1].x <= inPoint.x && l[0].x >= inPoint.x))
 	               candidateLines.push(l);
 	        })
 	        var lowest = null;
 	        candidateLines.forEach(function(l) {
 	            var m = (l[1].y - l[0].y) / (l[1].x - l[0].x);
 	            var y = m * (inPoint.x - l[1].x) + l[1].y; // y - y1 = m(x - x1);
-	            if (!lowest || y < lowest.y) {
+	            if (lowest === null || y > lowest.y) {
 	                lowest = {x: inPoint.x, y: y};
 	            }
 	        });
@@ -431,6 +432,8 @@ goog.provide("PAE.PolyPath");
 	    }
 	    else return inPoint;
 	}
+	PAE.Util.addGetters(PolyPath, ['mode']);
+	PAE.Util.addSetters(PolyPath, ['mode']);
 	/**
 	 * Get the convex hull of the points inputted.
 	 * @param {Object} thePoints in {x: 0, y: 0} format

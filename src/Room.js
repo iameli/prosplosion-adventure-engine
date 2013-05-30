@@ -372,6 +372,9 @@ goog.provide("PAE.Room");
         attrs.dynamics = PAE.Util.collectionAttrs(this.getDynamics());
         return attrs;
     }
+    Room.prototype.getWalkable = function() {
+        return this.walkable;
+    }
 	PAE.Util.addGetters(PAE.Room, ['name', 'bgColor', 'width', 'height']);
 	PAE.Util.addSetters(PAE.Room, ['name']);
 })(); 
