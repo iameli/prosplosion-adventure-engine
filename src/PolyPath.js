@@ -200,6 +200,7 @@ goog.provide("PAE.PolyPath");
 	 */
 	PolyPath.prototype.getPath = function(a, b) {
 		var self = this;
+		b = this.getPoint(b);
 		if (self.lineOfSight(a, b)) return [a, b];
 		var n1 = new gamlib.AStarNode(a.x, a.y, 0);
 		var n2 = new gamlib.AStarNode(b.x, b.y, 0);
