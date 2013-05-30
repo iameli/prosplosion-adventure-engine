@@ -21,7 +21,7 @@ goog.require("canvg");
     VectorSprite.prototype.drawFunc = function(canvas) {
         var context = canvas.getContext();
         var cached = this.cachedVectorAnimations[this.curAnim][this.animIndex];
-        context.drawImage(cached, 0, 0, this.attrs.width, this.attrs.height);
+        if (cached) context.drawImage(cached, 0, 0, this.attrs.width, this.attrs.height);
     }
     /**
      * Draw the hitbox for this VectorSprite
