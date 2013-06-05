@@ -13,8 +13,7 @@ goog.provide("PAE.Dynamic");
         y: {type: 'int'},
         scale: {type: 'float', def: 1.0},
         layer: {type: 'string'},
-        listening: {type: 'boolean', def: false},
-        onClick: {type: 'function', def: function(e){}}
+        listening: {type: 'boolean', def: false}
     }
 	var Dynamic = PAE.Dynamic = function(params) {
 		var self = this;
@@ -29,7 +28,12 @@ goog.provide("PAE.Dynamic");
 		        self.attrs[attrib] = def.attrs[attrib];
 		    }
 		})
-		
+		if (params.onClick) {
+		    this.onClick = new PAE.Script(params.onClick);
+		}
+		else {
+		    this.onClick = new PAE.Script({script: function(){}})
+		}
 		self.uid = game.uid();
 		var svg_list = {};
 		/**
@@ -56,7 +60,6 @@ goog.provide("PAE.Dynamic");
 		//Init talker functionality.
 		self._talkerInit(self, attrs, params.game);
 		//Init onClick functionality.
-		var onClick = attrs.onClick;
 		
 		s.on('click', function(e) {
 			PAE.EventMgr.trigger(new PAE.Event({
@@ -79,10 +82,11 @@ goog.provide("PAE.Dynamic");
 			}, 100);
 		})
 		PAE.EventMgr.on("sprite-clicked."+self.uid, function(e) {
-		    if (attrs.onClick) {
-		        attrs.onClick.prototype.game = PAE.curGame;
-                attrs.onClick.prototype.dynamic = self;
-		        new attrs.onClick(e);
+		    if (self.onClick) {
+		        self.onClick.run({
+		            game: game,
+		            room: PAE.curGame.curRoom //FIXME
+		        })
 		    }
 		})
 	}
@@ -260,7 +264,9 @@ goog.provide("PAE.Dynamic");
         return this.sprite.toImage().src;
     }
     Dynamic.prototype.getAttrs = function() {
-        return PAE.Util.dumpAttrs(dynamicStruct, this.attrs);
+        var dump = PAE.Util.dumpAttrs(dynamicStruct, this.attrs);
+        dump.onClick = this.onClick.getAttrs();
+        return dump;
     }
     PAE.Util.addSetters(Dynamic, ['id', 'x', 'y', 'layer', 'onClick']);
     PAE.Util.addGetters(Dynamic, ['id', 'x', 'y', 'layer', 'onClick']);

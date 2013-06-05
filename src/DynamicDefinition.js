@@ -11,8 +11,7 @@ goog.provide("PAE.DynamicDefinition");
         frameRate: { type: 'int' },
         vectorAnimations: { type: 'object' },
         talkNoises: { type: 'array', def: []},
-        speed: { type: 'int', def: 100 },
-        onClick: { type: 'function', def: function(e){}}
+        speed: { type: 'int', def: 100 }
     }
     var DynamicDefinition = PAE.DynamicDefinition = function(params) {
         PAE.Util.setAttrs(this, defStruct, params);

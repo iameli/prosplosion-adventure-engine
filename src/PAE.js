@@ -180,7 +180,14 @@ var PAE = {};
     PAE.Util.dumpAttrs = function(struct, obj) {
         var ret = {};
         _.forEach(struct, function(data, name) {
-            ret[name] = obj[name];
+            if (obj[name] === undefined) {
+                if (data.required !== false) {
+                    throw "Error in dumpAttrs. Data not found for required field: " + name
+                }
+            }
+            else {
+                ret[name] = obj[name];
+            }
         })
         return ret;
     }

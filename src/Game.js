@@ -2,6 +2,7 @@
  * Games are the root object for a game.
  */
 goog.require("PAE");
+goog.require("PAE.Script");
 goog.require("PAE.Room");
 goog.require("PAE.Resources");
 goog.require("PAE.DynamicDefinition");

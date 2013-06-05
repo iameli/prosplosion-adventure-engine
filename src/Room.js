@@ -17,15 +17,20 @@ goog.provide("PAE.Room");
 	    follow: {type: 'string'},
 	    height: {type: 'int', def: 1024},
 	    width: {type: 'int', def: 768},
-	    walkable: {type: 'object', def: {"points":[{"x":0,"y":0},{"x":970,"y":24},{"x":1010,"y":758},{"x":10,"y":757}]}},
-	    onEnter: {type: 'function', def: function(){}}
+	    walkable: {type: 'object', def: {"points":[{"x":0,"y":0},{"x":970,"y":24},{"x":1010,"y":758},{"x":10,"y":757}]}}
 	}
 	var Room = PAE.Room = function(params) {
 		var self = this;
+		if (params.onEnter) {
+		    this.onEnter = new PAE.Script(params.onEnter);
+		}
+		else {
+		    this.onEnter = new PAE.Script({script: function(){}})
+		}
 		self.dynamics = {};
 		self.layers = {};
 		var attrs = self.attrs = params;
-		self.layer = new Kinetic.Group() //TODO I'd like this to be a layer someday.
+		self.layer = new Kinetic.Group(); //TODO I'd like this to be a layer someday.
 		self.group = new Kinetic.Group();
 		self.layer.add(self.group);
 		self.leftBorder = PAE.curGame.leftOffset / PAE.curGame.scale
@@ -125,11 +130,11 @@ goog.provide("PAE.Room");
 	    })
 	    var done = function() {
 	    	var game = PAE.curGame;
-	    	var onEnter = self.attrs.onEnter || function(e){};
-	    	onEnter.prototype.game = game;
-	    	onEnter.prototype.dynamics = self.getDynamics();
-	    	onEnter.prototype.room = self;
-	    	new onEnter();
+	    	self.onEnter.run({
+	    	    game: game,
+	    	    room: self
+	    	})
+	    	
 	    	self.scrollX(self.leftBorder * -1);
 	    	if (self.attrs.follow) {
 		    	self.centerOn(self.attrs.follow);
@@ -442,6 +447,7 @@ goog.provide("PAE.Room");
         attrs.layers = PAE.Util.collectionAttrs(ls);
         attrs.dynamics = PAE.Util.collectionAttrs(this.getDynamics());
         attrs.walkable = this.walkable.getAttrs();
+        attrs.onEnter = this.onEnter.getAttrs();
         return attrs;
     }
     Room.prototype.getWalkable = function() {
