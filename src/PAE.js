@@ -34,7 +34,7 @@ var PAE = {};
 	            if (field.def !== undefined) {
 	                val = field.def;
 	            }
-	            else {
+	            else if (field.required !== false) {
 	                errors.push("Value not provided for required field: " + name);
 	                return;
 	            }
