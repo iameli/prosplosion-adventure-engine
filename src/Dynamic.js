@@ -236,6 +236,12 @@ goog.provide("PAE.Dynamic");
         this.attrs.name = name;
     }
     /**
+     * Get onClick Script 
+     */
+    Dynamic.prototype.getOnClick = function() {
+        return this.onClick;
+    }
+    /**
      * Set whether we can drag this dude around for game creation purposes.
      */
     Dynamic.prototype.setDraggable = function(yes) {
@@ -268,7 +274,7 @@ goog.provide("PAE.Dynamic");
         dump.onClick = this.onClick.getAttrs();
         return dump;
     }
-    PAE.Util.addSetters(Dynamic, ['id', 'x', 'y', 'layer', 'onClick']);
-    PAE.Util.addGetters(Dynamic, ['id', 'x', 'y', 'layer', 'onClick']);
+    PAE.Util.addSetters(Dynamic, ['id', 'x', 'y', 'layer']);
+    PAE.Util.addGetters(Dynamic, ['x', 'y', 'layer']);
 	PAE.Global.extend(PAE.Dynamic, PAE.Talker);
 })();
