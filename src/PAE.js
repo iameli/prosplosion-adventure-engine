@@ -145,6 +145,7 @@ var PAE = {};
 	PAE.Util.addGetters = function(self, attribs) {
 	    attribs.forEach(function(attr){
 	        var n = 'get' + PAE.Util.camelCase(attr);
+	        if (self.prototype[n]) throw "Getter already exists for " + n
 	        self.prototype[n] = function() {
 	            return this.attrs[attr];
 	        }
@@ -156,6 +157,7 @@ var PAE = {};
 	PAE.Util.addSetters = function(self, attribs) {
         attribs.forEach(function(attr){
             var n = 'set' + PAE.Util.camelCase(attr);
+            if (self.prototype[n]) throw "Setting already exists for " + n
             self.prototype[n] = function(val) {
                 this.attrs[attr] = val;
             }
