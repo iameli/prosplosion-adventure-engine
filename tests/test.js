@@ -80,7 +80,7 @@ lastTest = null;
         catch(e) {
             this.passed = false;
             this.message = this.message + " (THREW ERROR!!)";
-            this.results.push([false, e.stack]);
+            this.results.push([false, "" + e + ", " + e.stack]);
             this.callback();
         }
     }
