@@ -111,7 +111,7 @@ goog.provide("PAE.Game");
 	/**
 	 * Transition to a new room.
 	 */
-	Game.prototype.transition = function(params) {
+	Game.prototype.transition = function(params, callback) {
 		var self = this;
 		self.group.add(self.loadingScreen);
 		self.loadingScreen.moveToTop();
@@ -130,6 +130,7 @@ goog.provide("PAE.Game");
                 self.UI.Group.moveToTop();
                 self.loadingScreen.remove();
                 self.stage.draw();
+                callback && callback();
             });
 		}, 1)
 	}

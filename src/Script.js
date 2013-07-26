@@ -80,7 +80,7 @@ goog.provide("PAE.Script");
         this._internal = {}
         this._internal.parent = this;
         this._internal.game = context.game
-        this._internal.room = context.room
+        this._internal.room = game.getCurrentRoom();
         this._internal.queue = []
     }
     /**
@@ -105,6 +105,12 @@ goog.provide("PAE.Script");
     apiStruct.flag.hasFlag = {
         instant: function(flag) {
             return this._internal.game.hasFlag(flag);
+        }
+    }
+    apiStruct.game = {}
+    apiStruct.game.transition = {
+        queue: function(dest, params, cb) {
+            this._internal.game.transition(dest, cb);
         }
     }
     /**
